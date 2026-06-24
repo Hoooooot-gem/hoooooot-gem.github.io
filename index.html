@@ -1,40 +1,245 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>你的个人网站标题</title>
-    <style>
-        /* 这里写CSS样式，让网页变漂亮 */
-        body {
-            font-family: "微软雅黑", sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 50px;
-        }
-        h1 {
-            color: #333;
-        }
-        .card {
-            background: white;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-        }
-    </style>
+```
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+<title>Hoooooot</title>
+<meta
+    name="description"
+    content="Student, Filmmaker, Creator. Creating stories through image and design.">
+<meta
+    property="og:title"
+    content="Hoooooot">
+<meta
+    property="og:description"
+    content="Student, Filmmaker, Creator.">
+<meta
+    property="og:type"
+    content="website">
+<meta
+    name="twitter:card"
+    content="summary_large_image">
+<link
+    rel="icon"
+    href="favicon.svg">
+<link
+    rel="stylesheet"
+    href="css/reset.css">
+<link
+    rel="stylesheet"
+    href="css/variables.css">
+<link
+    rel="stylesheet"
+    href="css/layout.css">
+<link
+    rel="stylesheet"
+    href="css/components.css">
+<link
+    rel="stylesheet"
+    href="css/responsive.css">
+```
 </head>
 <body>
-    <div class="card">
-        <h1>你好，我是 [你的名字] 👋</h1>
-        <p>这是我的个人网站，欢迎光临！</p>
-        <p>我目前在学习做网站，这是我的第一个作品。</p>
-        <p>你可以通过邮箱联系我：<strong>你的邮箱@example.com</strong></p>
-    </div>
+```
+<!-- Navigation -->
+<header class="header">
+    <nav class="nav">
+        <a href="#hero" class="logo">
+            Hoooooot
+        </a>
+        <button
+            class="menu-toggle"
+            aria-label="Open Menu">
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links">
+            <li>
+                <a href="#about">About</a>
+            </li>
+            <li>
+                <a href="#portfolio">Portfolio</a>
+            </li>
+            <li>
+                <a href="#journey">Journey</a>
+            </li>
+            <li>
+                <a href="#contact">Contact</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <!-- HERO -->
+    <section
+        id="hero"
+        class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Hoooooot
+            </h1>
+            <div class="hero-roles">
+                <p>Student</p>
+                <p>Filmmaker</p>
+                <p>Creator</p>
+            </div>
+            <p class="hero-subtitle">
+                Creating stories through image and design.
+            </p>
+        </div>
+        <div class="scroll-indicator">
+            ↓ Scroll
+        </div>
+    </section>
+    <!-- ABOUT -->
+    <section
+        id="about"
+        class="section about reveal">
+        <div class="section-label">
+            About
+        </div>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    I explore visual storytelling through film,
+                    editing and design. Interested in creating
+                    experiences that feel quiet, clear and memorable.
+                </p>
+            </div>
+            <div class="about-tags">
+                <span>Video Editing</span>
+                <span>Photography</span>
+                <span>Design</span>
+                <span>Creative Direction</span>
+                <span>Storytelling</span>
+            </div>
+        </div>
+    </section>
+    <!-- PORTFOLIO -->
+    <section
+        id="portfolio"
+        class="section reveal">
+        <div class="section-label">
+            Portfolio
+        </div>
+        <div class="portfolio-list">
+            <article class="project">
+                <span class="project-year">
+                    2026
+                </span>
+                <h3>
+                    Summer Camp Visual Identity
+                </h3>
+                <p>
+                    Branding
+                </p>
+            </article>
+            <article class="project">
+                <span class="project-year">
+                    2025
+                </span>
+                <h3>
+                    Personal Film Project
+                </h3>
+                <p>
+                    Short Film
+                </p>
+            </article>
+            <article class="project">
+                <span class="project-year">
+                    2025
+                </span>
+                <h3>
+                    Editorial Motion Study
+                </h3>
+                <p>
+                    Motion Design
+                </p>
+            </article>
+        </div>
+    </section>
+    <!-- JOURNEY -->
+    <section
+        id="journey"
+        class="section reveal">
+        <div class="section-label">
+            Journey
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <span>2026</span>
+                <h3>
+                    Creating
+                </h3>
+            </div>
+            <div class="timeline-item">
+                <span>2025</span>
+                <h3>
+                    Learning
+                </h3>
+            </div>
+            <div class="timeline-item">
+                <span>2024</span>
+                <h3>
+                    Exploring
+                </h3>
+            </div>
+        </div>
+    </section>
+    <!-- CONTACT -->
+    <section
+        id="contact"
+        class="section reveal">
+        <div class="section-label">
+            Contact
+        </div>
+        <div class="contact-links">
+            <a href="#">
+                Email
+            </a>
+            <a href="#">
+                Instagram
+            </a>
+            <a href="#">
+                Bilibili
+            </a>
+        </div>
+    </section>
+</main>
+<!-- Footer -->
+<footer class="footer">
+    <p>
+        © 2026 Hoooooot
+    </p>
+</footer>
+<!-- Future Expansion -->
+<!--
+    Blog Module
+    Gallery Module
+    Notes Module
+    Travel Module
+    Projects Module
+-->
+<button
+    class="theme-toggle"
+    aria-label="Toggle Theme">
+    Theme
+</button>
+<script
+    src="js/navigation.js">
+</script>
+<script
+    src="js/darkmode.js">
+</script>
+<script
+    src="js/observer.js">
+</script>
+<script
+    src="js/main.js">
+</script>
+```
 </body>
 </html>
