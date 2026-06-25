@@ -8,11 +8,10 @@
     <!-- 直接复用全局 CSS -->
     <link rel="stylesheet" href="../../../css/style.css">
     
-    <!-- 子页面专属微调样式（写在 style 里，也可放入 css 文件夹） -->
+    <!-- 子页面专属微调样式 -->
     <style>
-        /* 子页面导航栏：去掉了模糊，只保留干净的分割线 */
         .sub-navbar {
-            position: sticky; /* 悬浮在顶部，但不固定遮挡 */
+            position: sticky;
             top: 0;
             width: 100%;
             height: 64px;
@@ -30,7 +29,6 @@
         .sub-navbar .back-link { color: var(--text-secondary); text-decoration: none; }
         .sub-navbar .back-link:hover { color: var(--text-primary); }
 
-        /* 课程列表容器 */
         .course-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -41,7 +39,6 @@
         .course-header h1 { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
         .course-header p { color: var(--text-secondary); font-size: 1.1rem; }
 
-        /* 课程项卡片（横向列表式） */
         .course-item {
             display: flex;
             align-items: center;
@@ -54,7 +51,6 @@
         .course-item:last-child { border-bottom: none; }
         .course-item:hover { opacity: 0.7; }
 
-        /* 封面占位（16:9 比例） */
         .course-thumb {
             width: 240px;
             aspect-ratio: 16 / 9;
@@ -71,9 +67,8 @@
         .course-info h3 { font-size: 1.3rem; margin-bottom: 6px; }
         .course-info p { color: var(--text-secondary); font-size: 0.95rem; }
 
-        /* 视频播放展开区域（默认隐藏） */
         .video-player-wrapper {
-            display: none; /* 默认收起，点击后展开 */
+            display: none;
             padding: 20px 0 40px 0;
             width: 100%;
         }
@@ -86,7 +81,6 @@
             border-radius: 8px;
         }
 
-        /* 移动端适配 */
         @media (max-width: 767px) {
             .sub-navbar { padding: 0 24px; }
             .course-container { padding: 40px 24px 80px 24px; }
@@ -109,60 +103,207 @@
             <p>从拍摄到调色，手把手带你完成一次完整的影像创作。点击任意课程展开视频。</p>
         </div>
 
-        <!-- 课程列表预留接口 -->
+        <!-- 课程列表 -->
         <div id="course-list">
             
-            <!-- ===== 课程 1 ===== -->
-            <div class="course-item" data-video="VIDEO_ID_1">
+            <!-- ==================== Part A · 初见 ==================== -->
+            
+            <!-- 课程 1 -->
+            <div class="course-item">
                 <div class="course-thumb">Part A-1</div>
                 <div class="course-info">
-                    <h3>第一课：正确的拍摄参数</h3>
-                    <p>曝光三要素 · 动态范围 · Log 视频与错误参数的后果</p>
-                    <span style="color:var(--text-secondary); font-size:0.85rem;">约 10 min · 4K</span>
+                    <h3>视频“标准化”（以iPhone和Pocket 3为例）</h3>
+                    <p>拍摄软件：Blackmagic Camera · 选择29.97或59.94帧 · 设备设置与预设保存</p>
                 </div>
             </div>
             <div class="video-player-wrapper" id="player-1">
-                <!-- 这里粘贴 B站/YouTube 的 iframe 嵌入代码 -->
-                <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=1706416465&bvid=BV1UT42167xb&cid=1641702404&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_1&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
             </div>
 
-            <!-- ===== 课程 2 ===== -->
-            <div class="course-item" data-video="VIDEO_ID_2">
+            <!-- 课程 2 -->
+            <div class="course-item">
                 <div class="course-thumb">Part A-2</div>
                 <div class="course-info">
-                    <h3>第二课：迅速且可靠的数据传输</h3>
-                    <p>读卡器 · AirDrop / LocalSend · 移动硬盘与素材整理结构</p>
-                    <span style="color:var(--text-secondary); font-size:0.85rem;">约 10 min · 4K</span>
+                    <h3>使用正确的拍摄参数</h3>
+                    <p>曝光三要素 · 动态范围 · Log视频 · 错误参数的后果</p>
                 </div>
             </div>
             <div class="video-player-wrapper" id="player-2">
-                <!-- 这里粘贴 B站/YouTube 的 iframe 嵌入代码 -->
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_2&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- ==================== Part B · 寒暄 ==================== -->
+
+            <!-- 课程 3 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-1</div>
+                <div class="course-info">
+                    <h3>软件的选择</h3>
+                    <p>问卷结果 · Final Cut Pro · DaVinci Resolve · Premiere Pro 对比</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-3">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_3&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 4 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-2</div>
+                <div class="course-info">
+                    <h3>迅速且可靠的数据传输</h3>
+                    <p>读卡器 · AirDrop / LocalSend · 移动硬盘 · 素材整理结构</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-4">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_4&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 5 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-3</div>
+                <div class="course-info">
+                    <h3>节奏的把控</h3>
+                    <p>节奏感 vs 流水账 · 寻找节拍与卡点 · 镜头长短 · B-Roll与空镜 · 环境音氛围</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-5">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_5&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 6 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-4</div>
+                <div class="course-info">
+                    <h3>“电影感”从何而来？</h3>
+                    <p>高级感来源 · 电影感≠加黑边 · 光线与构图技巧 · 色彩情绪</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-6">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_6&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 7 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-5</div>
+                <div class="course-info">
+                    <h3>简单的调色</h3>
+                    <p>调色前后对比 · 白平衡 · 曝光与对比度 · 饱和度控制 · 示波器辅助</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-7">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_7&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 8 -->
+            <div class="course-item">
+                <div class="course-thumb">Part B-6</div>
+                <div class="course-info">
+                    <h3>“懒人”的法宝——LUT</h3>
+                    <p>LUT是什么 · LUT正确使用方法 · 套LUT翻车原因</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-8">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_8&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- ==================== Extra 扩展 ==================== -->
+
+            <!-- 课程 9 -->
+            <div class="course-item">
+                <div class="course-thumb">Extra #1</div>
+                <div class="course-info">
+                    <h3>制作自己的LUT（含LUT分享）</h3>
+                    <p>个人风格建立 · 统一色彩 · LUT保存与导出分享 · 现场发放原创LUT包</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-9">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_9&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 10 -->
+            <div class="course-item">
+                <div class="course-thumb">Extra #2</div>
+                <div class="course-info">
+                    <h3>试试HDR？</h3>
+                    <p>SDR与HDR对比 · 制作流程 · 上传平台注意事项 · 常见翻车与工作流分享</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-10">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_10&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 11 -->
+            <div class="course-item">
+                <div class="course-thumb">Extra #3</div>
+                <div class="course-info">
+                    <h3>如何配好音乐？</h3>
+                    <p>音乐决定情绪 · 寻找BGM · 节拍与镜头对应 · 环境音 · 版权问题</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-11">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_11&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- ==================== Part C · 畅享 ==================== -->
+
+            <!-- 课程 12 -->
+            <div class="course-item">
+                <div class="course-thumb">Part C-1</div>
+                <div class="course-info">
+                    <h3>要“兼容”还是“效率”？</h3>
+                    <p>编码器是什么 · H.264与H.265简介 · 不同场景选择 · 平台偏好</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-12">
                 <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=1706416465&bvid=BV1UT42167xb&cid=1641702404&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
             </div>
 
-            <!-- 预留其它课程接口 -->
-            
+            <!-- 课程 13 -->
+            <div class="course-item">
+                <div class="course-thumb">Part C-2</div>
+                <div class="course-info">
+                    <h3>要“苗条”还是“精致”？</h3>
+                    <p>高/低码率对比 · 文件体积来源 · 平台压缩机制</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-13">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_13&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 课程 14 -->
+            <div class="course-item">
+                <div class="course-thumb">Extra #4</div>
+                <div class="course-info">
+                    <h3>碎碎念</h3>
+                    <p>我为什么拍视频、记录生活，以及做视频踩过的那些坑</p>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-14">
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_14&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
         </div>
     </main>
 
-    <!-- 复用首页的 JS，并增加课程列表点击展开逻辑 -->
+    <!-- 复用全局 JS -->
     <script src="../../../js/script.js"></script>
+    
+    <!-- 课程点击展开/收起逻辑（完美兼容14节课） -->
     <script>
-        // 新增课程点击展开/收起功能
         document.querySelectorAll('.course-item').forEach(item => {
             item.addEventListener('click', function() {
-                // 获取当前卡片对应的播放器 ID（例如 item 1 对应 player-1）
-                const index = Array.from(this.parentElement.children).indexOf(this);
-                const playerWrapper = document.getElementById(`player-${index + 1}`);
+                // 直接获取当前卡片的下一个兄弟元素（播放器）
+                const playerWrapper = this.nextElementSibling;
                 
-                if (playerWrapper) {
-                    // 切换播放器的显示状态
+                if (playerWrapper && playerWrapper.classList.contains('video-player-wrapper')) {
                     const isActive = playerWrapper.classList.contains('active');
-                    // 收起其他所有播放器（保持界面整洁）
+                    
+                    // 收起其他所有播放器，只保持当前点击的一个展开
                     document.querySelectorAll('.video-player-wrapper').forEach(w => w.classList.remove('active'));
+                    
                     if (!isActive) {
                         playerWrapper.classList.add('active');
-                        // 让页面平滑滚动到展开的位置
+                        // 滚动至播放器位置
                         playerWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 }
