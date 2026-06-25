@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoooooot Search</title>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --text-color: #ffffff;
+            --accent-color: #4f7eff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "MiSans", "Helvetica Neue", Arial, sans-serif;
+            background-color: #0c0c0e;
+            color: var(--text-color);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 动态背景 */
+        .background-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 12s infinite ease-in-out;
+        }
+
+        .blob-1 { width: 450px; height: 450px; background: linear-gradient(135deg, #ff00cc, #333399); top: -100px; left: -100px; }
+        .blob-2 { width: 550px; height: 550px; background: linear-gradient(135deg, #00c6ff, #0072ff); bottom: -150px; right: -150px; animation-delay: 2s; }
+        .blob-3 { width: 350px; height: 350px; background: linear-gradient(135deg, #7928ca, #ff0080); top: 30%; left: 25%; animation: float 15s infinite ease-in-out reverse; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 60px) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* 玻璃卡片 */
+        .glass-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: var(--glass-shadow);
+            padding: 45px;
+            width: 90%;
+            max-width: 850px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            z-index: 10;
+        }
+
+        .header-section { display: flex; flex-direction: column; gap: 8px; }
+        .clock-widget { font-size: 14px; color: rgba(255, 255, 255, 0.5); letter-spacing: 2px; }
+        #time-display { font-size: 52px; font-weight: 200; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #a6c1ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        /* 搜索框 */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px;
+            transition: all 0.4s ease;
+        }
+
+        .search-wrapper:focus-within {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(79, 126, 255, 0.6);
+        }
+
+        .search-engine-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            outline: none;
+            font-weight: 600;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px;
+            color: #fff;
+            font-size: 17px;
+            outline: none;
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #4f7eff, #395bb8);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 快捷链接 */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 修改为5列以适应Gmail删除后的数量 */
+            gap: 15px;
+        }
+
+        @media (max-width: 650px) {
+            .shortcuts-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .shortcut-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 20px 10px;
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .shortcut-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .icon-box {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-box svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .shortcut-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blob blob-1"></div>
+    <div class="background-blob blob-2"></div>
+    <div class="background-blob blob-3"></div>
+
+    <div class="glass-container">
+        <div class="header-section">
+            <div class="clock-widget">
+                <span id="date-display">...</span> • <span id="greeting">你好</span>
+            </div>
+            <div id="time-display">00:00:00</div>
+            <div class="logo">Hoooooot Search</div>
+        </div>
+
+        <div class="search-wrapper">
+            <select id="search-engine-select" class="search-engine-select">
+                <option value="google">Google</option>
+                <option value="baidu">百度</option>
+                <option value="youtube">YouTube</option>
+            </select>
+            <input type="text" id="search-input" class="search-input" placeholder="探索未知的世界..." autocomplete="off">
+            <button id="search-button" class="search-button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <div class="shortcuts-grid">
+            <!-- Google -->
+            <a href="https://www.google.com" class="shortcut-item">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                </div>
+                <span class="shortcut-name">Google</span>
+            </a>
+
+            <!-- GitHub -->
+            <a href="https://github.com" class="shortcut-item">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#ffffff" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </div>
+                <span class="shortcut-name">GitHub</span>
+            </a>
+
+            <!-- Gemini -->
+            <a href="https://gemini.google.com" class="shortcut-item">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4E86F8" d="M12 24c0-6.627-5.373-12-12-12 6.627 0 12-5.373 12-12 0 6.627 5.373 12 12 12-6.627 0-12 5.373-12 12Z"/>
+                    </svg>
+                </div>
+                <span class="shortcut-name">Gemini</span>
+            </a>
+
+            <!-- X -->
+            <a href="https://x.com" class="shortcut-item">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                    </svg>
+                </div>
+                <span class="shortcut-name">X</span>
+            </a>
+
+            <!-- YouTube -->
+            <a href="https://www.youtube.com" class="shortcut-item">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+                    </svg>
+                </div>
+                <span class="shortcut-name">YouTube</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function performSearch() {
+            const query = document.getElementById('search-input').value;
+            const engine = document.getElementById('search-engine-select').value;
+            if (query) {
+                let url;
+                switch(engine) {
+                    case 'google': url = `https://www.google.com/search?q=${encodeURIComponent(query)}`; break;
+                    case 'baidu': url = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`; break;
+                    case 'youtube': url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`; break;
+                    default: url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                }
+                window.location.href = url;
+            }
+        }
+
+        document.getElementById('search-button').addEventListener('click', performSearch);
+        document.getElementById('search-input').addEventListener('keypress', (e) => e.key === 'Enter' && performSearch());
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('time-display').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('date-display').textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
+            
+            const hour = now.getHours();
+            let g = '你好';
+            if(hour < 5) g = '深夜好';
+            else if(hour < 12) g = '早上好';
+            else if(hour < 18) g = '下午好';
+            else g = '晚上好';
+            document.getElementById('greeting').textContent = g;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
