@@ -1,0 +1,142 @@
+/* =======================================
+VARIABLES.CSS
+Design System
+Hoooooot Portfolio
+======================================= */
+:root {
+```
+/* ===================================
+   COLORS
+   =================================== */
+--color-bg: #FFFFFF;
+--color-text: #000000;
+--color-secondary: #666666;
+--color-border: #EAEAEA;
+--color-nav: rgba(255,255,255,0.72);
+/* ===================================
+   DARK MODE
+   =================================== */
+--dark-bg: #0A0A0A;
+--dark-text: #FAFAFA;
+--dark-secondary: #B5B5B5;
+--dark-border: #222222;
+--dark-nav: rgba(10,10,10,0.72);
+/* ===================================
+   TYPOGRAPHY
+   =================================== */
+--font-primary:
+    "SF Pro Display",
+    "Inter",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+/* Hero */
+--hero-size:
+    clamp(
+        72px,
+        10vw,
+        160px
+    );
+/* Large Statement */
+--statement-size:
+    clamp(
+        36px,
+        5vw,
+        72px
+    );
+/* Section Label */
+--section-label-size: 18px;
+/* Body */
+--body-size: 18px;
+/* Small */
+--small-size: 14px;
+/* ===================================
+   FONT WEIGHT
+   =================================== */
+--weight-regular: 400;
+--weight-medium: 500;
+--weight-semibold: 600;
+--weight-bold: 700;
+/* ===================================
+   LINE HEIGHT
+   =================================== */
+--line-tight: 0.92;
+--line-normal: 1.6;
+--line-reading: 1.8;
+/* ===================================
+   LETTER SPACING
+   =================================== */
+--tracking-tight: -0.06em;
+--tracking-normal: 0;
+--tracking-wide: 0.08em;
+/* ===================================
+   SPACING SYSTEM
+   8pt Grid
+   =================================== */
+--space-1: 8px;
+--space-2: 16px;
+--space-3: 24px;
+--space-4: 40px;
+--space-5: 64px;
+--space-6: 96px;
+--space-7: 160px;
+/* ===================================
+   PAGE PADDING
+   =================================== */
+--page-padding-desktop: 80px;
+--page-padding-tablet: 60px;
+--page-padding-mobile: 24px;
+/* ===================================
+   SECTION SPACING
+   =================================== */
+--section-gap: 160px;
+/* ===================================
+   CONTENT WIDTH
+   =================================== */
+--max-width: 1400px;
+--reading-width: 720px;
+/* ===================================
+   NAVIGATION
+   =================================== */
+--nav-height: 64px;
+/* ===================================
+   BORDER
+   =================================== */
+--border-thin: 1px solid var(--color-border);
+/* ===================================
+   RADIUS
+   =================================== */
+--radius-pill: 999px;
+/* ===================================
+   TRANSITIONS
+   =================================== */
+--transition-fast:
+    250ms ease;
+--transition-normal:
+    300ms ease;
+--transition-slow:
+    600ms cubic-bezier(
+        .2,
+        .8,
+        .2,
+        1
+    );
+/* ===================================
+   SHADOW
+   Intentionally Disabled
+   =================================== */
+--shadow-none: none;
+```
+}
+/* =======================================
+DARK MODE
+======================================= */
+[data-theme="dark"] {
+```
+--color-bg: var(--dark-bg);
+--color-text: var(--dark-text);
+--color-secondary: var(--dark-secondary);
+--color-border: var(--dark-border);
+--color-nav: var(--dark-nav);
+```
+}

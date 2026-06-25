@@ -1,0 +1,535 @@
+/* ============================================================
+   css/style.css
+   Apple 极简主义 / 瑞士排版 / 杂志感设计
+   ============================================================ */
+
+/* ==================== 1. CSS 变量与主题系统 ==================== */
+
+/* 默认浅色主题（Light Mode） */
+:root {
+  /* 颜色变量 */
+  --bg-color: #FFFFFF;            /* 背景色：纯白 */
+  --text-primary: #000000;        /* 主文字：纯黑 */
+  --text-secondary: #666666;      /* 辅助文字：高级灰 */
+  --border-color: #EAEAEA;        /* 分割线：极浅灰 */
+  --nav-bg: rgba(255, 255, 255, 0.72); /* 导航栏背景（半透明白） */
+
+  /* 尺寸变量 */
+  --nav-height: 64px;             /* 导航栏高度 */
+  --max-width: 1200px;            /* 内容最大宽度 */
+  --spacing-side: 80px;           /* 桌面端页面左右留白 */
+  
+  /* 字体变量 */
+  --font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-weight-bold: 700;        /* 标题字重 */
+  --font-weight-regular: 400;     /* 正文字重 */
+
+  /* 过渡变量 */
+  --transition-theme: 0.3s ease;  /* 主题切换过渡时间 */
+  --transition-reveal: 0.6s ease-out; /* 滚动出现动画时间 */
+}
+
+/* 深色主题（Dark Mode）通过 data-theme="dark" 属性触发 */
+[data-theme="dark"] {
+  --bg-color: #000000;            /* 背景色：纯黑 */
+  --text-primary: #FFFFFF;        /* 主文字：纯白 */
+  --text-secondary: #AAAAAA;      /* 辅助文字：浅灰 */
+  --border-color: #333333;        /* 分割线：深灰 */
+  --nav-bg: rgba(0, 0, 0, 0.72);  /* 导航栏背景（半透明黑） */
+}
+
+/* ==================== 2. 全局重置与基础样式 ==================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 让 padding 和 border 不撑大元素 */
+}
+
+/* 启用平滑滚动（HTML 自带，JS 无需额外处理） */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6; /* 优雅的行高，增强阅读呼吸感 */
+  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更细腻 */
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-theme), color var(--transition-theme);
+}
+
+a {
+  text-decoration: none;
+  color: inherit; /* 链接默认继承父级文字颜色 */
+  transition: opacity 0.2s;
+}
+
+a:hover {
+  opacity: 0.6; /* 悬停时轻微降低透明度，克制且高级 */
+}
+
+ul {
+  list-style: none; /* 去除列表默认小圆点 */
+}
+
+/* ==================== 3. 排版系统（Typography） ==================== */
+
+/* 标题字重 700，正文 400 */
+h1, h2, h3, h4 {
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em; /* 大标题通常需要微调字间距 */
+}
+
+p {
+  font-weight: var(--font-weight-regular);
+  color: var(--text-secondary);
+}
+
+/* ==================== 4. 固定顶部导航栏 ==================== */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);        /* 毛玻璃模糊效果 */
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1000;                     /* 确保导航栏在最上层 */
+  transition: background var(--transition-theme), border var(--transition-theme);
+}
+
+.nav-container {
+  max-width: var(--max-width);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-side);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo 品牌名 */
+.logo {
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.5px;
+}
+
+/* 右侧导航菜单 */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 32px; /* 菜单项间距 */
+}
+
+.nav-list {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-list a {
+  font-size: 0.95rem;
+  position: relative;
+}
+
+/* 当前区域高亮（由 JS 动态添加 .active 类触发） */
+.nav-list a.active {
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+/* 深色模式切换按钮 */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  padding: 4px;
+  transition: transform 0.2s;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* 汉堡菜单按钮（移动端使用，桌面端默认隐藏） */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger .bar {
+  width: 24px;
+  height: 2px;
+  background-color: var(--text-primary);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ==================== 5. 页面主体区域 ==================== */
+
+/* 通用容器类，控制居中与左右留白 */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-side);
+}
+
+/* 通用章节块：保证足够的上下留白 */
+.section {
+  padding: 120px 0; /* 上下间距为120px，左右由 container 控制 */
+}
+
+/* 章节标题（关于、作品集等） */
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 48px;
+  letter-spacing: -0.02em;
+}
+
+/* ==================== 6. Hero 首屏区域（背景图版） ==================== */
+
+#hero {
+  position: relative; /* 允许内部绝对定位 */
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--spacing-side);
+  background-color: var(--bg-color); /* 备用背景色 */
+  transition: background var(--transition-theme);
+  overflow: hidden; /* 防止图片溢出屏幕 */
+}
+
+/* 背景大图层：绝对定位铺满，图片保持16:9比例自适应裁剪 */
+.hero-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* 放在最底层 */
+}
+
+.hero-bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 核心：保持16:9比例不变，裁剪多余部分填满屏幕 */
+  display: block;
+}
+
+/* 半透明遮罩层：确保深浅模式下文字都清晰可辨 */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* 在图片上方，文字下方 */
+  /* 浅色模式下：微微偏白，让黑色主文字清晰可见 */
+  background: rgba(255, 255, 255, 0.25); 
+  transition: background var(--transition-theme);
+}
+
+/* 深色模式下的遮罩：变暗，让白色主文字清晰可见 */
+[data-theme="dark"] .hero-overlay {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* 文字内容层：保证在最顶层，不受干扰 */
+.hero-content {
+  position: relative;
+  z-index: 1; 
+  max-width: 800px;
+}
+
+/* 以下保持你原本的 Hero 排版动画不变 */
+.hero-title {
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.2em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes heroFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.8rem;
+  font-weight: var(--font-weight-regular);
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.hero-desc {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.scroll-indicator {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  opacity: 0.6;
+  animation: pulseOpacity 2s ease-in-out infinite;
+}
+
+@keyframes pulseOpacity {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.2; }
+}
+
+/* ==================== 7. About 关于区域 ==================== */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 左右两栏布局 */
+  gap: 60px;
+}
+
+.about-text p {
+  font-size: 1.1rem;
+  line-height: 1.8; /* 增加段落行高，杂志感 */
+}
+
+.about-tags {
+  display: flex;
+  flex-wrap: wrap; /* 标签过多时自动换行 */
+  align-content: flex-start;
+  gap: 12px;
+}
+
+/* 关键词标签样式：黑边、圆角、透明底 */
+.tag {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid var(--text-primary);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ==================== 8. Portfolio 作品集区域 ==================== */
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 两列网格 */
+  gap: 40px;
+}
+
+.portfolio-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 图片占位符（因为还没有真实图片，先占位） */
+.placeholder-image {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* 宽高比 16:9 */
+  background-color: var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.portfolio-item h3 {
+  font-size: 1.2rem;
+}
+
+.portfolio-item p {
+  font-size: 0.95rem;
+}
+
+/* ==================== 9. Timeline 历程区域 ==================== */
+
+.timeline-item {
+  display: flex;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-item .year {
+  width: 80px;
+  font-weight: var(--font-weight-bold);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.timeline-item .desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* ==================== 10. Contact 联系与 Footer 区域 ==================== */
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-info a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* ==================== 11. 视口滚动出现动画（IntersectionObserver） ==================== */
+
+/* 
+   JS 中将添加 .reveal 类，并在元素进入视口时添加 .is-visible
+   初始状态：隐藏并下移 30px
+*/
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--transition-reveal), transform var(--transition-reveal);
+}
+
+/* 进入视口后的状态 */
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== 12. 响应式设计 ==================== */
+
+/* 平板端（768px ~ 1199px） */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  :root {
+    --spacing-side: 60px; /* 留白缩减至 60px */
+  }
+  
+  .section {
+    padding: 100px 0;
+  }
+  
+  .hero-title {
+    font-size: clamp(3rem, 6vw, 4.5rem);
+  }
+}
+
+/* 手机端（< 768px） */
+@media screen and (max-width: 767px) {
+  :root {
+    --spacing-side: 24px; /* 留白缩减至 24px */
+  }
+  
+  .section {
+    padding: 80px 0;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 32px;
+  }
+
+  /* 汉堡菜单展开逻辑 */
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    height: calc(100vh - var(--nav-height));
+    background-color: var(--bg-color);
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+    /* 默认隐藏（向右位移出屏幕），展开动画 300ms */
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out, background var(--transition-theme);
+  }
+
+  /* 由 JS 添加 .active 类来展开菜单 */
+  .nav-menu.active {
+    transform: translateX(0);
+  }
+
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    font-size: 1.2rem;
+  }
+
+  /* 汉堡菜单展开时的叉号动画（交互动画） */
+  .hamburger.active .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.active .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  /* 手机端布局转为单列 */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .timeline-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .timeline-item .year {
+    width: auto;
+  }
+
+  .hero-subtitle {
+    font-size: 1.4rem;
+  }
+}
+
+/* ==================== 13. 预留未来扩展接口 ==================== */
+/* 
+   Future Extensions (Not Implemented):
+   - Blog: 文章卡片样式
+   - Gallery: 全屏画廊灯箱
+   - Notes: 笔记列表
+   - Travel: 旅行地图/时间线
+   - Projects: 独立项目页
+*/
