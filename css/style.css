@@ -473,6 +473,87 @@ p {
   color: var(--text-secondary);
 }
 
+/* ==================== 10.1 联系区域增强排版（社交媒体） ==================== */
+
+.contact-desc {
+    margin-bottom: 16px;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 28px; /* 平台间的间距，留出呼吸感 */
+    margin-top: 8px;
+}
+
+.social-link, .social-label {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    cursor: pointer;
+    /* 底部细线作为悬停反馈，极其克制 */
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.social-link:hover, .social-label:hover {
+    border-bottom-color: var(--text-primary);
+    opacity: 0.7;
+}
+
+/* 视频号定位容器 */
+.social-item {
+    position: relative;
+    display: inline-block;
+}
+
+/* 二维码弹窗卡片 */
+.qr-popup {
+    display: none; /* 默认隐藏 */
+    position: absolute;
+    bottom: calc(100% + 16px); /* 显示在文字正上方 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FFFFFF;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 10;
+    width: 140px;
+}
+
+/* 深色模式下的二维码卡片背景 */
+[data-theme="dark"] .qr-popup {
+    background: #1a1a1a;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.qr-popup.active {
+    display: block;
+}
+
+.qr-popup img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+/* 手机端适配（避免二维码跑出屏幕） */
+@media (max-width: 767px) {
+    .social-links {
+        gap: 18px; /* 手机端适当缩小间距 */
+    }
+    .qr-popup {
+        bottom: calc(100% + 12px);
+        width: 120px;
+        left: 0;
+        transform: none; /* 左对齐，防止在手机窄屏上溢出屏幕 */
+    }
+}
+
 /* ==================== 11. 视口滚动出现动画（IntersectionObserver） ==================== */
 
 /* 

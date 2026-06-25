@@ -167,3 +167,31 @@ window.addEventListener('scroll', () => {
    - 独立项目（Projects）路由切换
    - 上述功能只需在此文件底部添加对应模块，无需修改现有核心代码
 */
+
+/* ==================== 7. 视频号二维码交互逻辑 ==================== */
+
+const wechatItem = document.querySelector('.wechat-item');
+const qrPopup = document.getElementById('wechat-qr');
+
+if (wechatItem && qrPopup) {
+    // 桌面端悬停（鼠标移入/移出）
+    wechatItem.addEventListener('mouseenter', () => {
+        qrPopup.classList.add('active');
+    });
+    wechatItem.addEventListener('mouseleave', () => {
+        qrPopup.classList.remove('active');
+    });
+
+    // 移动端点击切换（兼容触屏）
+    wechatItem.addEventListener('click', (e) => {
+        e.stopPropagation(); // 阻止冒泡
+        qrPopup.classList.toggle('active');
+    });
+
+    // 点击页面其他任何位置，自动收起二维码
+    document.addEventListener('click', (e) => {
+        if (!wechatItem.contains(e.target)) {
+            qrPopup.classList.remove('active');
+        }
+    });
+}
