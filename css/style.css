@@ -27,6 +27,9 @@
   /* 过渡变量 */
   --transition-theme: 0.3s ease;  /* 主题切换过渡时间 */
   --transition-reveal: 0.6s ease-out; /* 滚动出现动画时间 */
+
+  /* 新增 Logo 滤镜（浅色模式下正常） */
+  --logo-filter: none;
 }
 
 /* 深色主题（Dark Mode）通过 data-theme="dark" 属性触发 */
@@ -114,11 +117,18 @@ p {
   justify-content: space-between;
 }
 
-/* Logo 品牌名 */
+/* Logo 纯图标 */
 .logo {
-  font-size: 1.2rem;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* 撑满导航栏高度 */
+}
+
+.logo img {
+    display: block;
+    /* 确保图标在深浅模式下都能显示正常（深色背景配白色 H） */
+    filter: var(--logo-filter, none);
 }
 
 /* 右侧导航菜单 */
@@ -473,19 +483,35 @@ p {
   color: var(--text-secondary);
 }
 
-/* ==================== 10.1 联系区域增强排版（社交媒体） ==================== */
+/* ==================== 10. Contact 与 Footer 区域（已更新邮箱） ==================== */
 
-.contact-desc {
-    margin-bottom: 16px;
+.contact-email {
+    display: inline-block;
+    font-size: 1.4rem;
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
 }
 
+.contact-email:hover {
+    border-bottom-color: var(--text-primary);
+    opacity: 0.7;
+}
+
+/* 以下社交平台部分保持不变（你已有的代码） */
 .social-links {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 28px; /* 平台间的间距，留出呼吸感 */
+    gap: 28px;
     margin-top: 8px;
 }
+
+/* ... 后面你原来的 social-link 和 wechat 样式不用动 ... */
 
 .social-link, .social-label {
     font-size: 1.1rem;
