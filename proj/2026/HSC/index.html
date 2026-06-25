@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoooooot's Summer Camp · 课程目录</title>
+    
+    <!-- 直接复用全局 CSS -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    
+    <!-- 子页面专属微调样式（写在 style 里，也可放入 css 文件夹） -->
+    <style>
+        /* 子页面导航栏：去掉了模糊，只保留干净的分割线 */
+        .sub-navbar {
+            position: sticky; /* 悬浮在顶部，但不固定遮挡 */
+            top: 0;
+            width: 100%;
+            height: 64px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            z-index: 100;
+            transition: background var(--transition-theme);
+        }
+        
+        .sub-navbar .logo { font-weight: 700; font-size: 1.2rem; }
+        .sub-navbar .back-link { color: var(--text-secondary); text-decoration: none; }
+        .sub-navbar .back-link:hover { color: var(--text-primary); }
+
+        /* 课程列表容器 */
+        .course-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 80px 120px 80px;
+        }
+
+        .course-header { margin-bottom: 48px; }
+        .course-header h1 { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+        .course-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+        /* 课程项卡片（横向列表式） */
+        .course-item {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .course-item:last-child { border-bottom: none; }
+        .course-item:hover { opacity: 0.7; }
+
+        /* 封面占位（16:9 比例） */
+        .course-thumb {
+            width: 240px;
+            aspect-ratio: 16 / 9;
+            background-color: var(--border-color);
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .course-info h3 { font-size: 1.3rem; margin-bottom: 6px; }
+        .course-info p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* 视频播放展开区域（默认隐藏） */
+        .video-player-wrapper {
+            display: none; /* 默认收起，点击后展开 */
+            padding: 20px 0 40px 0;
+            width: 100%;
+        }
+        .video-player-wrapper.active { display: block; }
+        
+        .video-player-wrapper iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 767px) {
+            .sub-navbar { padding: 0 24px; }
+            .course-container { padding: 40px 24px 80px 24px; }
+            .course-item { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .course-thumb { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 子页面导航 -->
+    <header class="sub-navbar">
+        <div class="logo">Hoooooot</div>
+        <a href="../../../index.html" class="back-link">← 返回首页</a>
+    </header>
+
+    <main class="course-container">
+        <div class="course-header">
+            <h1>Hoooooot's Summer Camp</h1>
+            <p>从拍摄到调色，手把手带你完成一次完整的影像创作。点击任意课程展开视频。</p>
+        </div>
+
+        <!-- 课程列表预留接口 -->
+        <div id="course-list">
+            
+            <!-- ===== 课程 1 ===== -->
+            <div class="course-item" data-video="VIDEO_ID_1">
+                <div class="course-thumb">Part A-1</div>
+                <div class="course-info">
+                    <h3>第一课：正确的拍摄参数</h3>
+                    <p>曝光三要素 · 动态范围 · Log 视频与错误参数的后果</p>
+                    <span style="color:var(--text-secondary); font-size:0.85rem;">约 10 min · 4K</span>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-1">
+                <!-- 这里粘贴 B站/YouTube 的 iframe 嵌入代码 -->
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=YOUR_BVID_1&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- ===== 课程 2 ===== -->
+            <div class="course-item" data-video="VIDEO_ID_2">
+                <div class="course-thumb">Part A-2</div>
+                <div class="course-info">
+                    <h3>第二课：迅速且可靠的数据传输</h3>
+                    <p>读卡器 · AirDrop / LocalSend · 移动硬盘与素材整理结构</p>
+                    <span style="color:var(--text-secondary); font-size:0.85rem;">约 10 min · 4K</span>
+                </div>
+            </div>
+            <div class="video-player-wrapper" id="player-2">
+                <!-- 这里粘贴 B站/YouTube 的 iframe 嵌入代码 -->
+                <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=1706416465&bvid=BV1UT42167xb&cid=1641702404&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+
+            <!-- 预留其它课程接口 -->
+            
+        </div>
+    </main>
+
+    <!-- 复用首页的 JS，并增加课程列表点击展开逻辑 -->
+    <script src="../../../js/script.js"></script>
+    <script>
+        // 新增课程点击展开/收起功能
+        document.querySelectorAll('.course-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 获取当前卡片对应的播放器 ID（例如 item 1 对应 player-1）
+                const index = Array.from(this.parentElement.children).indexOf(this);
+                const playerWrapper = document.getElementById(`player-${index + 1}`);
+                
+                if (playerWrapper) {
+                    // 切换播放器的显示状态
+                    const isActive = playerWrapper.classList.contains('active');
+                    // 收起其他所有播放器（保持界面整洁）
+                    document.querySelectorAll('.video-player-wrapper').forEach(w => w.classList.remove('active'));
+                    if (!isActive) {
+                        playerWrapper.classList.add('active');
+                        // 让页面平滑滚动到展开的位置
+                        playerWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

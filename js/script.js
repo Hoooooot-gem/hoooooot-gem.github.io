@@ -141,8 +141,8 @@ const activeObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.3 }); // 章节可见度达到 30% 时触发高亮
 
-// 观察除 Hero 以外的所有章节（因为 Hero 没有导航对应项）
-document.querySelectorAll('#about, #portfolio, #timeline, #contact').forEach(section => {
+// 观察除 Hero 以外的所有章节（更新为包含 #summer-camp）
+document.querySelectorAll('#about, #summer-camp, #portfolio, #timeline, #contact').forEach(section => {
   activeObserver.observe(section);
 });
 
