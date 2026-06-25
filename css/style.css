@@ -3,6 +3,26 @@
    Apple 极简主义 / 瑞士排版 / 杂志感设计
    ============================================================ */
 
+/* ==================== 0. 自定义网页字体（@font-face） ==================== */
+
+/* 加载字重 400（正文） */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('/fonts/Inter-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; /* 防闪烁，字体没加载时先用系统字体兜底 */
+}
+
+/* 加载字重 700（标题） */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('/fonts/Inter-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* ==================== 1. CSS 变量与主题系统 ==================== */
 
 /* 默认浅色主题（Light Mode） */
@@ -20,7 +40,7 @@
   --spacing-side: 80px;           /* 桌面端页面左右留白 */
   
   /* 字体变量 */
-  --font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-family: 'CustomFont', -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
   --font-weight-bold: 700;        /* 标题字重 */
   --font-weight-regular: 400;     /* 正文字重 */
 
