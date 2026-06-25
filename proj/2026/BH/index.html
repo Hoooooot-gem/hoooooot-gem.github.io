@@ -197,6 +197,7 @@
 
         <div class="search-wrapper">
             <select id="search-engine-select" class="search-engine-select">
+                <option value="bing">Bing</option>
                 <option value="google">Google</option>
                 <option value="baidu">百度</option>
                 <option value="youtube">YouTube</option>
@@ -270,6 +271,7 @@
             if (query) {
                 let url;
                 switch(engine) {
+                    case 'bing': url = `https://bing.com/search?q=${encodeURIComponent(query)}`; break;
                     case 'google': url = `https://www.google.com/search?q=${encodeURIComponent(query)}`; break;
                     case 'baidu': url = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`; break;
                     case 'youtube': url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`; break;
@@ -288,11 +290,11 @@
             document.getElementById('date-display').textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
             
             const hour = now.getHours();
-            let g = '你好';
-            if(hour < 5) g = '深夜好';
-            else if(hour < 12) g = '早上好';
-            else if(hour < 18) g = '下午好';
-            else g = '晚上好';
+            let g = '你好。';
+            if(hour < 5) g = '夜深了，早点睡。';
+            else if(hour < 12) g = '早上好。';
+            else if(hour < 18) g = '下午好。';
+            else g = '晚上好。';
             document.getElementById('greeting').textContent = g;
         }
         setInterval(updateClock, 1000);
