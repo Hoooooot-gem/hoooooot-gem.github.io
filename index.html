@@ -178,20 +178,37 @@
                     <div class="social-links">
                         <!-- 视频号（含二维码显示逻辑） -->
                         <div class="social-item wechat-item">
-                            <span class="social-label">视频号</span>
+                            <button class="social-icon-btn" id="wechat-btn" aria-label="微信视频号">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                    <path d="M9.5 3C5.36 3 2 6.01 2 9.72c0 1.93.76 3.74 2.05 5.09l-.53 2.13 2.48-1.21c1.16.6 2.46.95 3.84.95h.17C11 17.52 13.5 16.8 14.48 15.53c2.05-2.78 1.15-6.62-2.16-8.26-1.35-.7-2.88-.99-4.45-.99z"/>
+                                    <path d="M18.3 8.2c-1.97-1.05-4.6-.6-6.22.9-.52.48-.95 1.05-1.23 1.65-.28.6-.44 1.24-.44 1.89 0 2.36 1.85 4.45 4.44 4.45.61 0 1.2-.09 1.77-.27 1.33.7 2.84 1.08 4.39 1.08.6 0 1.2-.04 1.78-.14l1.31.65-.36-1.42c.8-1.08 1.29-2.39 1.29-3.82 0-3.46-2.88-6.34-6.34-6.34z"/>
+                                </svg>
+                            </button>
                             <div class="qr-popup" id="wechat-qr">
                                 <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
                             </div>
                         </div>
 
                         <!-- YouTube -->
-                        <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">YouTube</a>
+                        <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
 
                         <!-- 抖音 -->
-                        <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">抖音</a>
+                        <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="抖音">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path d="M18.12 5.84c1.35-1 2.81-1.09 3.95-.23 1.14.86 1.62 2.27 1.32 3.89-.31 1.62-1.35 3-2.81 3.56-1.46.56-3.22.3-4.35-1.09-.38-.48-.46-1.08-.23-1.6.23-.52.85-.83 1.54-.77v-2.35c.15 0 .3.02.46.03v-1.83c-.15 0-.3-.02-.46-.03zM9.19 2.5c1.92.04 3.73.92 4.82 2.44v4.36c-1.09-1.52-2.9-2.4-4.82-2.44-1.54 0-3.02.6-4.1 1.68V4.18c1.08-1.08 2.56-1.68 4.1-1.68zm0 6.2c.92 0 1.78-.37 2.42-1.02v5.88c0 1.76-1.44 3.2-3.2 3.2-1.76 0-3.2-1.44-3.2-3.2 0-1.76 1.44-3.2 3.2-3.2.78 0 1.51.28 2.1.78"/>
+                            </svg>
+                        </a>
 
                         <!-- 小红书 -->
-                        <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">小红书</a>
+                        <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="小红书">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path d="M3.5 9.08c0-.74.6-1.34 1.34-1.34h5.23c.74 0 1.34.6 1.34 1.34v9.14c0 .74-.6 1.34-1.34 1.34H4.84c-.74 0-1.34-.6-1.34-1.34V9.08zm10.16 0c0-.74.6-1.34 1.34-1.34h5.23c.74 0 1.34.6 1.34 1.34v9.14c0 .74-.6 1.34-1.34 1.34h-5.23c-.74 0-1.34-.6-1.34-1.34V9.08zM6.5 4.5c.6 0 1.09.49 1.09 1.09s-.49 1.09-1.09 1.09-1.09-.49-1.09-1.09.49-1.09 1.09-1.09zm9.16 0c.6 0 1.09.49 1.09 1.09s-.49 1.09-1.09 1.09-1.09-.49-1.09-1.09.49-1.09 1.09-1.09z"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -206,7 +223,7 @@
             <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
             <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
             <!-- 👇 把这段文字挪到了 container 内部 -->
-            <div id="footer-tagline"><sub>Hoooooot 网站数据库存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或允许相同类型的言论或分发。Hoooooot 网站不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
+            <div id="footer-tagline"><sub>Hoooooot 网站数据库存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保[...]
         </div>
     </footer>
 
