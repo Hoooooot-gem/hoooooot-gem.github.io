@@ -235,8 +235,8 @@ p {
   height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
   padding: 0 var(--spacing-side);
   background-color: var(--bg-color); /* 备用背景色 */
   transition: background var(--transition-theme);
@@ -498,9 +498,28 @@ p {
 .footer {
   padding: 40px 0;
   border-top: 1px solid var(--border-color);
-  text-align: center;
+  text-align: left;
   font-size: 0.9rem;
   color: var(--text-secondary);
+}
+
+/* 👇 新增：让 Footer 左对齐的元素更整齐、不挤在一起 */
+.footer .container > * {
+  display: block;        /* 让所有子元素独占一行，避免并排错位 */
+  margin-bottom: 8px;
+}
+
+.footer .container a {
+  display: inline-block; /* 保持 ICP 图标和文字紧挨着 */
+  margin-right: 4px;
+  text-decoration: none;
+}
+
+#footer-tagline {
+  margin-top: 12px;
+  max-width: 600px;      /* 限制长长的一段免责声明宽度，增加阅读呼吸感 */
+  font-size: 0.75rem;    /* 稍微缩小一点，避免喧宾夺主 */
+  line-height: 1.6;
 }
 
 /* ==================== 10. Contact 与 Footer 区域（已更新邮箱） ==================== */
