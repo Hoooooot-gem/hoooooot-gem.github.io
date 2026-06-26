@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoooooot's Summer Camp · 视频播放</title>
+    
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    
+    <style>
+        .sub-navbar {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 64px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            z-index: 100;
+            transition: background var(--transition-theme);
+        }
+        
+        .sub-navbar .logo { display: flex; align-items: center; }
+        .sub-navbar .back-link { color: var(--text-secondary); text-decoration: none; }
+        .sub-navbar .back-link:hover { color: var(--text-primary); }
+
+        .player-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 80px 80px 80px;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            margin-bottom: 24px;
+        }
+
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .course-title {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        .course-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 767px) {
+            .sub-navbar { padding: 0 24px; }
+            .player-container { padding: 20px 24px 40px 24px; }
+            .course-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="sub-navbar">
+        <div class="logo">
+            <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
+        </div>
+        <a href="index.html" class="back-link">← 返回课程目录</a>
+    </header>
+
+    <main class="player-container" id="player-main">
+        <div class="video-wrapper" id="video-box">
+            <!-- 动态注入 iframe -->
+        </div>
+        <h1 class="course-title" id="course-title">加载中...</h1>
+        <p class="course-desc" id="course-desc">正在获取课程信息...</p>
+    </main>
+
+    <!-- 全局 JS -->
+    <script src="../../../js/script.js"></script>
+
+    <script>
+        // 课程数据（存放你的 B站 BV 号和标题）
+        const courses = [
+            // Part A
+            { id: 1, bvid: 'BV1Gk69YLE8b', title: '视频“标准化”（以iPhone和Pocket 3为例）', desc: '拍摄软件：Blackmagic Camera · 选择29.97或59.94帧 · 设备设置与预设保存' },
+            { id: 2, bvid: 'BV1Gk69YLE8b', title: '使用正确的拍摄参数', desc: '曝光三要素 · 动态范围 · Log视频 · 错误参数的后果' },
+            // Part B
+            { id: 3, bvid: 'BV1Gk69YLE8b', title: '软件的选择', desc: '问卷结果 · Final Cut Pro · DaVinci Resolve · Premiere Pro 对比' },
+            { id: 4, bvid: 'BV1Gk69YLE8b', title: '迅速且可靠的数据传输', desc: '读卡器 · AirDrop / LocalSend · 移动硬盘 · 素材整理结构' },
+            { id: 5, bvid: 'BV1Gk69YLE8b', title: '节奏的把控', desc: '节奏感 vs 流水账 · 寻找节拍与卡点 · 镜头长短 · B-Roll与空镜 · 环境音氛围' },
+            { id: 6, bvid: 'BV1Gk69YLE8b', title: '“电影感”从何而来？', desc: '高级感来源 · 电影感≠加黑边 · 光线与构图技巧 · 色彩情绪' },
+            { id: 7, bvid: 'BV1Gk69YLE8b', title: '简单的调色', desc: '调色前后对比 · 白平衡 · 曝光与对比度 · 饱和度控制 · 示波器辅助' },
+            { id: 8, bvid: 'BV1Gk69YLE8b', title: '“懒人”的法宝——LUT', desc: 'LUT是什么 · LUT正确使用方法 · 套LUT翻车原因' },
+            // Extra
+            { id: 9, bvid: 'BV1Gk69YLE8b', title: '制作自己的LUT（含LUT分享）', desc: '个人风格建立 · 统一色彩 · LUT保存与导出分享 · 现场发放原创LUT包' },
+            { id: 10, bvid: 'BV1Gk69YLE8b', title: '试试HDR？', desc: 'SDR与HDR对比 · 制作流程 · 上传平台注意事项 · 常见翻车与工作流分享' },
+            { id: 11, bvid: 'BV1Gk69YLE8b', title: '如何配好音乐？', desc: '音乐决定情绪 · 寻找BGM · 节拍与镜头对应 · 环境音 · 版权问题' },
+            // Part C
+            { id: 12, bvid: 'BV1Gk69YLE8b', title: '要“兼容”还是“效率”？', desc: '编码器是什么 · H.264与H.265简介 · 不同场景选择 · 平台偏好' },
+            { id: 13, bvid: 'BV1Gk69YLE8b', title: '要“苗条”还是“精致”？', desc: '高/低码率对比 · 文件体积来源 · 平台压缩机制' },
+            { id: 14, bvid: 'BV1Gk69YLE8b', title: '碎碎念', desc: '我为什么拍视频、记录生活，以及做视频踩过的那些坑' }
+        ];
+
+        // 从 URL 获取 id 参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = parseInt(urlParams.get('id'));
+
+        // 查找对应的课程数据
+        const course = courses.find(c => c.id === courseId);
+
+        if (course) {
+            // 注入标题和描述
+            document.getElementById('course-title').textContent = course.title;
+            document.getElementById('course-desc').textContent = course.desc;
+
+            // 注入 B站 iframe
+            const iframeHTML = `<iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=${course.bvid}&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>`;
+            document.getElementById('video-box').innerHTML = iframeHTML;
+        } else {
+            // 如果 id 不对，提示用户
+            document.getElementById('course-title').textContent = '课程未找到';
+            document.getElementById('course-desc').textContent = '请返回课程目录选择正确的课程。';
+        }
+    </script>
+</body>
+</html>
