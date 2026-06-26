@@ -53,7 +53,7 @@
         }
 
         .course-item-link:hover {
-            transform: translateY(-2px); /* 悬停时轻微上浮 */
+            transform: translateY(-2px);
             opacity: 0.9;
         }
 
@@ -66,17 +66,24 @@
         }
         .course-item:last-child { border-bottom: none; }
 
+        /* 图片缩略图样式 */
         .course-thumb {
             width: 240px;
             aspect-ratio: 16 / 9;
-            background-color: var(--border-color);
-            border-radius: 6px;
             flex-shrink: 0;
+            border-radius: 6px;
+            overflow: hidden; /* 让图片完美贴合圆角 */
+            background-color: var(--border-color); /* 图片加载失败时的备用底色 */
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+        }
+
+        .course-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保证图片不拉伸，填满16:9比例 */
+            display: block;
         }
 
         .course-info h3 { font-size: 1.3rem; margin-bottom: 6px; }
@@ -88,7 +95,7 @@
             .course-container { padding: 40px 24px 80px 24px; }
             .course-item { flex-direction: column; align-items: flex-start; gap: 16px; }
             .course-thumb { width: 100%; }
-            .course-item-link:hover { transform: none; } /* 手机端禁用悬停上浮 */
+            .course-item-link:hover { transform: none; }
         }
     </style>
 </head>
@@ -115,7 +122,9 @@
             
             <a href="play.html?id=1" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part A-1</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pa-1.png" alt="Part A-1" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>视频“标准化”（以iPhone和Pocket 3为例）</h3>
                         <p>拍摄软件：Blackmagic Camera · 选择29.97或59.94帧 · 设备设置与预设保存</p>
@@ -125,7 +134,9 @@
 
             <a href="play.html?id=2" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part A-2</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pa-2.png" alt="Part A-2" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>使用正确的拍摄参数</h3>
                         <p>曝光三要素 · 动态范围 · Log视频 · 错误参数的后果</p>
@@ -137,7 +148,9 @@
 
             <a href="play.html?id=3" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-1</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-1.png" alt="Part B-1" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>软件的选择</h3>
                         <p>问卷结果 · Final Cut Pro · DaVinci Resolve · Premiere Pro 对比</p>
@@ -147,7 +160,9 @@
 
             <a href="play.html?id=4" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-2</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-2.png" alt="Part B-2" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>迅速且可靠的数据传输</h3>
                         <p>读卡器 · AirDrop / LocalSend · 移动硬盘 · 素材整理结构</p>
@@ -157,7 +172,9 @@
 
             <a href="play.html?id=5" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-3</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-3.png" alt="Part B-3" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>节奏的把控</h3>
                         <p>节奏感 vs 流水账 · 寻找节拍与卡点 · 镜头长短 · B-Roll与空镜 · 环境音氛围</p>
@@ -167,7 +184,9 @@
 
             <a href="play.html?id=6" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-4</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-4.png" alt="Part B-4" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>“电影感”从何而来？</h3>
                         <p>高级感来源 · 电影感≠加黑边 · 光线与构图技巧 · 色彩情绪</p>
@@ -177,7 +196,9 @@
 
             <a href="play.html?id=7" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-5</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-5.png" alt="Part B-5" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>简单的调色</h3>
                         <p>调色前后对比 · 白平衡 · 曝光与对比度 · 饱和度控制 · 示波器辅助</p>
@@ -187,7 +208,9 @@
 
             <a href="play.html?id=8" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part B-6</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pb-6.png" alt="Part B-6" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>“懒人”的法宝——LUT</h3>
                         <p>LUT是什么 · LUT正确使用方法 · 套LUT翻车原因</p>
@@ -199,7 +222,9 @@
 
             <a href="play.html?id=9" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Extra #1</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/extra1.png" alt="Extra #1" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>制作自己的LUT（含LUT分享）</h3>
                         <p>个人风格建立 · 统一色彩 · LUT保存与导出分享 · 现场发放原创LUT包</p>
@@ -209,7 +234,9 @@
 
             <a href="play.html?id=10" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Extra #2</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/extra2.png" alt="Extra #2" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>试试HDR？</h3>
                         <p>SDR与HDR对比 · 制作流程 · 上传平台注意事项 · 常见翻车与工作流分享</p>
@@ -219,7 +246,9 @@
 
             <a href="play.html?id=11" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Extra #3</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/extra3.png" alt="Extra #3" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>如何配好音乐？</h3>
                         <p>音乐决定情绪 · 寻找BGM · 节拍与镜头对应 · 环境音 · 版权问题</p>
@@ -231,7 +260,9 @@
 
             <a href="play.html?id=12" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part C-1</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pc-1.png" alt="Part C-1" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>要“兼容”还是“效率”？</h3>
                         <p>编码器是什么 · H.264与H.265简介 · 不同场景选择 · 平台偏好</p>
@@ -241,7 +272,9 @@
 
             <a href="play.html?id=13" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Part C-2</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/pc-2.png" alt="Part C-2" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>要“苗条”还是“精致”？</h3>
                         <p>高/低码率对比 · 文件体积来源 · 平台压缩机制</p>
@@ -251,7 +284,9 @@
 
             <a href="play.html?id=14" class="course-item-link">
                 <div class="course-item">
-                    <div class="course-thumb">Extra #4</div>
+                    <div class="course-thumb">
+                        <img src="/proj/2026/HSC/images/extra4.png" alt="Extra #4" loading="lazy">
+                    </div>
                     <div class="course-info">
                         <h3>碎碎念</h3>
                         <p>我为什么拍视频、记录生活，以及做视频踩过的那些坑</p>
