@@ -41,8 +41,8 @@
             <!-- 右侧导航菜单 -->
             <nav class="nav-menu" role="navigation" aria-label="主导航">
                 <ul class="nav-list">
-                    <li><a href="#about">关于</a></li>
-                    <li><a href="#summer-camp">课程</a></li>  <!-- 新增 -->
+                    <li><a href="#summer-camp">课程</a></li>  <!-- 课程放到第一个 -->
+                    <li><a href="#about">关于</a></li>        <!-- 关于放到第二个 -->
                     <li><a href="#portfolio">画廊</a></li>
                     <li><a href="#timeline">历程</a></li>
                     <li><a href="#contact">联系</a></li>
@@ -83,7 +83,24 @@
             </div>
         </section>
 
-        <!-- 2. About 关于区域 -->
+        <!-- 2. Summer Camp 夏令营区域（新增） -->
+        <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
+            <div class="container">
+                <h2 class="section-title">Hoooooot's Summer Camp</h2>
+                <div class="camp-content">
+                    <div class="camp-text">
+                        <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
+                        <p>包含实战演示、独家 LUT 分享。</p>
+                    </div>
+                    <!-- 预留接口：目标页面目前暂不实现，href 留作未来扩展 -->
+                    <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
+                        进入课程 <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. About 关于区域 -->
         <section id="about" class="section about" aria-label="关于">
             <div class="container">
                 <h2 class="section-title">关于</h2>
@@ -104,50 +121,20 @@
             </div>
         </section>
 
-        <!-- 2.5 Summer Camp 夏令营区域（新增） -->
-        <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
-            <div class="container">
-                <h2 class="section-title">Hoooooot's Summer Camp</h2>
-                <div class="camp-content">
-                    <div class="camp-text">
-                        <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
-                        <p>包含实战演示、独家 LUT 分享。</p>
-                    </div>
-                    <!-- 预留接口：目标页面目前暂不实现，href 留作未来扩展 -->
-                    <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
-                        进入课程 <span class="arrow">→</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. Portfolio 作品集区域 -->
+        <!-- 4. Portfolio 画廊区域（动态轮播版） -->
         <section id="portfolio" class="section portfolio" aria-label="作品集">
             <div class="container">
                 <h2 class="section-title">画廊</h2>
-                <div class="portfolio-grid">
-                    <!-- 预留作品占位，后续替换为真实图片 -->
-                    <article class="portfolio-item">
-                        <div class="placeholder-image"></div>
-                        <h3>项目名称</h3>
-                        <p>项目简短描述。</p>
-                    </article>
-                    <article class="portfolio-item">
-                        <div class="placeholder-image"></div>
-                        <h3>项目名称</h3>
-                        <p>项目简短描述。</p>
-                    </article>
-                    <!-- 
-                    ============================================
-                    未来扩展预留接口（当前版本不实现）：
-                    Blog, Gallery, Notes, Travel, Projects 等
-                    ============================================
-                    -->
+                <!-- 轮播容器 -->
+                <div class="gallery-wrapper">
+                    <div class="carousel-track" id="gallery-track">
+                        <!-- JS 将在此处自动注入图片 -->
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Timeline 历程区域 -->
+        <!-- 5. Timeline 历程区域 -->
         <section id="timeline" class="section timeline" aria-label="历程">
             <div class="container">
                 <h2 class="section-title">历程</h2>
@@ -164,15 +151,13 @@
             </div>
         </section>
 
-        <!-- 5. Contact 联系区域 -->
+        <!-- 6. Contact 联系区域 -->
         <section id="contact" class="section contact" aria-label="联系">
             <div class="container">
                 <h2 class="section-title">联系</h2>
                 <div class="contact-info">
-                    <p class="contact-desc">如果你有合作或交流意向，欢迎与我联系。</p>
-                    
                     <!-- 邮箱 -->
-                    <a href="mailto:shurinkycn@gmail.com" class="contact-email">shurinkycn@gmail.com</a>
+                    <span class="contact-email">shurinkycn@gmail.com</span>
                     
                     <!-- 社交平台 -->
                     <div class="social-links">
@@ -180,7 +165,7 @@
                         <div class="social-item wechat-item">
                             <span class="social-label">
                                 <!-- 如果想把文字换成图标，这里也可以用 img -->
-                                <img src="/images/videohao.svg" alt="视频号" class="social-img" loading="lazy">
+                                <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
                             </span>
                             <div class="qr-popup" id="wechat-qr">
                                 <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
@@ -209,7 +194,7 @@
 
     </main>
 
-    <!-- ==================== 6. Footer 页脚区域 ==================== -->
+    <!-- ==================== 7. Footer 页脚区域 ==================== -->
     <footer class="footer" role="contentinfo">
         <div class="container">
             <p>&copy; Hoooooot 2026</p>

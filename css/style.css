@@ -371,7 +371,7 @@ p {
   transition: background 0.2s, color 0.2s;
 }
 
-/* ==================== 7.5 Summer Camp 夏令营区域（新增） ==================== */
+/* ==================== 8. Summer Camp 夏令营区域（新增） ==================== */
 
 .summer-camp .camp-content {
     display: flex;
@@ -438,7 +438,7 @@ p {
     }
 }
 
-/* ==================== 8. Portfolio 作品集区域 ==================== */
+/* ==================== 9. Portfolio 作品集区域 ==================== */
 
 .portfolio-grid {
   display: grid;
@@ -469,7 +469,7 @@ p {
   font-size: 0.95rem;
 }
 
-/* ==================== 9. Timeline 历程区域 ==================== */
+/* ==================== 10. Timeline 历程区域 ==================== */
 
 .timeline-item {
   display: flex;
@@ -494,7 +494,7 @@ p {
   font-size: 1rem;
 }
 
-/* ==================== 10. Contact 联系与 Footer 区域 ==================== */
+/* ==================== 11. Contact 联系与 Footer 区域 ==================== */
 
 .contact-info {
   display: flex;
@@ -534,23 +534,16 @@ p {
   line-height: 1.6;
 }
 
-/* ==================== 10. Contact 与 Footer 区域（已更新邮箱） ==================== */
+/* ==================== 12. Contact 与 Footer 区域（已更新邮箱） ==================== */
 
+/* 邮箱纯文本样式（完全移除下划线和悬停变暗） */
 .contact-email {
     display: inline-block;
     font-size: 1.4rem;
     font-weight: var(--font-weight-regular);
     color: var(--text-primary);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    padding-bottom: 2px;
     margin-bottom: 24px;
-    transition: border-color 0.2s ease, opacity 0.2s ease;
-}
-
-.contact-email:hover {
-    border-bottom-color: var(--text-primary);
-    opacity: 0.7;
+    cursor: default; /* 鼠标放上去是普通箭头 */
 }
 
 /* 以下社交平台部分保持不变（你已有的代码） */
@@ -631,7 +624,7 @@ p {
     }
 }
 
-/* ==================== 11. 视口滚动出现动画（IntersectionObserver） ==================== */
+/* ==================== 13. 视口滚动出现动画（IntersectionObserver） ==================== */
 
 /* 
    JS 中将添加 .reveal 类，并在元素进入视口时添加 .is-visible
@@ -649,7 +642,7 @@ p {
   transform: translateY(0);
 }
 
-/* ==================== 12. 响应式设计 ==================== */
+/* ==================== 14. 响应式设计 ==================== */
 
 /* 平板端（768px ~ 1199px） */
 @media screen and (min-width: 768px) and (max-width: 1199px) {
@@ -749,7 +742,7 @@ p {
   }
 }
 
-/* ==================== 12.1 社交图标 SVG 样式 ==================== */
+/* ==================== 15. 社交图标 SVG 样式 ==================== */
 
 /* 确保所有社交链接内的 SVG 大小统一、随文字颜色变化 */
 .social-link svg,
@@ -773,7 +766,7 @@ p {
     padding-bottom: 2px;
 }
 
-/* ==================== 12.2 社交图标图片适配new ==================== */
+/* ==================== 16. 社交图标图片适配new ==================== */
 
 /* 统一图片尺寸 */
 .social-img {
@@ -789,7 +782,7 @@ p {
     opacity: 0.7;
 }
 
-/* ==================== 13. 预留未来扩展接口 ==================== */
+/* ==================== 17. 预留未来扩展接口 ==================== */
 /* 
    Future Extensions (Not Implemented):
    - Blog: 文章卡片样式
@@ -798,3 +791,67 @@ p {
    - Travel: 旅行地图/时间线
    - Projects: 独立项目页
 */
+
+/* ==================== 画廊轮播样式（重叠卡片） ==================== */
+
+.gallery-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+    overflow-x: auto;  /* 横向滚动 */
+    overflow-y: hidden;
+    /* 屏蔽横向滚动条（桌面端视觉更干净） */
+    scrollbar-width: none; 
+}
+.gallery-wrapper::-webkit-scrollbar {
+    display: none; /* 隐藏 Chrome/Safari 滚动条 */
+}
+
+.carousel-track {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    padding-left: 20px;  /* 防止第一张卡片贴边 */
+}
+
+/* 单个卡片容器 */
+.carousel-item {
+    position: relative;
+    flex-shrink: 0;      /* 阻止卡片被挤压 */
+    width: 300px;        /* 基础宽度，适应 16:9 比例 */
+    height: 200px;       /* 基础高度 */
+    border-radius: 16px; /* 圆角矩形 */
+    overflow: hidden;    /* 裁剪溢出圆角部分 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    margin-left: -60px;  /* 核心：负边距实现重叠效果 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s;
+    background-color: var(--border-color); /* 未加载时的底色 */
+}
+
+/* 第一张卡片不进行偏移 */
+.carousel-item:first-child {
+    margin-left: 0;
+}
+
+/* 卡片内图片：自适应 16:9 / 9:16 / 3:2 / 1:1 */
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* 核心：不拉伸、保证比例并智能裁剪 */
+    display: block;
+}
+
+/* 悬停反馈：向上浮起，放大阴影，提升层级 */
+.carousel-item:hover {
+    transform: translateY(-16px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+/* ==================== 手机端适配 ==================== */
+@media (max-width: 767px) {
+    .carousel-item {
+        width: 220px;
+        height: 150px;
+        margin-left: -40px; /* 手机端重叠幅度减小 */
+    }
+}

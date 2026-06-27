@@ -195,3 +195,40 @@ if (wechatItem && qrPopup) {
         }
     });
 }
+
+/* ==================== 8. 画廊动态加载图片 ==================== */
+
+// 1. 在这里列出你所有图片的文件名
+// 注意：图片必须放在 /images/homegallery/ 目录下
+const imageList = [
+    '1.jpg',
+    '2.jpg',
+    '3.jpg',
+    '4.jpg',
+    '5.jpg',
+    // '6.jpg',   // 以后加图，就在这里加一行
+    // '7.jpg',
+];
+
+// 2. 获取轮播轨道容器
+const track = document.getElementById('gallery-track');
+
+// 3. 遍历数组，动态生成 DOM 并插入到 HTML 中
+if (track) {
+    imageList.forEach(filename => {
+        // 生成外层卡片 div
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'carousel-item';
+        
+        // 生成图片 img
+        const img = document.createElement('img');
+        // 按照要求使用绝对路径 /images/homegallery/
+        img.src = `/images/homegallery/${filename}`;
+        img.alt = `Gallery ${filename}`;
+        img.loading = 'lazy'; // 懒加载：提升性能
+        
+        // 组合并插入
+        cardDiv.appendChild(img);
+        track.appendChild(cardDiv);
+    });
+}
