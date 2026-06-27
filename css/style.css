@@ -792,66 +792,85 @@ p {
    - Projects: 独立项目页
 */
 
-/* ==================== 画廊轮播样式（重叠卡片） ==================== */
+/* ==================== 画廊自动轮播样式 ==================== */
 
 .gallery-wrapper {
     position: relative;
     width: 100%;
-    padding: 20px 0;
-    overflow-x: auto;  /* 横向滚动 */
-    overflow-y: hidden;
-    /* 屏蔽横向滚动条（桌面端视觉更干净） */
-    scrollbar-width: none; 
-}
-.gallery-wrapper::-webkit-scrollbar {
-    display: none; /* 隐藏 Chrome/Safari 滚动条 */
-}
-
-.carousel-track {
+    height: 260px;
     display: flex;
-    align-items: center; /* 垂直居中 */
-    padding-left: 20px;  /* 防止第一张卡片贴边 */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 隐藏超出容器的部分 */
 }
 
-/* 单个卡片容器 */
-.carousel-item {
+.carousel-container {
     position: relative;
-    flex-shrink: 0;      /* 阻止卡片被挤压 */
-    width: 300px;        /* 基础宽度，适应 16:9 比例 */
-    height: 200px;       /* 基础高度 */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 单个卡片的基础样式（圆角、阴影、过渡） */
+.carousel-item {
+    position: absolute;
     border-radius: 16px; /* 圆角矩形 */
-    overflow: hidden;    /* 裁剪溢出圆角部分 */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    margin-left: -60px;  /* 核心：负边距实现重叠效果 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s;
+    overflow: hidden;
     background-color: var(--border-color); /* 未加载时的底色 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    /* 核心：平滑顺滑的滑动与缩放过渡 */
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.2s;
+    will-change: transform;
 }
 
-/* 第一张卡片不进行偏移 */
-.carousel-item:first-child {
-    margin-left: 0;
-}
-
-/* 卡片内图片：自适应 16:9 / 9:16 / 3:2 / 1:1 */
 .carousel-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;    /* 核心：不拉伸、保证比例并智能裁剪 */
+    object-fit: cover; /* 智能裁剪，适配所有比例 */
     display: block;
 }
 
-/* 悬停反馈：向上浮起，放大阴影，提升层级 */
-.carousel-item:hover {
-    transform: translateY(-16px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-    z-index: 10;
+/* ---------- 桌面端和手机端共同的定位与大小 ---------- */
+.carousel-item#gallery-left {
+    width: 280px;
+    height: 185px;
+    transform: translateX(-180px) scale(0.85); /* 左偏、缩小 */
+    z-index: 1;
+    opacity: 0.8;
 }
 
-/* ==================== 手机端适配 ==================== */
+.carousel-item#gallery-center {
+    width: 340px;
+    height: 225px;
+    transform: translateX(0px) scale(1); /* 居中、最大 */
+    z-index: 3; /* 位于上方 */
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+
+.carousel-item#gallery-right {
+    width: 280px;
+    height: 185px;
+    transform: translateX(180px) scale(0.85); /* 右偏、缩小 */
+    z-index: 1;
+    opacity: 0.8;
+}
+
+/* ---------- 手机端适配 ---------- */
 @media (max-width: 767px) {
-    .carousel-item {
-        width: 220px;
-        height: 150px;
-        margin-left: -40px; /* 手机端重叠幅度减小 */
+    .gallery-wrapper { height: 190px; }
+    
+    .carousel-item#gallery-left {
+        width: 200px; height: 130px;
+        transform: translateX(-100px) scale(0.85);
+    }
+    .carousel-item#gallery-center {
+        width: 240px; height: 160px;
+        transform: translateX(0px) scale(1);
+    }
+    .carousel-item#gallery-right {
+        width: 200px; height: 130px;
+        transform: translateX(100px) scale(0.85);
     }
 }

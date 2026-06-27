@@ -121,14 +121,17 @@
             </div>
         </section>
 
-        <!-- 4. Portfolio 画廊区域（动态轮播版） -->
+        <!-- 4. Portfolio 画廊区域（自动轮播版） -->
         <section id="portfolio" class="section portfolio" aria-label="作品集">
             <div class="container">
                 <h2 class="section-title">画廊</h2>
                 <!-- 轮播容器 -->
                 <div class="gallery-wrapper">
-                    <div class="carousel-track" id="gallery-track">
-                        <!-- JS 将在此处自动注入图片 -->
+                    <div class="carousel-container">
+                        <!-- 卡片占位，由 JS 赋予 src -->
+                        <div class="carousel-item" id="gallery-left"></div>
+                        <div class="carousel-item" id="gallery-center"></div>
+                        <div class="carousel-item" id="gallery-right"></div>
                     </div>
                 </div>
             </div>

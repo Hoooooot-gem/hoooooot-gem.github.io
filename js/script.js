@@ -196,39 +196,53 @@ if (wechatItem && qrPopup) {
     });
 }
 
-/* ==================== 8. 画廊动态加载图片 ==================== */
+/* ==================== 8. 画廊自动轮播核心逻辑 ==================== */
 
-// 1. 在这里列出你所有图片的文件名
-// 注意：图片必须放在 /images/homegallery/ 目录下
-const imageList = [
+// 1. 在这里列出你的图片文件名（支持任意数量）
+const galleryImages = [
     '1.jpg',
     '2.jpg',
     '3.jpg',
     '4.jpg',
     '5.jpg',
-    // '6.jpg',   // 以后加图，就在这里加一行
-    // '7.jpg',
+    // '6.jpg', // 以后加图，直接在此往下加一行即可
 ];
 
-// 2. 获取轮播轨道容器
-const track = document.getElementById('gallery-track');
+// 如果没有图片则直接退出，不报错
+if (galleryImages.length === 0) return;
 
-// 3. 遍历数组，动态生成 DOM 并插入到 HTML 中
-if (track) {
-    imageList.forEach(filename => {
-        // 生成外层卡片 div
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'carousel-item';
-        
-        // 生成图片 img
-        const img = document.createElement('img');
-        // 按照要求使用绝对路径 /images/homegallery/
-        img.src = `/images/homegallery/${filename}`;
-        img.alt = `Gallery ${filename}`;
-        img.loading = 'lazy'; // 懒加载：提升性能
-        
-        // 组合并插入
-        cardDiv.appendChild(img);
-        track.appendChild(cardDiv);
-    });
+// 2. 预加载所有图片（彻底杜绝切换时的闪烁和卡顿）
+const preloadedImages = galleryImages.map(url => {
+    const img = new Image();
+    img.src = `/images/homegallery/${url}`;
+    return img;
+});
+
+// 3. 获取轮播的三个 DOM 节点
+const leftCard = document.getElementById('gallery-left');
+const centerCard = document.getElementById('gallery-center');
+const rightCard = document.getElementById('gallery-right');
+
+// 4. 核心渲染函数：更新三张卡片的位置和图片
+let currentIndex = 1; // 初始时，中间显示第 2 张图（索引 1）
+
+function updateGallery() {
+    // 计算左边（已展示过的主图）和右边（即将展示的主图）的索引
+    const leftIdx = (currentIndex - 1 + preloadedImages.length) % preloadedImages.length;
+    const rightIdx = (currentIndex + 1) % preloadedImages.length;
+
+    // 由于图片已预加载，直接赋 src 不会有闪烁
+    leftCard.querySelector('img') ? leftCard.querySelector('img').src = preloadedImages[leftIdx].src : leftCard.innerHTML = `<img src="${preloadedImages[leftIdx].src}" alt="gallery" loading="lazy">`;
+    centerCard.querySelector('img') ? centerCard.querySelector('img').src = preloadedImages[currentIndex].src : centerCard.innerHTML = `<img src="${preloadedImages[currentIndex].src}" alt="gallery" loading="lazy">`;
+    rightCard.querySelector('img') ? rightCard.querySelector('img').src = preloadedImages[rightIdx].src : rightCard.innerHTML = `<img src="${preloadedImages[rightIdx].src}" alt="gallery" loading="lazy">`;
 }
+
+// 5. 自动切换函数：每次将当前索引 +1，调用渲染
+function slideNext() {
+    currentIndex = (currentIndex + 1) % preloadedImages.length; // 循环递增
+    updateGallery();
+}
+
+// 6. 首次渲染与启动 5 秒定时器
+updateGallery();
+const slideInterval = setInterval(slideNext, 5000); // 5000毫秒 = 5秒
