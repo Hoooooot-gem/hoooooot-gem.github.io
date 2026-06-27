@@ -198,51 +198,57 @@ if (wechatItem && qrPopup) {
 
 /* ==================== 8. 画廊自动轮播核心逻辑 ==================== */
 
-// 1. 在这里列出你的图片文件名（支持任意数量）
-const galleryImages = [
-    '1.jpg',
-    '2.jpg',
-    '3.jpg',
-    '4.jpg',
-    '5.jpg',
-    // '6.jpg', // 以后加图，直接在此往下加一行即可
-];
+// 将画廊逻辑放入自执行函数中，防止全局作用域的直接 return 报错
+(function() {
+    // 1. 在这里列出你的图片文件名（支持任意数量）
+    const galleryImages = [
+        '1.jpg',
+        '2.jpg',
+        '3.jpg',
+        '4.jpg',
+        '5.jpg',
+        // '6.jpg', // 以后加图，直接在此往下加一行即可
+    ];
 
-// 如果没有图片则直接退出，不报错
-if (galleryImages.length === 0) return;
+    // 如果在函数内部执行 return，是合法的
+    if (galleryImages.length === 0) return;
 
-// 2. 预加载所有图片（彻底杜绝切换时的闪烁和卡顿）
-const preloadedImages = galleryImages.map(url => {
-    const img = new Image();
-    img.src = `/images/homegallery/${url}`;
-    return img;
-});
+    // 2. 预加载所有图片（彻底杜绝切换时的闪烁和卡顿）
+    const preloadedImages = galleryImages.map(url => {
+        const img = new Image();
+        img.src = `/images/homegallery/${url}`;
+        return img;
+    });
 
-// 3. 获取轮播的三个 DOM 节点
-const leftCard = document.getElementById('gallery-left');
-const centerCard = document.getElementById('gallery-center');
-const rightCard = document.getElementById('gallery-right');
+    // 3. 获取轮播的三个 DOM 节点
+    const leftCard = document.getElementById('gallery-left');
+    const centerCard = document.getElementById('gallery-center');
+    const rightCard = document.getElementById('gallery-right');
 
-// 4. 核心渲染函数：更新三张卡片的位置和图片
-let currentIndex = 1; // 初始时，中间显示第 2 张图（索引 1）
+    // 兜底保护：如果 HTML 里没有这三个盒子，直接退出
+    if (!leftCard || !centerCard || !rightCard) return;
 
-function updateGallery() {
-    // 计算左边（已展示过的主图）和右边（即将展示的主图）的索引
-    const leftIdx = (currentIndex - 1 + preloadedImages.length) % preloadedImages.length;
-    const rightIdx = (currentIndex + 1) % preloadedImages.length;
+    // 4. 核心渲染函数：更新三张卡片的位置和图片
+    let currentIndex = 1; // 初始时，中间显示第 2 张图（索引 1）
 
-    // 由于图片已预加载，直接赋 src 不会有闪烁
-    leftCard.querySelector('img') ? leftCard.querySelector('img').src = preloadedImages[leftIdx].src : leftCard.innerHTML = `<img src="${preloadedImages[leftIdx].src}" alt="gallery" loading="lazy">`;
-    centerCard.querySelector('img') ? centerCard.querySelector('img').src = preloadedImages[currentIndex].src : centerCard.innerHTML = `<img src="${preloadedImages[currentIndex].src}" alt="gallery" loading="lazy">`;
-    rightCard.querySelector('img') ? rightCard.querySelector('img').src = preloadedImages[rightIdx].src : rightCard.innerHTML = `<img src="${preloadedImages[rightIdx].src}" alt="gallery" loading="lazy">`;
-}
+    function updateGallery() {
+        // 计算左边（已展示过的主图）和右边（即将展示的主图）的索引
+        const leftIdx = (currentIndex - 1 + preloadedImages.length) % preloadedImages.length;
+        const rightIdx = (currentIndex + 1) % preloadedImages.length;
 
-// 5. 自动切换函数：每次将当前索引 +1，调用渲染
-function slideNext() {
-    currentIndex = (currentIndex + 1) % preloadedImages.length; // 循环递增
+        // 由于图片已预加载，直接赋 src 不会有闪烁
+        leftCard.querySelector('img') ? leftCard.querySelector('img').src = preloadedImages[leftIdx].src : leftCard.innerHTML = `<img src="${preloadedImages[leftIdx].src}" alt="gallery" loading="lazy">`;
+        centerCard.querySelector('img') ? centerCard.querySelector('img').src = preloadedImages[currentIndex].src : centerCard.innerHTML = `<img src="${preloadedImages[currentIndex].src}" alt="gallery" loading="lazy">`;
+        rightCard.querySelector('img') ? rightCard.querySelector('img').src = preloadedImages[rightIdx].src : rightCard.innerHTML = `<img src="${preloadedImages[rightIdx].src}" alt="gallery" loading="lazy">`;
+    }
+
+    // 5. 自动切换函数：每次将当前索引 +1，调用渲染
+    function slideNext() {
+        currentIndex = (currentIndex + 1) % preloadedImages.length; // 循环递增
+        updateGallery();
+    }
+
+    // 6. 首次渲染与启动 5 秒定时器
     updateGallery();
-}
-
-// 6. 首次渲染与启动 5 秒定时器
-updateGallery();
-const slideInterval = setInterval(slideNext, 5000); // 5000毫秒 = 5秒
+    const slideInterval = setInterval(slideNext, 5000); // 5000毫秒 = 5秒
+})();

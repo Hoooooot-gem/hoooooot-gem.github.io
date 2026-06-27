@@ -71,6 +71,10 @@
   .social-link img[alt="小红书"] {
       filter: invert(1) saturate(0) brightness(1.5);
   }
+
+  .social-link img[alt="视频号"] {
+      filter: invert(1);
+  }
 }
 
 /* ==================== 2. 全局重置与基础样式 ==================== */
