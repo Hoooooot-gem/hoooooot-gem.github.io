@@ -269,7 +269,8 @@ p {
   z-index: -1; /* 放在最底层 */
 }
 
-.hero-bg-image img {
+/* 👇 将 .hero-bg-image img 改为 .hero-bg-image video */
+.hero-bg-image video {
   width: 100%;
   height: 100%;
   object-fit: cover; /* 核心：保持16:9比例不变，裁剪多余部分填满屏幕 */

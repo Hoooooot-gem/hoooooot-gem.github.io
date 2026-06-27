@@ -69,10 +69,24 @@
         <!-- 1. Hero 首页区域 -->
         <section id="hero" class="section hero" aria-label="首页">
             <!-- 背景 16:9 大图层 -->
-            <!-- 背景 16:9 大图层 -->
             <div class="hero-bg-image">
-                <!-- 👇 加上斜杠 / -->
-                <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
+                <!-- 
+                  苹果无缝衔接核心：
+                  1. poster: 视频未加载时先显示第一帧的 webp 静态图（极快加载）
+                  2. preload="metadata": 仅预加载视频元数据（节省流量）
+                  3. muted / loop / playsinline: 视频自动循环且不打扰用户
+                -->
+                <video 
+                    src="/images/hero-bg.mp4" 
+                    poster="/images/hero-bg.webp" 
+                    preload="metadata" 
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline>
+                    <!-- 兜底：如果浏览器彻底不支持 video，则显示图片 -->
+                    <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
+                </video>
             </div>
             <!-- 半透明遮罩层（保证文字始终清晰） -->
             <div class="hero-overlay"></div>
