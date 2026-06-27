@@ -59,6 +59,18 @@
   --text-secondary: #AAAAAA;      /* 辅助文字：浅灰 */
   --border-color: #333333;        /* 分割线：深灰 */
   --nav-bg: rgba(0, 0, 0, 0.72);  /* 导航栏背景（半透明黑） */
+
+  /* 针对 YouTube 黑底图和抖音黑色轮廓图：反色变为白底/白色轮廓 */
+  .social-link img[alt="YouTube"],
+  .social-link img[alt="抖音"] {
+      filter: invert(1);
+  }
+
+  /* 针对小红书红底图的处理：我们需要把它变成纯黑白，不保留红/青色 */
+  /* 注意：如果你能用“纯黑色无红色”的小红书简约线条图，这句话可以删除 */
+  .social-link img[alt="小红书"] {
+      filter: invert(1) saturate(0) brightness(1.5);
+  }
 }
 
 /* ==================== 2. 全局重置与基础样式 ==================== */
@@ -735,6 +747,46 @@ p {
   .hero-subtitle {
     font-size: 1.4rem;
   }
+}
+
+/* ==================== 12.1 社交图标 SVG 样式 ==================== */
+
+/* 确保所有社交链接内的 SVG 大小统一、随文字颜色变化 */
+.social-link svg,
+.social-label svg {
+    width: 22px;                /* 统一图标尺寸 */
+    height: 22px;
+    display: block;
+    stroke: currentColor;       /* 继承文字颜色（浅色黑、深色白） */
+    fill: none;
+    stroke-width: 1.8;          /* 线条粗细，克制且清晰 */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 0.2s;   /* 鼠标悬停时的淡入淡出效果 */
+}
+
+/* 保持悬停时下划线和透明度反馈依然有效 */
+.social-link {
+    display: inline-flex;       /* 让图标和底部边框完美对齐 */
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2px;
+}
+
+/* ==================== 12.2 社交图标图片适配new ==================== */
+
+/* 统一图片尺寸 */
+.social-img {
+    width: 22px;
+    height: 22px;
+    display: block;
+    object-fit: contain; /* 保证图片比例不被拉伸 */
+    transition: opacity 0.2s ease;
+}
+
+/* 保持悬停时的透明度反馈 */
+.social-link:hover .social-img {
+    opacity: 0.7;
 }
 
 /* ==================== 13. 预留未来扩展接口 ==================== */

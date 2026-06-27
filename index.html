@@ -176,22 +176,32 @@
                     
                     <!-- 社交平台 -->
                     <div class="social-links">
-                        <!-- 视频号（含二维码显示逻辑） -->
+                        <!-- 视频号（保留二维码逻辑） -->
                         <div class="social-item wechat-item">
-                            <span class="social-label">视频号</span>
+                            <span class="social-label">
+                                <!-- 如果想把文字换成图标，这里也可以用 img -->
+                                <img src="/images/videohao.svg" alt="视频号" class="social-img" loading="lazy">
+                            </span>
                             <div class="qr-popup" id="wechat-qr">
                                 <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
                             </div>
                         </div>
 
                         <!-- YouTube -->
-                        <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">YouTube</a>
+                        <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">
+                            <img src="/images/youtubesvg.svg" alt="YouTube" class="social-img" loading="lazy">
+                        </a>
 
                         <!-- 抖音 -->
-                        <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">抖音</a>
+                        <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
+                            <img src="/images/douyinsvg.svg" alt="抖音" class="social-img" loading="lazy">
+                        </a>
 
                         <!-- 小红书 -->
-                        <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">小红书</a>
+                        <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
+                            <!-- 建议：如果使用红底图，这个类名必须保留，后面会讲如何单独处理 -->
+                            <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
+                        </a>
                     </div>
                 </div>
             </div>
