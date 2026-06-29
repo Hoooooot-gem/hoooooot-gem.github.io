@@ -32,7 +32,7 @@
   --text-primary: #000000;        /* 主文字：纯黑 */
   --text-secondary: #666666;      /* 辅助文字：高级灰 */
   --border-color: #EAEAEA;        /* 分割线：极浅灰 */
-  --nav-bg: rgba(255, 255, 255, 0.72); /* 导航栏背景（半透明白） */
+  --nav-bg: rgba(255, 255, 255, 0.5); /* 导航栏背景（半透明白） */
 
   /* 尺寸变量 */
   --nav-height: 64px;             /* 导航栏高度 */
@@ -58,7 +58,7 @@
   --text-primary: #FFFFFF;        /* 主文字：纯白 */
   --text-secondary: #AAAAAA;      /* 辅助文字：浅灰 */
   --border-color: #333333;        /* 分割线：深灰 */
-  --nav-bg: rgba(0, 0, 0, 0.72);  /* 导航栏背景（半透明黑） */
+  --nav-bg: rgba(0, 0, 0, 0.5);  /* 导航栏背景（半透明黑） */
 
   /* 针对 YouTube 黑底图和抖音黑色轮廓图：反色变为白底/白色轮廓 */
   .social-link img[alt="YouTube"],
