@@ -797,81 +797,57 @@ p {
    - Projects: 独立项目页
 */
 
-/* ==================== 画廊自动轮播样式 ==================== */
+/* ==================== 画廊跑马灯（无限匀速平移） ==================== */
 
 .gallery-wrapper {
     position: relative;
     width: 100%;
-    height: 260px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* 隐藏超出容器的部分 */
+    overflow: hidden; /* 隐藏溢出屏幕外的部分 */
+    padding: 20px 0;
 }
 
-.carousel-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
+.carousel-track {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: nowrap;  /* 强制所有图片排成一行，绝不换行 */
+    width: max-content; /* 轨道宽度由里面的图片总宽度撑开 */
+    /* 动画速度由 JS 动态设置，这里只定义关键帧 */
+    animation-name: scroll;
+    animation-timing-function: linear; /* 核心：绝对匀速，不缓动 */
+    animation-iteration-count: infinite; /* 无限循环 */
 }
 
-/* 单个卡片的基础样式（圆角、阴影、过渡） */
+/* 跑马灯核心动画：因为它含有两倍的图片数量，所以位移 50% 刚好是一组 */
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* 卡片容器 */
 .carousel-item {
-    position: absolute;
-    border-radius: 16px; /* 圆角矩形 */
+    flex-shrink: 0;        /* 保证卡片绝对不被挤压 */
+    width: 320px;          /* 电脑端基础尺寸 */
+    height: 210px;
+    margin-right: 24px;    /* 卡片间距 */
+    border-radius: 12px;
     overflow: hidden;
-    background-color: var(--border-color); /* 未加载时的底色 */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    /* 核心：平滑顺滑的滑动与缩放过渡 */
-    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.2s;
-    will-change: transform;
+    background-color: var(--border-color);
 }
 
 .carousel-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 智能裁剪，适配所有比例 */
+    object-fit: cover;     /* 无论横竖图，完美居中裁剪 */
     display: block;
 }
 
-/* ---------- 桌面端和手机端共同的定位与大小 ---------- */
-.carousel-item#gallery-left {
-    width: 280px;
-    height: 185px;
-    transform: translateX(-180px) scale(0.85); /* 左偏、缩小 */
-    z-index: 1;
-    opacity: 0.8;
-}
-
-.carousel-item#gallery-center {
-    width: 340px;
-    height: 225px;
-    transform: translateX(0px) scale(1); /* 居中、最大 */
-    z-index: 3; /* 位于上方 */
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
-}
-
-.carousel-item#gallery-right {
-    width: 280px;
-    height: 185px;
-    transform: translateX(180px) scale(0.85); /* 右偏、缩小 */
-    z-index: 1;
-    opacity: 0.8;
-}
-
-/* ---------- 手机端适配 ---------- */
+/* 手机端适配 */
 @media (max-width: 767px) {
-    /* 给轮播外层容器增加左侧留白，第一张图就不会贴着屏幕左边了 */
     .gallery-wrapper {
-        padding-left: 12px;
+        padding-left: 12px; /* 手机端加一点左边距，不贴边 */
     }
-
     .carousel-item {
-        flex: 0 0 230px;
+        width: 230px;     /* 手机端尺寸自动变小 */
         height: 150px;
-        margin-right: 12px; /* 手机端间距同步改为 12px */
+        margin-right: 16px;
     }
 }

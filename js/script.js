@@ -196,25 +196,23 @@ if (wechatItem && qrPopup) {
     });
 }
 
-/* ==================== 8. 画廊滑动轮播核心逻辑 ==================== */
+/* ==================== 8. 画廊无限跑马灯核心逻辑 ==================== */
 
 (function() {
-    // 1. 图片列表
+    // 1. 图片列表（你以后只需要在这里加名字即可）
     const galleryImages = [
         '1.jpg',
         '2.jpg',
         '3.jpg',
         '4.jpg',
         '5.jpg',
-        // '6.jpg', // 以后加图，直接在此往下加一行即可
     ];
     if (galleryImages.length === 0) return;
 
-    // 2. 获取轨道
     const track = document.getElementById('gallery-track');
     if (!track) return;
 
-    // 3. 生成图片卡片并加入轨道
+    // 2. 生成第一组图片
     galleryImages.forEach(url => {
         const div = document.createElement('div');
         div.className = 'carousel-item';
@@ -222,45 +220,14 @@ if (wechatItem && qrPopup) {
         track.appendChild(div);
     });
 
-    // 4. 🟡 核心技巧：克隆全部图片追加到末尾，制作“无限循环”假象
-    const originalItems = [...track.children];
-    originalItems.forEach(item => {
+    // 3. 核心：**克隆**第一组图片追加到末尾，实现无缝循环的关键！
+    const firstGroupItems = [...track.children];
+    firstGroupItems.forEach(item => {
         track.appendChild(item.cloneNode(true));
     });
 
-    // 5. 获取单张卡片的宽度（动态获取当前实际间距，完美适配电脑和手机）
-    const firstItem = originalItems[0];
-    const style = window.getComputedStyle(firstItem);
-    const gap = parseInt(style.marginRight) || 0; // 自动读取出 24px (电脑) 或 16px (手机)
-    const itemWidth = firstItem.offsetWidth + gap;
+    // 4. 根据图片数量，动态设定一个舒服的匀速滑动速度（图片越多，速度自然越慢）
+    // 公式：4 秒/张。例如 5 张图，全程走完就是 20 秒。
+    track.style.animationDuration = (galleryImages.length * 4) + 's';
 
-    // 6. 滑动动画执行函数
-    function slideNext() {
-        currentIndex++;
-        
-        // 执行平滑滑动
-        const moveX = -(currentIndex * itemWidth);
-        track.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        track.style.transform = `translateX(${moveX}px)`;
-
-        // 7. 🟡 循环回正技巧：当滑到克隆的第一张时，瞬间跳回起点
-        if (currentIndex >= originalItems.length) {
-            setTimeout(() => {
-                track.style.transition = 'none'; // 先关闭动画（防止回弹闪烁）
-                currentIndex = 0;               // 索引重置为0
-                track.style.transform = `translateX(0px)`;
-            }, 600); // 这里的 600ms 必须和上面 CSS transition 的时间保持一致！
-        }
-    }
-
-    // 8. 首次加载时，计算正确的 itemWidth 以适配不同屏幕
-    // （因为 CSS 加载需要时间，所以先延迟 100ms 确保渲染完成）
-    setTimeout(() => {
-        // 重新计算，防止移动端误判
-        const actualWidth = originalItems[0].offsetWidth + 24;
-        // 如果 resize 了，我们可以通过 window 监听，但最简单的做法是保持固定
-    }, 100);
-
-    // 9. 启动定时器，每 4 秒滑一次（可以改成 5）
-    setInterval(slideNext, 4000);
 })();
