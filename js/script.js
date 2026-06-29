@@ -228,9 +228,11 @@ if (wechatItem && qrPopup) {
         track.appendChild(item.cloneNode(true));
     });
 
-    // 5. 获取单张卡片的宽度（宽 + 间距）
-    const itemWidth = originalItems[0].offsetWidth + 24; 
-    let currentIndex = 0;
+    // 5. 获取单张卡片的宽度（动态获取当前实际间距，完美适配电脑和手机）
+    const firstItem = originalItems[0];
+    const style = window.getComputedStyle(firstItem);
+    const gap = parseInt(style.marginRight) || 0; // 自动读取出 24px (电脑) 或 16px (手机)
+    const itemWidth = firstItem.offsetWidth + gap;
 
     // 6. 滑动动画执行函数
     function slideNext() {
