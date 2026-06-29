@@ -140,22 +140,18 @@
             </div>
         </section>
 
-        <!-- 4. Portfolio 画廊区域（自动轮播版） -->
+        <!-- 4. Portfolio 画廊区域（滑动轮播版） -->
         <section id="portfolio" class="section portfolio" aria-label="作品集">
             <div class="container">
                 <h2 class="section-title">画廊</h2>
                 <!-- 轮播容器 -->
                 <div class="gallery-wrapper">
-                    <div class="carousel-container">
-                        <!-- 卡片占位，必须包含这些 id，JS 才能找到 -->
-                        <div class="carousel-item" id="gallery-left"></div>
-                        <div class="carousel-item" id="gallery-center"></div>
-                        <div class="carousel-item" id="gallery-right"></div>
-                    </div>
+                    <!-- 由 JS 动态生成图片的滑动轨道 -->
+                    <div class="carousel-track" id="gallery-track"></div>
                 </div>
             </div>
         </section>
-
+        
         <!-- 5. Timeline 历程区域 -->
         <section id="timeline" class="section timeline" aria-label="历程">
             <div class="container">
