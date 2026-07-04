@@ -468,6 +468,12 @@ if (wechatItem && qrPopup) {
 const audio = document.getElementById('bgMusic');       // 真实的音频元素
 const progressTime = document.getElementById('progressTime'); // 显示时间的文字 (如 1:24)
 
+// 【新增】：将默认音量设置为 50% (音量范围是 0.0 到 1.0)
+audio.volume = 0.5;
+
+// 尝试自动播放（浏览器可能会阻止，所以用 catch 捕获错误，保证不报红）
+audio.play().catch(() => console.log('等待用户点击播放'));
+
 let isDragging = false; // 记录用户是否正在拖拽进度条
 
 // ============================================================
