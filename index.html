@@ -32,6 +32,46 @@
         <!-- ==================== PWA 配置（让 Chrome 显示“以应用形式安装”） ==================== -->
     <link rel="manifest" href="/manifest.json">
 </head>
+<!-- ==================== 底部液态玻璃物理透镜播放栏 ==================== -->
+<!-- 使用一个容器包裹，方便应用动态滤镜 -->
+<div id="glass-player-wrapper" class="glass-player-wrapper">
+    <!-- 真正的播放器主体 -->
+    <div id="glass-player" class="glass-player">
+        <!-- 内容层 -->
+        <div class="glass-content">
+            <!-- 专辑图片 -->
+            <div class="album-art">
+                <img src="/images/albumpic/homepage.webp" alt="专辑封面">
+            </div>
+
+            <!-- 歌名 -->
+            <div class="song-title">DOUDOU - 最终观测</div>
+
+            <!-- 进度条 -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-track"></div>
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-thumb" id="progressThumb"></div>
+            </div>
+
+            <!-- 播放/暂停按钮 -->
+            <button class="play-btn" id="playBtn">
+                <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
+                    <polygon points="6 3 20 12 6 21 6 3" />
+                </svg>
+                <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                </svg>
+            </button>
+                        <!-- ============================================================
+                 核心隐藏音频标签 (浏览器底层播放它，界面上看不到)
+                 只要你把 homepagesong.mp3 放进 /images/homepagesong/ 文件夹即可
+                 ============================================================ -->
+            <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
+        </div>
+    </div>
+</div>
 <body>
 
     <!-- ==================== 固定顶部导航栏 ==================== -->

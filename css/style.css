@@ -851,3 +851,107 @@ p {
         margin-right: 16px;
     }
 }
+
+/* ==================== 底部物理透镜播放栏 ==================== */
+.glass-player-wrapper {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: min(600px, 90%);
+    height: 64px;
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.glass-player {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    /* 极弱的玻璃底，真正的折射透镜效果由 SVG 滤镜叠加图层完成 */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(6px) saturate(120%); /* 辅助柔化 */
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    overflow: hidden;
+    pointer-events: auto;
+    transition: background var(--transition-theme);
+}
+
+/* 悬浮时增加一点点边缘高光提示 */
+.glass-player:hover {
+    box-shadow: 0 0 20px rgba(124, 91, 245, 0.1);
+}
+
+.glass-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 16px 0 8px;
+    gap: 12px;
+}
+
+.album-art {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+.album-art img { width: 100%; height: 100%; object-fit: cover; }
+
+.song-title {
+    flex: 1;
+    font-size: 15px; font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 40px;
+}
+
+.progress-container {
+    position: relative; flex: 2; min-width: 60px; height: 4px;
+    cursor: pointer; background: rgba(128, 128, 128, 0.2); border-radius: 4px;
+}
+[data-theme="dark"] .progress-container { background: rgba(255, 255, 255, 0.15); }
+.progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #7c5bf5, #67c6e3);
+    border-radius: 4px; position: absolute; top: 0; left: 0;
+    transition: width 0.05s linear;
+}
+.progress-thumb {
+    position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
+    width: 14px; height: 14px; background: #ffffff; border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.2s;
+}
+.progress-container:hover .progress-thumb { opacity: 1; }
+
+.play-btn {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.15s; color: var(--text-primary);
+}
+.play-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+.play-btn:active { transform: scale(0.92); }
+.play-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .glass-player-wrapper { bottom: 16px; height: 56px; }
+    .glass-content { padding: 0 12px 0 6px; gap: 8px; }
+    .album-art { width: 40px; height: 40px; }
+    .song-title { font-size: 13px; }
+    .play-btn { width: 34px; height: 34px; }
+    .play-btn svg { width: 16px; height: 16px; }
+}
+@media (max-width: 420px) {
+    .glass-player-wrapper { width: 96%; }
+    .song-title { display: none; }
+}
