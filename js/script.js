@@ -459,18 +459,13 @@ if (wechatItem && qrPopup) {
         resizeTimer = setTimeout(applyGlassEffect, 100);
     });
 
- /* ============================================================
+/* ============================================================
    全新真实音频播放逻辑（替换掉之前的模拟动画）
    ============================================================ */
 
-// 1. 获取页面上的元素（音频、按钮、进度条等）
+// 1. 获取音频元素和显示时间的元素
+// 注意：playBtn、playIcon、pauseIcon 等已经在物理透镜部分声明过了，这里不用再次声明！
 const audio = document.getElementById('bgMusic');       // 真实的音频元素
-const playBtn = document.getElementById('playBtn');     // 播放/暂停按钮
-const playIcon = document.getElementById('playIcon');   // 播放图标 (▶)
-const pauseIcon = document.getElementById('pauseIcon'); // 暂停图标 (⏸)
-const progressFill = document.getElementById('progressFill');   // 进度条填充
-const progressThumb = document.getElementById('progressThumb'); // 进度条圆点
-const progressContainer = document.getElementById('progressContainer'); // 进度条容器
 const progressTime = document.getElementById('progressTime'); // 显示时间的文字 (如 1:24)
 
 let isDragging = false; // 记录用户是否正在拖拽进度条
