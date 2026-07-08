@@ -76,9 +76,9 @@
       filter: invert(1);
   }
   
-      /* 针对 Bilibili 图标的深色模式适配 */
-  .social-link img[alt="Bilibili"] {
-      filter: invert(1);
+    /* 针对 Bilibili 图标的深色模式适配 【修复版】*/
+    .social-link img[alt="Bilibili"] {
+        filter: brightness(0) invert(1); /* 先把亮度变0变黑，再反色，结果就是100%纯白 */
     }
 }
 
