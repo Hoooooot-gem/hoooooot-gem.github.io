@@ -75,6 +75,11 @@
   .social-link img[alt="视频号"] {
       filter: invert(1);
   }
+  
+      /* 针对 Bilibili 图标的深色模式适配 */
+  .social-link img[alt="Bilibili"] {
+      filter: invert(1);
+    }
 }
 
 /* ==================== 2. 全局重置与基础样式 ==================== */

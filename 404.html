@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- ==================== 基础 Meta ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ==================== SEO 与社交分享 ==================== -->
+    <title>404 · Hoooooot's</title>
+    <meta name="description" content="I'm Hoooooot. Student Filmmaker & Creator，通过影像与设计讲述故事。">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Hoooooot">
+    <meta property="og:description" content="Hoooooot 的个人网站。Student Filmmaker & Creator。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hoooooot.github.io">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hoooooot">
+    
+    <!-- ==================== 网站图标（Favicon） ==================== -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    
+    <!-- ==================== 引用 CSS 文件 ==================== -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- 为了让 404 页面完美居中并且贴合主页风格，加一段内联样式 -->
+    <style>
+        /* 移除主页原有的 Margin，让 404 内容完美在导航栏和底栏之间居中 */
+        main.main-404 {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* 减去导航栏高度和底栏大致高度 */
+            min-height: calc(100vh - var(--nav-height, 64px) - 120px); 
+            padding: 40px 24px;
+            background-color: var(--bg-color);
+            transition: background var(--transition-theme);
+        }
+
+        .error-content {
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: clamp(6rem, 15vw, 10rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin: 0 0 0.2em 0;
+            line-height: 1;
+            /* 渐变色文字，与主页 Hero 标题呼应 */
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .error-message {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin: 0 0 40px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .error-desc {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* 复用你主页 Summer Camp 里的胶囊按钮样式 */
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 32px;
+            border: 1px solid var(--text-primary);
+            border-radius: 999px;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-home-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 底部液态玻璃物理透镜播放栏 ==================== -->
+    <!-- 注意：我已经帮你修正了代码结构，现在它合法地写在 <body> 内部了 -->
+    <div id="glass-player-wrapper" class="glass-player-wrapper">
+        <div id="glass-player" class="glass-player">
+            <div class="glass-content">
+                <div class="album-art">
+                    <img src="/images/albumpic/homepage.webp" alt="专辑封面">
+                </div>
+                <div class="song-title">DOUDOU - 最终观测</div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-track"></div>
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-thumb" id="progressThumb"></div>
+                </div>
+                <button class="play-btn" id="playBtn">
+                    <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
+                        <polygon points="6 3 20 12 6 21 6 3" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                </button>
+                <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 固定顶部导航栏 ==================== -->
+    <header class="navbar" role="banner">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
+            </div>
+            <nav class="nav-menu" role="navigation" aria-label="主导航">
+                <ul class="nav-list">
+                    <li><a href="/#summer-camp">课程</a></li>
+                    <li><a href="/#about">关于</a></li>
+                    <li><a href="/#portfolio">画廊</a></li>
+                    <li><a href="/#timeline">历程</a></li>
+                    <li><a href="/#contact">联系</a></li>
+                </ul>
+                <button id="theme-toggle" class="theme-toggle" aria-label="切换深色模式">
+                    <span class="icon-sun">☀</span>
+                    <span class="icon-moon">🌙</span>
+                </button>
+            </nav>
+            <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ==================== 将主页内容替换为 404 模块 ==================== -->
+    <main class="main-404">
+        <div class="error-content">
+            <div class="error-code">404</div>
+            <p class="error-message">— 宇宙浩瀚，此页已远行 —</p>
+            <a href="/" class="back-home-btn">返回主页</a>
+            <p class="error-desc">也许你输入了错误的链接，或者时光把这里清空了。</p>
+        </div>
+    </main>
+
+    <!-- ==================== Footer 页脚区域 ==================== -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; Hoooooot 2026</p>
+            <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
+            <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
+            <div id="footer-tagline"><sub>Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
+        </div>
+    </footer>
+
+    <!-- ==================== 引用 JS 文件 ==================== -->
+    <script src="js/script.js"></script>
+
+</body>
+</html>
