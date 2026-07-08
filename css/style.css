@@ -448,6 +448,69 @@ p {
     }
 }
 
+/* ==================== 2.1 黑客帝国区域（新增） ==================== */
+.hacker-empire .hacker-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    max-width: 800px;
+}
+
+.hacker-empire .hacker-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.hacker-empire .hacker-text .hacker-sub {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* 胶囊按钮样式 */
+.hacker-empire .hacker-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    border: 1px solid var(--text-primary);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.hacker-empire .hacker-button .arrow {
+    margin-left: 8px;
+    transition: transform 0.2s ease;
+}
+
+/* 悬停效果：填充背景、文字反色、箭头轻微右移 */
+.hacker-empire .hacker-button:hover {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    transform: translateY(-2px);
+}
+
+.hacker-empire .hacker-button:hover .arrow {
+    transform: translateX(4px);
+}
+
+/* 移动端适配（< 768px） */
+@media screen and (max-width: 767px) {
+    .hacker-empire .hacker-content {
+        max-width: 100%;
+    }
+    .hacker-empire .hacker-button {
+        width: 100%;
+        justify-content: center; /* 手机端按钮铺满，更好点按 */
+    }
+}
+
 /* ==================== 9. Portfolio 作品集区域 ==================== */
 
 .portfolio-grid {
