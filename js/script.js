@@ -278,17 +278,21 @@ if (wechatItem && qrPopup) {
                 let dx = x - cx;
                 let dy = y - cy;
 
+                // 处理圆角边缘逻辑
                 const radX = halfW - br;
                 const radY = halfH - br;
                 
+                // 【修复】：把变量放到外面，解决 ReferenceError 报错
+                let isInside = true; 
                 let dist;
                 if (x < radX && y < radY) {
+                    // 内部方形区域，距离为 0
                     dist = 0; 
                 } else {
+                    // 边缘过度区域
                     const ex = Math.max(0, x - radX) / br;
                     const ey = Math.max(0, y - radY) / br;
                     const eDist = Math.sqrt(ex * ex + ey * ey);
-                    let isInside = true;
                     if (eDist > 1) isInside = false;
                     dist = Math.min(eDist, 1);
                 }
