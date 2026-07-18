@@ -278,18 +278,16 @@ if (wechatItem && qrPopup) {
                 let dx = x - cx;
                 let dy = y - cy;
 
-                // 处理圆角边缘逻辑
                 const radX = halfW - br;
                 const radY = halfH - br;
                 
-                // 【修复】：把变量放到外面，解决 ReferenceError 报错
+                // 【安全声明】：将 isInside 提到最外层，确保绝对可用
                 let isInside = true; 
                 let dist;
+
                 if (x < radX && y < radY) {
-                    // 内部方形区域，距离为 0
                     dist = 0; 
                 } else {
-                    // 边缘过度区域
                     const ex = Math.max(0, x - radX) / br;
                     const ey = Math.max(0, y - radY) / br;
                     const eDist = Math.sqrt(ex * ex + ey * ey);
@@ -316,12 +314,6 @@ if (wechatItem && qrPopup) {
                 };
 
                 if (isInside) {
-                    const angle = Math.atan2(dy, dx);
-                    const dx_shift = Math.cos(angle) * intensity;
-                    const dy_shift = Math.sin(angle) * intensity;
-                    const r = 128 + dx_shift;
-                    const g = 128 + dy_shift;
-                    const b = 128;
                     writePixel(x, y, r, g, b, 255);
                     writePixel(width - 1 - x, y, 256 - r, g, b, 255);
                     writePixel(x, height - 1 - y, r, 256 - g, b, 255);
@@ -428,11 +420,11 @@ if (wechatItem && qrPopup) {
     });
 
 /* ============================================================
-   真实音频播放逻辑（去掉限速）
+   真实音频播放逻辑（增加进度时间的空值防御）
    ============================================================ */
 
 const audio = document.getElementById('bgMusic');
-const progressTime = document.getElementById('progressTime');
+const progressTime = document.getElementById('progressTime'); // 补上这个
 
 audio.volume = 0.5;
 
@@ -498,7 +490,8 @@ window.addEventListener('mouseup', () => {
 });
 
 function updateProgressUI() {
-    if (!audio.duration || !isFinite(audio.duration)) return;
+    // 【安全门】：如果音频没加载好，或者时间标签不存在，直接停止执行，防止报错
+    if (!audio.duration || !isFinite(audio.duration) || !progressTime) return;
 
     const percent = (audio.currentTime / audio.duration) * 100;
     
