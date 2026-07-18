@@ -229,6 +229,11 @@ if (wechatItem && qrPopup) {
     // 4. 根据图片数量，动态设定一个舒服的匀速滑动速度（图片越多，速度自然越慢）
     // 公式：4 秒/张。例如 5 张图，全程走完就是 20 秒。
     track.style.animationDuration = (galleryImages.length * 4) + 's';
+    // 【新增】：如果系统启用了“减弱动效”，将动画时间设为 0（实际上会停止）
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) {
+        track.style.animationDuration = '0s';
+    }
 
 })();
 

@@ -26,18 +26,19 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="/manifest.json">
 
-    <!-- 为了让 404 页面完美居中并且贴合主页风格，加一段内联样式 -->
+    <!-- 为了让 404 页面完美居中、贴合主页风格，并容纳新板块 -->
     <style>
         /* 移除主页原有的 Margin，让 404 内容完美在导航栏和底栏之间居中 */
         main.main-404 {
             flex: 1;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             /* 减去导航栏高度和底栏大致高度 */
             min-height: calc(100vh - var(--nav-height, 64px) - 120px); 
-            padding: 40px 24px;
+            padding: 40px 24px 60px 24px;
             background-color: var(--bg-color);
             transition: background var(--transition-theme);
         }
@@ -73,7 +74,7 @@
             opacity: 0.7;
         }
 
-        /* 复用你主页 Summer Camp 里的胶囊按钮样式 */
+        /* 复用主页胶囊按钮样式 */
         .back-home-btn {
             display: inline-flex;
             align-items: center;
@@ -87,11 +88,136 @@
             text-decoration: none;
             transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
         }
-
         .back-home-btn:hover {
             background: var(--text-primary);
             color: var(--bg-color);
             transform: translateY(-2px);
+        }
+        .back-home-btn:active {
+            transform: scale(0.97) translateY(-1px);
+            transition: transform 80ms ease-out;
+        }
+
+        /* ============================================================
+           新增：宝贝回家 公益板块专属样式
+           ============================================================ */
+        .baby-home-section {
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 24px;
+            max-width: 100%;
+            padding: 0 10px;
+            border-top: 1px solid rgba(128, 128, 128, 0.15);
+            padding-top: 40px;
+        }
+        [data-theme="dark"] .baby-home-section {
+            border-top-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 460px;
+            margin: 0 auto;
+        }
+
+        .stats-cards {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 12px;
+            padding: 16px 28px;
+            min-width: 130px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: background var(--transition-theme), border var(--transition-theme);
+        }
+        [data-theme="dark"] .stats-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+        .stats-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 行动按钮 */
+        .baby-home-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 32px;
+            border: 1px solid var(--text-primary);
+            border-radius: 999px;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+        .baby-home-btn .arrow {
+            margin-left: 8px;
+            transition: transform 0.2s ease;
+        }
+        .baby-home-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+        }
+        .baby-home-btn:hover .arrow {
+            transform: translateX(4px);
+        }
+        .baby-home-btn:active {
+            transform: scale(0.97) translateY(-1px);
+            transition: transform 80ms ease-out;
+        }
+
+        .stats-credit {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-top: 4px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 767px) {
+            .baby-home-section {
+                margin-top: 32px;
+                gap: 20px;
+                padding-top: 32px;
+            }
+            .stats-card {
+                padding: 14px 20px;
+                min-width: 100px;
+                flex: 1;
+            }
+            .stats-number {
+                font-size: 1.6rem;
+            }
+            .baby-home-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -131,6 +257,30 @@
             <p class="error-message">— 宇宙浩瀚，此页已远行 —</p>
             <a href="/" class="back-home-btn">返回主页</a>
             <p class="error-desc">也许你输入了错误的链接，或者时光把这里清空了。</p>
+        </div>
+
+        <!-- ==================== 新增：宝贝回家 公益板块 ==================== -->
+        <div class="baby-home-section">
+            <p class="intro-text">
+                但是你可以让这些家庭团圆。
+            </p>
+            
+            <div class="stats-cards">
+                <div class="stats-card">
+                    <div class="stats-number">17,136</div>
+                    <div class="stats-label">个家庭团圆</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number">413,916</div>
+                    <div class="stats-label">名志愿者在行动</div>
+                </div>
+            </div>
+
+            <a href="https://www.baobeihuijia.com" target="_blank" rel="noopener noreferrer" class="baby-home-btn">
+                进入官方网站 <span class="arrow">→</span>
+            </a>
+            
+            <div class="stats-credit">截至2026年7月</div>
         </div>
     </main>
 
