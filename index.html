@@ -32,13 +32,10 @@
         <!-- ==================== PWA 配置（让 Chrome 显示“以应用形式安装”） ==================== -->
     <link rel="manifest" href="/manifest.json">
 </head>
-<!-- ==================== 底部液态玻璃物理透镜播放栏 ==================== -->
-<!-- 使用一个容器包裹，方便应用动态滤镜 -->
-<div id="glass-player-wrapper" class="glass-player-wrapper">
-    <!-- 真正的播放器主体 -->
-    <div id="glass-player" class="glass-player">
-        <!-- 内容层 -->
-        <div class="glass-content">
+<body>
+<!-- ==================== 右下角纯色胶囊播放栏 ==================== -->
+    <div id="player-wrapper" class="player-wrapper">
+        <div class="player-content">
             <!-- 专辑图片 -->
             <div class="album-art">
                 <img src="/images/albumpic/homepage.webp" alt="专辑封面">
@@ -52,6 +49,8 @@
                 <div class="progress-track"></div>
                 <div class="progress-fill" id="progressFill"></div>
                 <div class="progress-thumb" id="progressThumb"></div>
+                <!-- 补上了时间显示 -->
+                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
             </div>
 
             <!-- 播放/暂停按钮 -->
@@ -64,16 +63,11 @@
                     <rect x="14" y="4" width="4" height="16" />
                 </svg>
             </button>
-                        <!-- ============================================================
-                 核心隐藏音频标签 (浏览器底层播放它，界面上看不到)
-                 只要你把 homepagesong.mp3 放进 /images/homepagesong/ 文件夹即可
-                 ============================================================ -->
+
+            <!-- 音频标签 -->
             <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
         </div>
     </div>
-</div>
-<body>
-
     <!-- ==================== 固定顶部导航栏 ==================== -->
     <header class="navbar" role="banner">
         <div class="nav-container">
@@ -128,7 +122,7 @@
                     loop 
                     playsinline>
                     <!-- 兜底：如果浏览器彻底不支持 video，则显示图片 -->
-                    <img src="/images/hero-bg.mp4" alt="Hoooooot 背景图" loading="lazy">
+                    <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
                 </video>
             </div>
             <!-- 半透明遮罩层（保证文字始终清晰） -->

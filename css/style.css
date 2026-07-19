@@ -963,109 +963,149 @@ p {
     }
 }
 
-/* ==================== 底部物理透镜播放栏 ==================== */
-.glass-player-wrapper {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    width: min(600px, 90%);
-    height: 64px;
-    border-radius: 999px;
-    pointer-events: none;
+/* ==================== 右下角纯色胶囊播放栏 ==================== */
+
+/* 设置深浅模式纯色背景的变量 */
+:root {
+    --card-bg: #F5F5F7;           /* 浅色模式：苹果标准的浅灰 */
+}
+[data-theme="dark"] {
+    --card-bg: #1C1C1E;           /* 深色模式：苹果标准的深灰 */
 }
 
-.glass-player {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 999px;
-    /* 极弱的玻璃底，真正的折射透镜效果由 SVG 滤镜叠加图层完成 */
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(6px) saturate(120%); /* 辅助柔化 */
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    overflow: hidden;
+.player-wrapper {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;             /* 固定在右下角，左对齐自动取消 */
+    left: auto;             /* 防止被其他样式干扰 */
+    transform: none;        /* 清除之前的居中偏移 */
+    width: min(440px, 92%);
+    height: 64px;
+    border-radius: 999px;    /* 胶囊形状 */
+    background: var(--card-bg); /* 纯实色背景，无毛玻璃 */
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* 极淡投影，保持立体感 */
     pointer-events: auto;
     transition: background var(--transition-theme);
 }
 
-/* 悬浮时增加一点点边缘高光提示 */
-.glass-player:hover {
-    box-shadow: 0 0 20px rgba(124, 91, 245, 0.1);
-}
-
-.glass-content {
-    position: relative;
-    z-index: 2;
+.player-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    padding: 0 16px 0 8px;
-    gap: 12px;
+    padding: 0 12px 0 6px;
+    gap: 10px;
 }
 
 .album-art {
     flex-shrink: 0;
-    width: 48px; height: 48px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     overflow: hidden;
     background: var(--border-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+[data-theme="dark"] .album-art {
+    border-color: rgba(255,255,255,0.04);
 }
 .album-art img { width: 100%; height: 100%; object-fit: cover; }
 
 .song-title {
     flex: 1;
-    font-size: 15px; font-weight: 600;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-primary);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     min-width: 40px;
+    letter-spacing: -0.02em;
 }
 
 .progress-container {
-    position: relative; flex: 2; min-width: 60px; height: 4px;
-    cursor: pointer; background: rgba(128, 128, 128, 0.2); border-radius: 4px;
+    position: relative;
+    flex: 2;
+    min-width: 60px;
+    height: 4px;
+    cursor: pointer;
+    background: rgba(128, 128, 128, 0.15);
+    border-radius: 4px;
 }
-[data-theme="dark"] .progress-container { background: rgba(255, 255, 255, 0.15); }
+[data-theme="dark"] .progress-container { background: rgba(255, 255, 255, 0.1); }
 .progress-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, #7c5bf5, #67c6e3);
-    border-radius: 4px; position: absolute; top: 0; left: 0;
-    transition: width 0.05s linear;
+    height: 100%;
+    width: 0%;
+    background: var(--text-primary); /* 浅色模式是纯黑，深色模式是纯白 */
+    /* ... 后面代码不变 ... */
 }
 .progress-thumb {
-    position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
-    width: 14px; height: 14px; background: #ffffff; border-radius: 50%;
-    box-shadow: 0 0 6px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.2s;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,0,0,0.15);
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 .progress-container:hover .progress-thumb { opacity: 1; }
 
-.play-btn {
-    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
-    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, transform 0.15s; color: var(--text-primary);
+/* 播放器时间显示文字 */
+.progress-time {
+    font-size: 10px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    min-width: 40px;
+    text-align: right;
+    letter-spacing: 0.3px;
 }
-.play-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+
+.play-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    color: var(--text-primary);
+}
+[data-theme="dark"] .play-btn { background: rgba(255,255,255,0.08); }
+.play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
 .play-btn:active { transform: scale(0.92); }
-.play-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.play-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
 /* 移动端适配 */
 @media (max-width: 640px) {
-    .glass-player-wrapper { bottom: 16px; height: 56px; }
-    .glass-content { padding: 0 12px 0 6px; gap: 8px; }
-    .album-art { width: 40px; height: 40px; }
-    .song-title { font-size: 13px; }
-    .play-btn { width: 34px; height: 34px; }
-    .play-btn svg { width: 16px; height: 16px; }
+    .player-wrapper {
+        bottom: 16px;
+        right: 16px;
+        height: 56px;
+        width: calc(100% - 32px);
+    }
+    .album-art { width: 38px; height: 38px; }
+    .song-title { font-size: 12px; }
+    .play-btn { width: 32px; height: 32px; }
+    .play-btn svg { width: 15px; height: 15px; }
+    .progress-time { min-width: 32px; font-size: 9px; }
 }
 @media (max-width: 420px) {
-    .glass-player-wrapper { width: 96%; }
     .song-title { display: none; }
+    .progress-time { min-width: 28px; }
 }
+
+/* 【彻底去除】Apple 无障碍动效回退限制 (已根据要求完全移除) */
 
 /* ==================== 18. Apple 设计规范 即时反馈 ==================== */
 
@@ -1080,22 +1120,4 @@ p {
 /* 播放器播放按钮按下瞬间反馈 */
 .play-btn:active {
     transform: scale(0.88);
-}
-
-/* ==================== 19. Apple 无障碍动效回退 ==================== */
-
-/* 当用户在系统设置开启“减弱动态效果”时 */
-@media (prefers-reduced-motion: reduce) {
-  
-  /* 1. 停掉画廊的跑马灯无限滚动，并静止在第一张图 */
-  .carousel-track {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-
-  /* 2. 停掉所有区块的“向上浮入”动画，改为极短的“淡入” */
-  .reveal {
-    transform: none !important;  /* 取消垂直位移 */
-    transition: opacity 200ms ease !important;
-  }
 }
