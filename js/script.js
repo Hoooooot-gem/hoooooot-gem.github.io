@@ -11,6 +11,8 @@ const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-list a');
 const sections = document.querySelectorAll('.section');
 const navbar = document.querySelector('.navbar');
+// 获取播放栏元素，与顶栏同步浮现
+const playerWrapper = document.getElementById('player-wrapper');
 
 // ==================== 2. 移动端汉堡菜单逻辑 ====================
 function toggleMenu() {
@@ -93,12 +95,20 @@ if (wechatItem && qrPopup) {
     track.style.animationDuration = (galleryImages.length * 4) + 's';
 })();
 
-// ==================== 7. 滚动控制顶栏毛玻璃切换 ====================
+// ==================== 7. 滚动控制顶栏与播放栏同步浮现 ====================
 window.addEventListener('scroll', () => {
     if (window.scrollY > 10) {
         navbar.classList.add('scrolled');
+        // 同时浮现播放栏
+        if (playerWrapper) {
+            playerWrapper.classList.add('visible');
+        }
     } else {
         navbar.classList.remove('scrolled');
+        // 同时隐藏播放栏
+        if (playerWrapper) {
+            playerWrapper.classList.remove('visible');
+        }
     }
 });
 
