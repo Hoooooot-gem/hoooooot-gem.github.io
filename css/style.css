@@ -963,11 +963,11 @@ p {
     }
 }
 
-/* ==================== 右下角纯色胶囊播放栏 ==================== */
+/* ==================== 右下角胶囊播放栏（新布局） ==================== */
 
 /* 设置深浅模式纯色背景的变量 */
 :root {
-    --card-bg: #F5F5F7;           /* 浅色模式：苹果标准的浅灰 */
+    --card-bg: #E5E5E7;           /* 浅色模式：苹果干净的浅灰 */
 }
 [data-theme="dark"] {
     --card-bg: #1C1C1E;           /* 深色模式：苹果标准的深灰 */
@@ -976,103 +976,120 @@ p {
 .player-wrapper {
     position: fixed;
     bottom: 24px;
-    right: 24px;             /* 固定在右下角，左对齐自动取消 */
-    left: auto;             /* 防止被其他样式干扰 */
-    transform: none;        /* 清除之前的居中偏移 */
-    width: min(440px, 92%);
-    height: 64px;
-    border-radius: 999px;    /* 胶囊形状 */
-    background: var(--card-bg); /* 纯实色背景，无毛玻璃 */
+    right: 24px;
+    left: auto;
+    transform: none;
+    width: min(480px, 92%);
+    height: 72px;                /* 加高，以容纳更大的封面和按钮 */
+    border-radius: 999px;
+    background: var(--card-bg);
     z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* 极淡投影，保持立体感 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     pointer-events: auto;
     transition: background var(--transition-theme);
-}
-
-.player-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    padding: 0 12px 0 6px;
-    gap: 10px;
+    padding: 6px 8px 6px 10px;   /* 调整内部内边距 */
+    gap: 14px;
 }
 
+/* === 1. 左侧专辑封面 === */
 .album-art {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
+    width: 56px;                 /* 尺寸显著加大 */
+    height: 56px;
+    border-radius: 16px;         /* 更明显的圆角 */
     overflow: hidden;
     background: var(--border-color);
     border: 1px solid rgba(0,0,0,0.04);
 }
-[data-theme="dark"] .album-art {
-    border-color: rgba(255,255,255,0.04);
-}
+[data-theme="dark"] .album-art { border-color: rgba(255,255,255,0.04); }
 .album-art img { width: 100%; height: 100%; object-fit: cover; }
 
-.song-title {
+/* === 2. 中间区域：信息 + 进度条 === */
+.meta-wrapper {
     flex: 1;
-    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;                    /* 控制歌名行与进度条之间的间距 */
+    padding-right: 4px;
+    min-width: 0;                /* 防止标题过长导致布局崩坏 */
+}
+
+/* 上边一行：歌名 + 时间 */
+.meta-row {
+    display: flex;
+    justify-content: space-between; /* 歌名在左，时间在右 */
+    align-items: baseline;
+    width: 100%;
+}
+
+.song-title {
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 40px;
     letter-spacing: -0.02em;
+    flex: 1;
+    padding-right: 8px;
 }
 
+.progress-time {
+    font-size: 13px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 下边一行：进度条 */
 .progress-container {
     position: relative;
-    flex: 2;
-    min-width: 60px;
+    width: 100%;
     height: 4px;
     cursor: pointer;
-    background: rgba(128, 128, 128, 0.15);
+    background: rgba(128, 128, 128, 0.2);
     border-radius: 4px;
+    transition: background 0.2s;
 }
-[data-theme="dark"] .progress-container { background: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .progress-container { background: rgba(255, 255, 255, 0.15); }
+
 .progress-fill {
     height: 100%;
     width: 0%;
-    background: var(--text-primary); /* 浅色模式是纯黑，深色模式是纯白 */
-    /* ... 后面代码不变 ... */
+    background: var(--text-primary); /* 纯黑/纯白进度条 */
+    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.1s linear;
 }
+
 .progress-thumb {
     position: absolute;
     top: 50%;
     left: 0%;
     transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    background: #ffffff;
+    width: 16px;
+    height: 16px;
+    background: var(--text-primary);
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(0,0,0,0.15);
     opacity: 0;
     transition: opacity 0.2s;
 }
 .progress-container:hover .progress-thumb { opacity: 1; }
 
-/* 播放器时间显示文字 */
-.progress-time {
-    font-size: 10px;
-    color: var(--text-secondary);
-    opacity: 0.8;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    min-width: 40px;
-    text-align: right;
-    letter-spacing: 0.3px;
-}
-
+/* === 3. 右侧播放按钮 === */
 .play-btn {
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 48px;                 /* 更宽、更明显的播放按钮 */
+    height: 48px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.15);
+    background: rgba(0, 0, 0, 0.08);
     border: none;
     cursor: pointer;
     display: flex;
@@ -1081,31 +1098,34 @@ p {
     transition: background 0.2s, transform 0.15s;
     color: var(--text-primary);
 }
-[data-theme="dark"] .play-btn { background: rgba(255,255,255,0.08); }
-.play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
+[data-theme="dark"] .play-btn { background: rgba(255, 255, 255, 0.12); }
+.play-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
 .play-btn:active { transform: scale(0.92); }
-.play-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.play-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-/* 移动端适配 */
+/* === 4. 手机端适配 === */
 @media (max-width: 640px) {
     .player-wrapper {
         bottom: 16px;
         right: 16px;
-        height: 56px;
+        height: 62px;
         width: calc(100% - 32px);
+        padding: 4px 6px 4px 8px;
+        gap: 10px;
     }
-    .album-art { width: 38px; height: 38px; }
-    .song-title { font-size: 12px; }
-    .play-btn { width: 32px; height: 32px; }
-    .play-btn svg { width: 15px; height: 15px; }
-    .progress-time { min-width: 32px; font-size: 9px; }
+    .album-art { width: 46px; height: 46px; border-radius: 12px; }
+    .song-title { font-size: 14px; }
+    .play-btn { width: 40px; height: 40px; }
+    .play-btn svg { width: 18px; height: 18px; }
+    .progress-time { font-size: 11px; }
+    .meta-wrapper { gap: 2px; }
 }
 @media (max-width: 420px) {
     .song-title { display: none; }
-    .progress-time { min-width: 28px; }
+    .player-wrapper { height: 56px; }
+    .album-art { width: 38px; height: 38px; }
+    .play-btn { width: 36px; height: 36px; }
 }
-
-/* 【彻底去除】Apple 无障碍动效回退限制 (已根据要求完全移除) */
 
 /* ==================== 18. Apple 设计规范 即时反馈 ==================== */
 

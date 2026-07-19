@@ -33,40 +33,41 @@
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-<!-- ==================== 右下角纯色胶囊播放栏 ==================== -->
+<!-- ==================== 右下角胶囊播放栏 ==================== -->
     <div id="player-wrapper" class="player-wrapper">
-        <div class="player-content">
-            <!-- 专辑图片 -->
-            <div class="album-art">
-                <img src="/images/albumpic/homepage.webp" alt="专辑封面">
+        <!-- 左侧：专辑封面 -->
+        <div class="album-art">
+            <img src="/images/albumpic/homepage.webp" alt="专辑封面">
+        </div>
+
+        <!-- 中间：信息 + 进度条 -->
+        <div class="meta-wrapper">
+            <!-- 上方行：歌名(左) + 时间(右) -->
+            <div class="meta-row">
+                <div class="song-title">DOUDOU - 最终观测</div>
+                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
             </div>
-
-            <!-- 歌名 -->
-            <div class="song-title">DOUDOU - 最终观测</div>
-
-            <!-- 进度条 -->
+            
+            <!-- 下方行：进度条 -->
             <div class="progress-container" id="progressContainer">
                 <div class="progress-track"></div>
                 <div class="progress-fill" id="progressFill"></div>
                 <div class="progress-thumb" id="progressThumb"></div>
-                <!-- 补上了时间显示 -->
-                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
             </div>
-
-            <!-- 播放/暂停按钮 -->
-            <button class="play-btn" id="playBtn">
-                <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
-                    <polygon points="6 3 20 12 6 21 6 3" />
-                </svg>
-                <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
-                    <rect x="6" y="4" width="4" height="16" />
-                    <rect x="14" y="4" width="4" height="16" />
-                </svg>
-            </button>
-
-            <!-- 音频标签 -->
-            <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
         </div>
+
+        <!-- 右侧：播放按钮 -->
+        <button class="play-btn" id="playBtn">
+            <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
+                <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+            <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+            </svg>
+        </button>
+
+        <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
     </div>
     <!-- ==================== 固定顶部导航栏 ==================== -->
     <header class="navbar" role="banner">
