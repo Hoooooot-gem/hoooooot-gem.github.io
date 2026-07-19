@@ -5,16 +5,14 @@
 
 /* ==================== 0. 自定义网页字体（@font-face） ==================== */
 
-/* 加载字重 400（正文） */
 @font-face {
     font-family: 'CustomFont';
     src: url('/fonts/Inter-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
-    font-display: swap; /* 防闪烁，字体没加载时先用系统字体兜底 */
+    font-display: swap;
 }
 
-/* 加载字重 700（标题） */
 @font-face {
     font-family: 'CustomFont';
     src: url('/fonts/Inter-Bold.woff2') format('woff2');
@@ -25,31 +23,28 @@
 
 /* ==================== 1. CSS 变量与主题系统 ==================== */
 
-/* 强制为纯黑深色主题 */
+/* 强制浅色主题 */
 :root {
-  /* 颜色变量 */
-  --bg-color: #000000;            /* 背景色：纯黑 */
-  --text-primary: #FFFFFF;        /* 主文字：纯白 */
-  --text-secondary: #AAAAAA;      /* 辅助文字：浅灰 */
-  --border-color: #333333;        /* 分割线：深灰 */
-  --nav-bg: rgba(0, 0, 0, 0.5);  /* 导航栏背景（半透明黑） */
+  /* 颜色变量（浅色模式） */
+  --bg-color: #FFFFFF;            /* 背景色：纯白 */
+  --text-primary: #000000;        /* 主文字：纯黑 */
+  --text-secondary: #666666;      /* 辅助文字：高级灰 */
+  --border-color: #EAEAEA;        /* 分割线：极浅灰 */
+  --nav-bg: rgba(255, 255, 255, 0.5); /* 导航栏原始变量 */
 
   /* 尺寸变量 */
-  --nav-height: 64px;             /* 导航栏高度 */
-  --max-width: 1200px;            /* 内容最大宽度 */
-  --spacing-side: 80px;           /* 桌面端页面左右留白 */
+  --nav-height: 64px;
+  --max-width: 1200px;
+  --spacing-side: 80px;
   
   /* 字体变量 */
   --font-family: 'CustomFont', -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-  --font-weight-bold: 700;        /* 标题字重 */
-  --font-weight-regular: 400;     /* 正文字重 */
+  --font-weight-bold: 700;
+  --font-weight-regular: 400;
 
   /* 过渡变量 */
-  --transition-theme: 0.3s ease;  /* 主题切换过渡时间 */
-  --transition-reveal: 0.6s ease-out; /* 滚动出现动画时间 */
-
-  /* Logo 滤镜 */
-  --logo-filter: none;
+  --transition-theme: 0.3s ease;
+  --transition-reveal: 0.6s ease-out;
 }
 
 /* ==================== 2. 全局重置与基础样式 ==================== */
@@ -57,10 +52,9 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* 让 padding 和 border 不撑大元素 */
+  box-sizing: border-box;
 }
 
-/* 启用平滑滚动（HTML 自带，JS 无需额外处理） */
 html {
   scroll-behavior: smooth;
 }
@@ -69,50 +63,49 @@ body {
   font-family: var(--font-family);
   background-color: var(--bg-color);
   color: var(--text-primary);
-  line-height: 1.6; /* 优雅的行高，增强阅读呼吸感 */
-  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更细腻 */
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-theme), color var(--transition-theme);
 }
 
 a {
   text-decoration: none;
-  color: inherit; /* 链接默认继承父级文字颜色 */
+  color: inherit;
   transition: opacity 0.2s;
 }
 
 a:hover {
-  opacity: 0.6; /* 悬停时轻微降低透明度，克制且高级 */
+  opacity: 0.6;
 }
 
 ul {
-  list-style: none; /* 去除列表默认小圆点 */
+  list-style: none;
 }
 
 /* ==================== 3. 排版系统（Typography） ==================== */
 
-/* 标题字重 700，正文 400 */
 h1, h2, h3, h4 {
   font-weight: var(--font-weight-bold);
-  letter-spacing: -0.02em; /* 大标题收紧字间距 */
-  line-height: 1.1;        /* 大标题收紧行高 */
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   font-optical-sizing: auto;
 }
 
 h2.section-title {
   font-size: 2.5rem;
   margin-bottom: 48px;
-  letter-spacing: -0.03em; /* 加重大标题的字间距收拢 */
+  letter-spacing: -0.03em;
   line-height: 1.05;
 }
 
 p {
   font-weight: var(--font-weight-regular);
   color: var(--text-secondary);
-  line-height: 1.6;        /* 正文保留舒适的呼吸感 */
+  line-height: 1.6;
 }
 
-/* ==================== 4. 固定顶部导航栏（已修改为滚动切换毛玻璃） ==================== */
+/* ==================== 4. 固定顶部导航栏 ==================== */
 
 .navbar {
   position: fixed;
@@ -121,12 +114,12 @@ p {
   width: 100%;
   height: var(--nav-height);
   background: transparent !important; /* 默认完全透明 */
-  border-bottom: none !important;     /* 默认无边框 */
+  border-bottom: none !important;
   z-index: 1000;
   transition: border-bottom 0.3s ease;
 }
 
-/* 隐藏的毛玻璃背景层（仅当添加 .scrolled 类时激活） */
+/* 毛玻璃背景层（仅当添加 .scrolled 类时激活） */
 .navbar::before {
   content: '';
   position: absolute;
@@ -136,18 +129,18 @@ p {
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  opacity: 0; /* 默认透明不可见 */
+  opacity: 0;
   background: transparent;
-  transition: opacity 0.4s ease; /* 渐变出现/消失 */
+  transition: opacity 0.4s ease;
 }
 
-/* 激活状态：毛玻璃 + 底部边框 */
+/* 激活状态：保留你喜欢的深色毛玻璃 + 细边框 */
 .navbar.scrolled {
-  border-bottom: 1px solid #727272 !important; /* 底部细边框 */
+  border-bottom: 1px solid #727272 !important;
 }
 .navbar.scrolled::before {
   opacity: 1;
-  background: rgba(20, 20, 20, 0.85); /* 比 #727272 颜色更深 */
+  background: rgba(20, 20, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -171,7 +164,6 @@ p {
 
 .logo img {
     display: block;
-    filter: var(--logo-filter, none);
 }
 
 .nav-menu {
@@ -188,14 +180,14 @@ p {
 .nav-list a {
   font-size: 0.95rem;
   position: relative;
+  color: #FFFFFF; /* 无论透明还是深色毛玻璃，文字都是白色 */
 }
 
 .nav-list a.active {
   font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
 }
 
-/* 汉堡菜单按钮 */
+/* 汉堡菜单按钮（背景若为深色，则线条为白色） */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -209,11 +201,11 @@ p {
 .hamburger .bar {
   width: 24px;
   height: 2px;
-  background-color: var(--text-primary);
+  background-color: #FFFFFF;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* 保留导航栏顶部高光 */
+/* 导航栏顶部高光（保留） */
 .navbar::after {
   content: '';
   position: absolute;
@@ -281,10 +273,11 @@ p {
   max-width: 100%;
 }
 
+/* Hero 文字改为纯黑，以适配浅色背景 */
 .hero-title {
   font-size: 1.8rem;
   font-weight: var(--font-weight-bold);
-  color: #FFFFFF;
+  color: #000000;
   letter-spacing: 0.02em;
 }
 
@@ -582,10 +575,10 @@ p {
     bottom: calc(100% + 16px);
     left: 50%;
     transform: translateX(-50%);
-    background: #1a1a1a;
+    background: #FFFFFF; /* 浅色模式下二维码卡片改为纯白 */
     padding: 12px;
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     z-index: 10;
     width: 140px;
 }
@@ -676,6 +669,7 @@ p {
     align-items: center;
     gap: 24px;
     font-size: 1.2rem;
+    color: #000000; /* 浅色背景下的菜单文字变成黑色 */
   }
 
   .hamburger.active .bar:nth-child(1) {
@@ -743,19 +737,13 @@ p {
     opacity: 0.7;
 }
 
-/* 强制深色模式下的图标反白，避免黑图看不见 */
+/* 强制所有媒体平台 Logo 变为纯黑色 */
 .social-link img[alt="YouTube"],
-.social-link img[alt="抖音"] {
-    filter: invert(1);
-}
-.social-link img[alt="小红书"] {
-    filter: invert(1) saturate(0) brightness(1.5);
-}
-.social-link img[alt="视频号"] {
-    filter: invert(1);
-}
+.social-link img[alt="抖音"],
+.social-link img[alt="小红书"],
+.social-link img[alt="视频号"],
 .social-link img[alt="Bilibili"] {
-    filter: brightness(0) invert(1);
+    filter: brightness(0) !important;
 }
 
 /* ==================== 17. 预留未来扩展接口 ==================== */
@@ -811,10 +799,10 @@ p {
     }
 }
 
-/* ==================== 右下角胶囊播放栏 ==================== */
+/* ==================== 右下角胶囊播放栏（改为浅色模式） ==================== */
 
 :root {
-    --card-bg: #1C1C1E;
+    --card-bg: #F5F5F7; /* 浅色模式下的卡片背景 */
 }
 
 .player-wrapper {
@@ -844,7 +832,7 @@ p {
     border-radius: 16px;
     overflow: hidden;
     background: var(--border-color);
-    border: 1px solid rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,0,0,0.04);
 }
 .album-art img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -868,7 +856,7 @@ p {
 .song-title {
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-primary); /* 浅色模式：纯黑 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -891,7 +879,7 @@ p {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.15); /* 浅色模式下的进度条底色 */
     border-radius: 4px;
     transition: background 0.2s;
 }
@@ -899,7 +887,7 @@ p {
 .progress-fill {
     height: 100%;
     width: 0%;
-    background: var(--text-primary);
+    background: var(--text-primary); /* 纯黑进度条 */
     border-radius: 4px;
     position: absolute;
     top: 0;
@@ -914,7 +902,7 @@ p {
     transform: translate(-50%, -50%);
     width: 16px;
     height: 16px;
-    background: var(--text-primary);
+    background: var(--text-primary); /* 纯黑圆点 */
     border-radius: 50%;
     opacity: 0;
     transition: opacity 0.2s;
@@ -926,16 +914,16 @@ p {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.08); /* 浅色模式下的按钮背景 */
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.2s, transform 0.15s;
-    color: var(--text-primary);
+    color: var(--text-primary); /* 纯黑图标 */
 }
-.play-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
+.play-btn:hover { background: rgba(0,0,0,0.15); transform: scale(1.02); }
 .play-btn:active { transform: scale(0.92); }
 .play-btn svg { width: 20px; height: 20px; fill: currentColor; }
 

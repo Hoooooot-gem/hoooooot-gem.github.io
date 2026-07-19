@@ -27,229 +27,213 @@
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
+
 <!-- ==================== 右下角胶囊播放栏 ==================== -->
-    <div id="player-wrapper" class="player-wrapper">
-        <!-- 左侧：专辑封面 -->
-        <div class="album-art">
-            <img src="/images/albumpic/homepage.webp" alt="专辑封面">
-        </div>
-
-        <!-- 中间：信息 + 进度条 -->
-        <div class="meta-wrapper">
-            <div class="meta-row">
-                <div class="song-title">DOUDOU - 最终观测</div>
-                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
-            </div>
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-track"></div>
-                <div class="progress-fill" id="progressFill"></div>
-                <div class="progress-thumb" id="progressThumb"></div>
-            </div>
-        </div>
-
-        <!-- 右侧：播放按钮 -->
-        <button class="play-btn" id="playBtn">
-            <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
-                <polygon points="6 3 20 12 6 21 6 3" />
-            </svg>
-            <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-            </svg>
-        </button>
-
-        <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
+<div id="player-wrapper" class="player-wrapper">
+    <div class="album-art">
+        <img src="/images/albumpic/homepage.webp" alt="专辑封面">
     </div>
-    <!-- ==================== 固定顶部导航栏 ==================== -->
-    <header class="navbar" role="banner">
-        <div class="nav-container">
-            <!-- 左侧 Logo -->
-            <div class="logo">
-                <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
-            </div>
-            <!-- 右侧导航菜单 -->
-            <nav class="nav-menu" role="navigation" aria-label="主导航">
-                <ul class="nav-list">
-                    <li><a href="#summer-camp">课程</a></li>
-                    <li><a href="#about">关于</a></li>
-                    <li><a href="#portfolio">画廊</a></li>
-                    <li><a href="#timeline">历程</a></li>
-                    <li><a href="#contact">联系</a></li>
-                </ul>
-                <!-- 【已删除】深色模式切换按钮 -->
-            </nav>
-            
-            <!-- 移动端汉堡菜单按钮 -->
-            <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-        </div>
-    </header>
 
-    <!-- ==================== 页面主内容区 ==================== -->
-    <main>
+    <div class="meta-wrapper">
+        <div class="meta-row">
+            <div class="song-title">DOUDOU - 最终观测</div>
+            <span class="progress-time" id="progressTime">0:00 / 0:00</span>
+        </div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-track"></div>
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-thumb" id="progressThumb"></div>
+        </div>
+    </div>
+
+    <button class="play-btn" id="playBtn">
+        <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
+            <polygon points="6 3 20 12 6 21 6 3" />
+        </svg>
+        <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+        </svg>
+    </button>
+
+    <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
+</div>
+
+<!-- ==================== 固定顶部导航栏 ==================== -->
+<header class="navbar" role="banner">
+    <div class="nav-container">
+        <div class="logo">
+            <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
+        </div>
+        <nav class="nav-menu" role="navigation" aria-label="主导航">
+            <ul class="nav-list">
+                <li><a href="#summer-camp">课程</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#portfolio">画廊</a></li>
+                <li><a href="#timeline">历程</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </nav>
         
-        <!-- 1. Hero 首页区域 -->
-        <section id="hero" class="section hero" aria-label="首页">
-            <!-- 背景 16:9 大图层 -->
-            <div class="hero-bg-image">
-                <video 
-                    src="/images/hero-bg.mp4" 
-                    poster="/images/hero-bg.webp" 
-                    preload="metadata" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline>
-                    <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
-                </video>
-            </div>
-            <!-- 【已删除】半透明遮罩层 -->
-            
-            <div class="hero-content">
-                <!-- 【已修改】改为纯白、粗体、相同大小、居中的 Hoooooot -->
-                <h1 class="hero-title">Hoooooot</h1>
-            </div>
-        </section>
+        <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
 
-        <!-- 2.1 黑客帝国区域 -->
-        <section id="hacker-empire" class="section hacker-empire" aria-label="黑客帝国">
-            <div class="container">
-                <h2 class="section-title">黑客帝国</h2>
-                <div class="hacker-content">
-                    <div class="hacker-text">
-                        <p>跟我来，三天成为黑客。</p>
-                        <p class="hacker-sub">关注 bilibili 账号，我们在直播间见。</p>
-                    </div>
-                    <a href="https://live.bilibili.com/1700657549" target="_blank" rel="noopener noreferrer" class="hacker-button" aria-label="进入直播间">
-                        进入直播间 <span class="arrow">→</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. Summer Camp 夏令营区域 -->
-        <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
-            <div class="container">
-                <h2 class="section-title">Hoooooot's Summer Camp</h2>
-                <div class="camp-content">
-                    <div class="camp-text">
-                        <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
-                        <p>包含实战演示、独家 LUT 分享。</p>
-                    </div>
-                    <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
-                        进入课程 <span class="arrow">→</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. About 关于区域 -->
-        <section id="about" class="section about" aria-label="关于">
-            <div class="container">
-                <h2 class="section-title">关于</h2>
-                <div class="about-grid">
-                    <div class="about-text">
-                        <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
-                    </div>
-                    <div class="about-tags">
-                        <span class="tag">剪辑</span>
-                        <span class="tag">调色</span>
-                        <span class="tag">设计</span>
-                        <span class="tag">创意</span>
-                        <span class="tag">故事</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. Portfolio 画廊区域 -->
-        <section id="portfolio" class="section portfolio" aria-label="作品集">
-            <div class="container">
-                <h2 class="section-title">画廊</h2>
-                <div class="gallery-wrapper">
-                    <div class="carousel-track" id="gallery-track"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. Timeline 历程区域 -->
-        <section id="timeline" class="section timeline" aria-label="历程">
-            <div class="container">
-                <h2 class="section-title">历程</h2>
-                <div class="timeline-list">
-                    <div class="timeline-item">
-                        <span class="year">2026</span>
-                        <div class="desc">独立创作阶段，搭建个人数字空间。</div>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="year">2025</span>
-                        <div class="desc">深入探索影像制作与设计美学的边界。</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. Contact 联系区域 -->
-        <section id="contact" class="section contact" aria-label="联系">
-            <div class="container">
-                <h2 class="section-title">联系</h2>
-                <div class="contact-info">
-                    <!-- 邮箱 -->
-                    <span class="contact-email">shurinkycn@gmail.com</span>
-                    
-                    <!-- 社交平台 -->
-                    <div class="social-links">
-                        <!-- 视频号 -->
-                        <div class="social-item wechat-item">
-                            <span class="social-label">
-                                <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
-                            </span>
-                            <div class="qr-popup" id="wechat-qr">
-                                <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
-                            </div>
-                        </div>
-
-                        <!-- YouTube -->
-                        <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">
-                            <img src="/images/youtubesvg.svg" alt="YouTube" class="social-img" loading="lazy">
-                        </a>
-
-                        <!-- Bilibili -->
-                        <a href="https://space.bilibili.com/3707026240702873" target="_blank" rel="noopener noreferrer" class="social-link">
-                            <img src="/images/bilibilisvg.svg" alt="Bilibili" class="social-img" loading="lazy">
-                        </a>
-                        
-                        <!-- 抖音 -->
-                        <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
-                            <img src="/images/douyinsvg.svg" alt="抖音" class="social-img" loading="lazy">
-                        </a>
-
-                        <!-- 小红书 -->
-                        <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
-                            <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ==================== 7. Footer 页脚区域 ==================== -->
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <p>&copy; Hoooooot 2026</p>
-            <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
-            <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
-            <div id="footer-tagline"><sub>Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
+<!-- ==================== 页面主内容区 ==================== -->
+<main>
+    
+    <!-- 1. Hero 首页区域 -->
+    <section id="hero" class="section hero" aria-label="首页">
+        <div class="hero-bg-image">
+            <video 
+                src="/images/hero-bg.mp4" 
+                poster="/images/hero-bg.webp" 
+                preload="metadata" 
+                autoplay 
+                muted 
+                loop 
+                playsinline>
+                <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
+            </video>
         </div>
-    </footer>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Hoooooot</h1>
+        </div>
+    </section>
 
-    <!-- ==================== 引用 JS 文件 ==================== -->
-    <script src="js/script.js"></script>
+    <!-- 2.1 黑客帝国区域 -->
+    <section id="hacker-empire" class="section hacker-empire" aria-label="黑客帝国">
+        <div class="container">
+            <h2 class="section-title">黑客帝国</h2>
+            <div class="hacker-content">
+                <div class="hacker-text">
+                    <p>跟我来，三天成为黑客。</p>
+                    <p class="hacker-sub">关注 bilibili 账号，我们在直播间见。</p>
+                </div>
+                <a href="https://live.bilibili.com/1700657549" target="_blank" rel="noopener noreferrer" class="hacker-button" aria-label="进入直播间">
+                    进入直播间 <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Summer Camp 夏令营区域 -->
+    <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
+        <div class="container">
+            <h2 class="section-title">Hoooooot's Summer Camp</h2>
+            <div class="camp-content">
+                <div class="camp-text">
+                    <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
+                    <p>包含实战演示、独家 LUT 分享。</p>
+                </div>
+                <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
+                    进入课程 <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. About 关于区域 -->
+    <section id="about" class="section about" aria-label="关于">
+        <div class="container">
+            <h2 class="section-title">关于</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
+                </div>
+                <div class="about-tags">
+                    <span class="tag">剪辑</span>
+                    <span class="tag">调色</span>
+                    <span class="tag">设计</span>
+                    <span class="tag">创意</span>
+                    <span class="tag">故事</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Portfolio 画廊区域 -->
+    <section id="portfolio" class="section portfolio" aria-label="作品集">
+        <div class="container">
+            <h2 class="section-title">画廊</h2>
+            <div class="gallery-wrapper">
+                <div class="carousel-track" id="gallery-track"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Timeline 历程区域 -->
+    <section id="timeline" class="section timeline" aria-label="历程">
+        <div class="container">
+            <h2 class="section-title">历程</h2>
+            <div class="timeline-list">
+                <div class="timeline-item">
+                    <span class="year">2026</span>
+                    <div class="desc">独立创作阶段，搭建个人数字空间。</div>
+                </div>
+                <div class="timeline-item">
+                    <span class="year">2025</span>
+                    <div class="desc">深入探索影像制作与设计美学的边界。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Contact 联系区域 -->
+    <section id="contact" class="section contact" aria-label="联系">
+        <div class="container">
+            <h2 class="section-title">联系</h2>
+            <div class="contact-info">
+                <span class="contact-email">shurinkycn@gmail.com</span>
+                
+                <div class="social-links">
+                    <div class="social-item wechat-item">
+                        <span class="social-label">
+                            <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
+                        </span>
+                        <div class="qr-popup" id="wechat-qr">
+                            <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
+                        </div>
+                    </div>
+
+                    <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/youtubesvg.svg" alt="YouTube" class="social-img" loading="lazy">
+                    </a>
+
+                    <a href="https://space.bilibili.com/3707026240702873" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/bilibilisvg.svg" alt="Bilibili" class="social-img" loading="lazy">
+                    </a>
+                    
+                    <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/douyinsvg.svg" alt="抖音" class="social-img" loading="lazy">
+                    </a>
+
+                    <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ==================== 7. Footer 页脚区域 ==================== -->
+<footer class="footer" role="contentinfo">
+    <div class="container">
+        <p>&copy; Hoooooot 2026</p>
+        <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
+        <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
+        <div id="footer-tagline"><sub>Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
+    </div>
+</footer>
+
+<script src="js/script.js"></script>
 
 </body>
 </html>

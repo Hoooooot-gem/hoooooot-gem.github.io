@@ -10,7 +10,7 @@ const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-list a');
 const sections = document.querySelectorAll('.section');
-const navbar = document.querySelector('.navbar'); // 新增顶栏引用
+const navbar = document.querySelector('.navbar');
 
 // ==================== 2. 移动端汉堡菜单逻辑 ====================
 function toggleMenu() {
@@ -93,10 +93,8 @@ if (wechatItem && qrPopup) {
     track.style.animationDuration = (galleryImages.length * 4) + 's';
 })();
 
-// ==================== 7. 滚动控制顶栏毛玻璃切换（新增） ====================
-// 当 Hero 区域离开视口顶部时，显示毛玻璃与边框
+// ==================== 7. 滚动控制顶栏毛玻璃切换 ====================
 window.addEventListener('scroll', () => {
-    // Hero 区域高度为 100vh，只要页面滚动超过 10px，即可认为已经离开 Hero
     if (window.scrollY > 10) {
         navbar.classList.add('scrolled');
     } else {
@@ -117,15 +115,12 @@ window.addEventListener('scroll', () => {
     const progressTime = document.getElementById('progressTime');
     const audio = document.getElementById('bgMusic');
 
-    // 音量 50%
     audio.volume = 0.5;
 
-    // 尝试自动播放（如被浏览器拦截则等待用户点击）
     audio.play().catch(() => console.log('等待用户点击播放'));
 
     let isDragging = false;
 
-    // 播放/暂停按钮逻辑
     playBtn.addEventListener('click', () => {
         if (audio.paused) {
             audio.play();
@@ -157,7 +152,6 @@ window.addEventListener('scroll', () => {
         pauseIcon.style.display = 'none';
     });
 
-    // 进度条交互
     function updateProgressFromEvent(e) {
         const rect = progressContainer.getBoundingClientRect();
         let x = (e.clientX - rect.left) / rect.width;
@@ -184,7 +178,6 @@ window.addEventListener('scroll', () => {
     });
 
     function updateProgressUI() {
-        // 安全检查：防止 DOM 节点未加载时报错
         if (!audio.duration || !isFinite(audio.duration) || !progressTime) return;
 
         const percent = (audio.currentTime / audio.duration) * 100;
