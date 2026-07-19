@@ -723,7 +723,7 @@ p {
     padding-bottom: 2px;
 }
 
-/* ==================== 16. 社交图标图片适配 ==================== */
+/* ==================== 16. 社交图标图片适配（强制纯黑，绝不被覆盖） ==================== */
 
 .social-img {
     width: 22px;
@@ -741,9 +741,15 @@ p {
 .social-link img[alt="YouTube"],
 .social-link img[alt="抖音"],
 .social-link img[alt="小红书"],
-.social-link img[alt="视频号"],
 .social-link img[alt="Bilibili"] {
     filter: brightness(0) !important;
+}
+
+/* 【暴力修复】单独强制视频号必为纯黑，防止缓存冲突 */
+.social-link img[alt="视频号"],
+.social-item img[alt="视频号"] {
+    filter: brightness(0) !important;
+    fill: #000000 !important; /* 针对SVG填充额外强制 */
 }
 
 /* ==================== 17. 预留未来扩展接口 ==================== */
@@ -799,7 +805,7 @@ p {
     }
 }
 
-/* ==================== 右下角胶囊播放栏（改为深色毛玻璃，与顶栏一致，并默认隐藏） ==================== */
+/* ==================== 右下角胶囊播放栏（深色毛玻璃版） ==================== */
 
 .player-wrapper {
     position: fixed;
