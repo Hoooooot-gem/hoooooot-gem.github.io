@@ -1,6 +1,6 @@
 /* ============================================================
    js/script.js
-   功能模块：汉堡菜单、深色模式、导航高亮、滚动入场动画
+   功能模块：汉堡菜单、导航高亮、滚动入场动画、播放器、滚动毛玻璃控制
    ============================================================ */
 
 'use strict';
@@ -9,8 +9,8 @@
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-list a');
-const themeToggle = document.getElementById('theme-toggle');
 const sections = document.querySelectorAll('.section');
+const navbar = document.querySelector('.navbar'); // 新增顶栏引用
 
 // ==================== 2. 移动端汉堡菜单逻辑 ====================
 function toggleMenu() {
@@ -25,43 +25,7 @@ navLinks.forEach(link => {
   });
 });
 
-// ==================== 3. 深色模式切换与本地存储 ====================
-function updateThemeIcon(theme) {
-  const iconSun = document.querySelector('.icon-sun');
-  const iconMoon = document.querySelector('.icon-moon');
-  if (theme === 'dark') {
-    iconSun.style.display = 'none';
-    iconMoon.style.display = 'inline';
-  } else {
-    iconSun.style.display = 'inline';
-    iconMoon.style.display = 'none';
-  }
-}
-function initTheme() {
-  let savedTheme = localStorage.getItem('theme');
-  if (!savedTheme) {
-    savedTheme = 'dark';
-    localStorage.setItem('theme', savedTheme);
-  }
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
-}
-themeToggle.addEventListener('click', () => {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  let newTheme;
-  if (currentTheme === 'dark') {
-    document.documentElement.removeAttribute('data-theme');
-    newTheme = 'light';
-  } else {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    newTheme = 'dark';
-  }
-  localStorage.setItem('theme', newTheme);
-  updateThemeIcon(newTheme);
-});
-initTheme();
-
-// ==================== 4. 滚动入场动画 (IntersectionObserver) ====================
+// ==================== 3. 滚动入场动画 (IntersectionObserver) ====================
 sections.forEach(section => section.classList.add('reveal'));
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -72,7 +36,7 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 sections.forEach(section => revealObserver.observe(section));
 
-// ==================== 5. 导航栏当前区域高亮 ====================
+// ==================== 4. 导航栏当前区域高亮 ====================
 const activeObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -93,7 +57,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// ==================== 6. 视频号二维码交互逻辑 ====================
+// ==================== 5. 视频号二维码交互逻辑 ====================
 const wechatItem = document.querySelector('.wechat-item');
 const qrPopup = document.getElementById('wechat-qr');
 if (wechatItem && qrPopup) {
@@ -110,7 +74,7 @@ if (wechatItem && qrPopup) {
     });
 }
 
-// ==================== 7. 画廊无限跑马灯 (去掉减动效限制) ====================
+// ==================== 6. 画廊无限跑马灯 ====================
 (function() {
     const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
     if (galleryImages.length === 0) return;
@@ -127,14 +91,23 @@ if (wechatItem && qrPopup) {
         track.appendChild(item.cloneNode(true));
     });
     track.style.animationDuration = (galleryImages.length * 4) + 's';
-    // 【删除】之前的减动效拦截代码（0s），现在画廊会永远转动，不受系统影响。
 })();
 
-// ==================== 8. 右下角胶囊播放栏（真实音频播放逻辑） ====================
+// ==================== 7. 滚动控制顶栏毛玻璃切换（新增） ====================
+// 当 Hero 区域离开视口顶部时，显示毛玻璃与边框
+window.addEventListener('scroll', () => {
+    // Hero 区域高度为 100vh，只要页面滚动超过 10px，即可认为已经离开 Hero
+    if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// ==================== 8. 右下角胶囊播放栏 ====================
 (function() {
     'use strict';
 
-    const playerWrapper = document.getElementById('player-wrapper');
     const playBtn = document.getElementById('playBtn');
     const playIcon = document.getElementById('playIcon');
     const pauseIcon = document.getElementById('pauseIcon');

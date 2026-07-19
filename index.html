@@ -18,18 +18,12 @@
     <meta name="twitter:title" content="Hoooooot">
     
     <!-- ==================== 网站图标（Favicon） ==================== -->
-    <!-- 标准 SVG 图标 -->
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-    <!-- 兼容老式浏览器 / 备用图标 -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
-    <!-- 苹果设备（iPhone/iPad）主屏幕图标 -->
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
     <!-- ==================== 引用 CSS 文件 ==================== -->
-    <!-- CSS 将放在 css 文件夹中 -->
     <link rel="stylesheet" href="css/style.css">
-
-        <!-- ==================== PWA 配置（让 Chrome 显示“以应用形式安装”） ==================== -->
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
@@ -42,13 +36,10 @@
 
         <!-- 中间：信息 + 进度条 -->
         <div class="meta-wrapper">
-            <!-- 上方行：歌名(左) + 时间(右) -->
             <div class="meta-row">
                 <div class="song-title">DOUDOU - 最终观测</div>
                 <span class="progress-time" id="progressTime">0:00 / 0:00</span>
             </div>
-            
-            <!-- 下方行：进度条 -->
             <div class="progress-container" id="progressContainer">
                 <div class="progress-track"></div>
                 <div class="progress-fill" id="progressFill"></div>
@@ -79,20 +70,16 @@
             <!-- 右侧导航菜单 -->
             <nav class="nav-menu" role="navigation" aria-label="主导航">
                 <ul class="nav-list">
-                    <li><a href="#summer-camp">课程</a></li>  <!-- 课程放到第一个 -->
-                    <li><a href="#about">关于</a></li>        <!-- 关于放到第二个 -->
+                    <li><a href="#summer-camp">课程</a></li>
+                    <li><a href="#about">关于</a></li>
                     <li><a href="#portfolio">画廊</a></li>
                     <li><a href="#timeline">历程</a></li>
                     <li><a href="#contact">联系</a></li>
                 </ul>
-                <!-- 深色模式切换按钮（占位，后续由 JS 控制功能） -->
-                <button id="theme-toggle" class="theme-toggle" aria-label="切换深色模式">
-                    <span class="icon-sun">☀</span>
-                    <span class="icon-moon">🌙</span>
-                </button>
+                <!-- 【已删除】深色模式切换按钮 -->
             </nav>
             
-            <!-- 移动端汉堡菜单按钮（占位，后续由 JS 控制展开） -->
+            <!-- 移动端汉堡菜单按钮 -->
             <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -108,12 +95,6 @@
         <section id="hero" class="section hero" aria-label="首页">
             <!-- 背景 16:9 大图层 -->
             <div class="hero-bg-image">
-                <!-- 
-                  苹果无缝衔接核心：
-                  1. poster: 视频未加载时先显示第一帧的 webp 静态图（极快加载）
-                  2. preload="metadata": 仅预加载视频元数据（节省流量）
-                  3. muted / loop / playsinline: 视频自动循环且不打扰用户
-                -->
                 <video 
                     src="/images/hero-bg.mp4" 
                     poster="/images/hero-bg.webp" 
@@ -122,22 +103,18 @@
                     muted 
                     loop 
                     playsinline>
-                    <!-- 兜底：如果浏览器彻底不支持 video，则显示图片 -->
                     <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
                 </video>
             </div>
-            <!-- 半透明遮罩层（保证文字始终清晰） -->
-            <div class="hero-overlay"></div>
+            <!-- 【已删除】半透明遮罩层 -->
             
             <div class="hero-content">
+                <!-- 【已修改】改为纯白、粗体、相同大小、居中的 Hoooooot -->
                 <h1 class="hero-title">Hoooooot</h1>
-                <p class="hero-subtitle">—放大世界—</p>
-                <p class="hero-desc">Student Filmmaker Creator</p>
-                <span class="scroll-indicator">向下滚动</span>
             </div>
         </section>
 
-        <!-- 2.1 黑客帝国区域（新增） -->
+        <!-- 2.1 黑客帝国区域 -->
         <section id="hacker-empire" class="section hacker-empire" aria-label="黑客帝国">
             <div class="container">
                 <h2 class="section-title">黑客帝国</h2>
@@ -146,7 +123,6 @@
                         <p>跟我来，三天成为黑客。</p>
                         <p class="hacker-sub">关注 bilibili 账号，我们在直播间见。</p>
                     </div>
-                    <!-- 胶囊按钮链接已填好 -->
                     <a href="https://live.bilibili.com/1700657549" target="_blank" rel="noopener noreferrer" class="hacker-button" aria-label="进入直播间">
                         进入直播间 <span class="arrow">→</span>
                     </a>
@@ -154,7 +130,7 @@
             </div>
         </section>
 
-        <!-- 2. Summer Camp 夏令营区域（新增） -->
+        <!-- 2. Summer Camp 夏令营区域 -->
         <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
             <div class="container">
                 <h2 class="section-title">Hoooooot's Summer Camp</h2>
@@ -163,7 +139,6 @@
                         <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
                         <p>包含实战演示、独家 LUT 分享。</p>
                     </div>
-                    <!-- 预留接口：目标页面目前暂不实现，href 留作未来扩展 -->
                     <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
                         进入课程 <span class="arrow">→</span>
                     </a>
@@ -176,11 +151,9 @@
             <div class="container">
                 <h2 class="section-title">关于</h2>
                 <div class="about-grid">
-                    <!-- 左侧：个人简介 -->
                     <div class="about-text">
                         <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
                     </div>
-                    <!-- 右侧：关键词标签 -->
                     <div class="about-tags">
                         <span class="tag">剪辑</span>
                         <span class="tag">调色</span>
@@ -192,7 +165,7 @@
             </div>
         </section>
 
-        <!-- 4. Portfolio 画廊区域（跑马灯版） -->
+        <!-- 4. Portfolio 画廊区域 -->
         <section id="portfolio" class="section portfolio" aria-label="作品集">
             <div class="container">
                 <h2 class="section-title">画廊</h2>
@@ -229,10 +202,9 @@
                     
                     <!-- 社交平台 -->
                     <div class="social-links">
-                        <!-- 视频号（保留二维码逻辑） -->
+                        <!-- 视频号 -->
                         <div class="social-item wechat-item">
                             <span class="social-label">
-                                <!-- 如果想把文字换成图标，这里也可以用 img -->
                                 <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
                             </span>
                             <div class="qr-popup" id="wechat-qr">
@@ -257,7 +229,6 @@
 
                         <!-- 小红书 -->
                         <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
-                            <!-- 建议：如果使用红底图，这个类名必须保留，后面会讲如何单独处理 -->
                             <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
                         </a>
                     </div>
@@ -273,13 +244,11 @@
             <p>&copy; Hoooooot 2026</p>
             <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
             <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
-            <!-- 👇 把这段文字挪到了 container 内部 -->
             <div id="footer-tagline"><sub>Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
         </div>
     </footer>
 
     <!-- ==================== 引用 JS 文件 ==================== -->
-    <!-- JS 将放在 js 文件夹中 -->
     <script src="js/script.js"></script>
 
 </body>
