@@ -5,22 +5,19 @@
 
 'use strict';
 
-// 【核心修复】：等整个页面的 DOM 结构（包括 components.js 动态插入的顶栏）都加载完毕后再执行
+// 【核心修复】：等整个页面的 DOM 结构加载完毕后再执行
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ==================== 1. DOM 元素引用（加安全检测） ====================
+    // ==================== 1. DOM 元素引用（提前抓取） ====================
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-list a');
     const sections = document.querySelectorAll('.section');
-    const navbar = document.querySelector('.navbar');
-    const playerWrapper = document.getElementById('player-wrapper');
 
-    // 【安全拦截】：如果顶栏还没渲染出来（找不到菜单），就直接跳过汉堡菜单功能，
-    // 但保证后面的画廊、视频、播放器依然能运行，不会让整个网页崩溃。
+    // 【注意】：navbar 和 playerWrapper 不在这里定义了，改为滚动时动态获取！
+
     if (!hamburger || !navMenu) {
         console.warn('顶栏组件还未加载，稍后会自动同步');
-        // 注意：这里不能 return，因为画廊、视频等还在下面等着运行
     }
 
     // ==================== 2. 移动端汉堡菜单逻辑 ====================
@@ -94,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== 6. 画廊无限跑马灯 ====================
-    // 这部分只要不报错就能正常运行，图片将重新出现
     (function() {
         const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
         if (galleryImages.length === 0) return;
@@ -113,14 +109,19 @@ document.addEventListener('DOMContentLoaded', function() {
         track.style.animationDuration = (galleryImages.length * 4) + 's';
     })();
 
-    // ==================== 7. 滚动控制顶栏与播放栏同步浮现 ====================
+    // ==================== 7. 滚动控制顶栏与播放栏同步浮现（动态抓取修复版） ====================
     window.addEventListener('scroll', () => {
+        // 【核心修复】：每次触发滚动时，实时去页面里找顶栏和播放栏。
+        // 这样哪怕 components.js 是一秒后才把顶栏塞进来的，滚动时也能立刻抓到。
+        const navbarDynamic = document.querySelector('.navbar');
+        const playerWrapperDynamic = document.getElementById('player-wrapper');
+
         if (window.scrollY > 10) {
-            if (navbar) navbar.classList.add('scrolled');
-            if (playerWrapper) playerWrapper.classList.add('visible');
+            if (navbarDynamic) navbarDynamic.classList.add('scrolled');
+            if (playerWrapperDynamic) playerWrapperDynamic.classList.add('visible');
         } else {
-            if (navbar) navbar.classList.remove('scrolled');
-            if (playerWrapper) playerWrapper.classList.remove('visible');
+            if (navbarDynamic) navbarDynamic.classList.remove('scrolled');
+            if (playerWrapperDynamic) playerWrapperDynamic.classList.remove('visible');
         }
     });
 
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const progressTime = document.getElementById('progressTime');
         const audio = document.getElementById('bgMusic');
 
-        if (!playBtn || !audio) return; // 安全门，防止播放器还没加载出问题
+        if (!playBtn || !audio) return;
 
         audio.volume = 0.5;
         audio.play().catch(() => console.log('等待用户点击播放'));
