@@ -26,9 +26,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="/manifest.json">
 
-    <!-- 为了让 404 页面完美居中、贴合主页风格，并容纳新板块 -->
+    <!-- 404 专属的内联样式，现在遵循主页的强制浅色纯黑白灰规范 -->
     <style>
-        /* 移除主页原有的 Margin，让 404 内容完美在导航栏和底栏之间居中 */
+        /* 让 404 内容完美在导航栏和底栏之间居中 */
         main.main-404 {
             flex: 1;
             display: flex;
@@ -37,7 +37,7 @@
             align-items: center;
             text-align: center;
             /* 减去导航栏高度和底栏大致高度 */
-            min-height: calc(100vh - var(--nav-height, 64px) - 120px); 
+            min-height: calc(100vh - var(--nav-height, 42px) - 120px); 
             padding: 40px 24px 60px 24px;
             background-color: var(--bg-color);
             transition: background var(--transition-theme);
@@ -53,11 +53,8 @@
             letter-spacing: -0.04em;
             margin: 0 0 0.2em 0;
             line-height: 1;
-            /* 渐变色文字，与主页 Hero 标题呼应 */
-            background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            /* 修改为纯黑/纯白，严格遵守黑白灰规则 */
+            color: var(--text-primary);
         }
 
         .error-message {
@@ -99,7 +96,7 @@
         }
 
         /* ============================================================
-           新增：宝贝回家 公益板块专属样式
+           宝贝回家 公益板块专属样式 (移除深色模式残余)
            ============================================================ */
         .baby-home-section {
             margin-top: 48px;
@@ -110,11 +107,8 @@
             gap: 24px;
             max-width: 100%;
             padding: 0 10px;
-            border-top: 1px solid rgba(128, 128, 128, 0.15);
+            border-top: 1px solid rgba(0, 0, 0, 0.08); /* 改为极浅的黑灰线 */
             padding-top: 40px;
-        }
-        [data-theme="dark"] .baby-home-section {
-            border-top-color: rgba(255, 255, 255, 0.08);
         }
 
         .intro-text {
@@ -133,19 +127,15 @@
         }
 
         .stats-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.04); /* 修改为浅色毛玻璃底 */
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border-radius: 12px;
             padding: 16px 28px;
             min-width: 130px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.02);
             transition: background var(--transition-theme), border var(--transition-theme);
-        }
-        [data-theme="dark"] .stats-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .stats-number {
@@ -237,10 +227,7 @@
                     <li><a href="/#timeline">历程</a></li>
                     <li><a href="/#contact">联系</a></li>
                 </ul>
-                <button id="theme-toggle" class="theme-toggle" aria-label="切换深色模式">
-                    <span class="icon-sun">☀</span>
-                    <span class="icon-moon">🌙</span>
-                </button>
+                <!-- 【同步修复】已移除残留的深色模式切换按钮 -->
             </nav>
             <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
                 <span class="bar"></span>
@@ -259,7 +246,7 @@
             <p class="error-desc">也许你输入了错误的链接，或者时光把这里清空了。</p>
         </div>
 
-        <!-- ==================== 新增：宝贝回家 公益板块 ==================== -->
+        <!-- ==================== 宝贝回家 公益板块 ==================== -->
         <div class="baby-home-section">
             <p class="intro-text">
                 但是你可以让这些宝贝跟他们的家庭团聚。
@@ -288,8 +275,15 @@
     <footer class="footer" role="contentinfo">
         <div class="container">
             <p>&copy; Hoooooot 2026</p>
+            
+            <!-- 萌ICP备案 -->
             <a style="text-decoration:none;" href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
             <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
+
+            <!-- 【同步修复】添加缺失的 幸ICP备案 -->
+            <a style="text-decoration:none;" href="https://icp.felicity.land/favicon.ico"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.felicity.land/favicon.ico"></a>
+            <a href="https://icp.felicity.land/id.php?keyword=20266985" target="_blank">幸ICP备20266985号</a>
+
             <div id="footer-tagline"><sub>Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</sub></div>
         </div>
     </footer>
