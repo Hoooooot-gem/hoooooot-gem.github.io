@@ -735,7 +735,7 @@ p {
     padding-bottom: 2px;
 }
 
-/* ==================== 16. 社交图标图片适配 ==================== */
+/* ==================== 16. 社交图标图片适配（已删除强制变黑代码） ==================== */
 
 .social-img {
     width: 22px;
@@ -747,15 +747,6 @@ p {
 
 .social-link:hover .social-img {
     opacity: 0.7;
-}
-
-/* 强制所有媒体平台 Logo 变为纯黑色 */
-.social-link img[alt="YouTube"],
-.social-link img[alt="抖音"],
-.social-link img[alt="小红书"],
-.social-link img[alt="视频号"],
-.social-link img[alt="Bilibili"] {
-    filter: brightness(0) !important;
 }
 
 /* ==================== 17. 预留未来扩展接口 ==================== */
