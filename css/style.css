@@ -683,7 +683,11 @@ p {
     font-size: 1.2rem;
     color: #000000;
   }
-
+  /* 【新增修复】强制手机菜单内的链接文字为黑色，防止白字混入白底 */
+  .nav-list a {
+    color: #000000 !important;
+  }
+  
   .hamburger.active .bar:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
   }
