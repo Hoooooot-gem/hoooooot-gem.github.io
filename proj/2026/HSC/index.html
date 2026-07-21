@@ -26,6 +26,13 @@
         }
 
         .course-header { margin-bottom: 48px; }
+                /* 【新增】让背景图等比例铺满左右 */
+        .course-bg-img {
+            width: 100%;           /* 宽度占满容器 */
+            height: auto;          /* 高度跟随宽度等比例自动缩放 */
+            display: block;        /* 防止图片下方出现多余的间隙 */
+            border-radius: 12px;   /* 可选：配合你现代的风格加一个圆角 */
+        }
         .course-header h1 { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
         .course-header p { color: var(--text-secondary); font-size: 1.1rem; }
 
@@ -86,10 +93,9 @@
 
     <main class="course-container">
         <div class="course-header">
-            <h1>Hoooooot's Summer Camp</h1>
-            <p>从拍摄到调色，手把手带你完成一次完整的影像创作。点击课程卡片进入课程。</p>
+            <!-- 替换为等比例铺满的背景图 -->
+            <img src="/images/bg.png" alt="Summer Camp Background" class="course-bg-img">
         </div>
-
         <!-- 课程导航列表 -->
         <div id="course-list">
             
