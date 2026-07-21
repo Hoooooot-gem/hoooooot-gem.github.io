@@ -1,47 +1,17 @@
 /* ============================================================
    js/script.js
-   功能模块：汉堡菜单、导航高亮、滚动入场动画、播放器、滚动毛玻璃控制
+   功能模块：导航高亮、滚动入场动画、播放器、滚动毛玻璃控制
    ============================================================ */
 
 'use strict';
 
-// 【核心修复】：等整个页面的 DOM 结构加载完毕后再执行
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ==================== 1. DOM 元素引用（提前抓取） ====================
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+    // ==================== 1. DOM 元素引用 ====================
     const navLinks = document.querySelectorAll('.nav-list a');
     const sections = document.querySelectorAll('.section');
 
-    // 【注意】：navbar 和 playerWrapper 不在这里定义了，改为滚动时动态获取！
-
-    if (!hamburger || !navMenu) {
-        console.warn('顶栏组件还未加载，稍后会自动同步');
-    }
-
-    // ==================== 2. 移动端汉堡菜单逻辑 ====================
-    function toggleMenu() {
-        if (hamburger && navMenu) {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        }
-    }
-    
-    if (hamburger) {
-        hamburger.addEventListener('click', toggleMenu);
-    }
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (hamburger && navMenu) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
-        });
-    });
-
-    // ==================== 3. 滚动入场动画 (IntersectionObserver) ====================
+    // ==================== 2. 滚动入场动画 (IntersectionObserver) ====================
     sections.forEach(section => section.classList.add('reveal'));
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -52,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { threshold: 0.1 });
     sections.forEach(section => revealObserver.observe(section));
 
-    // ==================== 4. 导航栏当前区域高亮 ====================
+    // ==================== 3. 导航栏当前区域高亮 ====================
     const activeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -73,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ==================== 5. 视频号二维码交互逻辑 ====================
+    // ==================== 4. 视频号二维码交互逻辑 ====================
     const wechatItem = document.querySelector('.wechat-item');
     const qrPopup = document.getElementById('wechat-qr');
     if (wechatItem && qrPopup) {
@@ -90,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ==================== 6. 画廊无限跑马灯 ====================
+    // ==================== 5. 画廊无限跑马灯 ====================
     (function() {
         const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
         if (galleryImages.length === 0) return;
@@ -109,10 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
         track.style.animationDuration = (galleryImages.length * 4) + 's';
     })();
 
-    // ==================== 7. 滚动控制顶栏与播放栏同步浮现（动态抓取修复版） ====================
+    // ==================== 6. 滚动控制顶栏与播放栏同步浮现 ====================
     window.addEventListener('scroll', () => {
-        // 【核心修复】：每次触发滚动时，实时去页面里找顶栏和播放栏。
-        // 这样哪怕 components.js 是一秒后才把顶栏塞进来的，滚动时也能立刻抓到。
         const navbarDynamic = document.querySelector('.navbar');
         const playerWrapperDynamic = document.getElementById('player-wrapper');
 
@@ -125,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ==================== 8. 右下角胶囊播放栏 ====================
+    // ==================== 7. 右下角胶囊播放栏 ====================
     (function() {
         'use strict';
         const playBtn = document.getElementById('playBtn');
