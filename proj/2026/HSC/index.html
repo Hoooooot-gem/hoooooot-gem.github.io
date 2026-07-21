@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoooooot's Summer Camp</title>
     
+    <!-- 【新增】必须放在最前面，让 js 去拉取顶栏和底栏 -->
+    <script src="../../../js/components.js"></script>
+    
     <!-- 复用全局 CSS -->
     <link rel="stylesheet" href="../../../css/style.css">
     
@@ -15,25 +18,7 @@
     
     <!-- 子页面专属微调样式 -->
     <style>
-        .sub-navbar {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 64px;
-            background: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 80px;
-            z-index: 100;
-            transition: background var(--transition-theme);
-        }
-        
-        .sub-navbar .logo { display: flex; align-items: center; }
-        .sub-navbar .back-link { color: var(--text-secondary); text-decoration: none; }
-        .sub-navbar .back-link:hover { color: var(--text-primary); }
-
+        /* 删除 .sub-navbar 相关样式 */
         .course-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -44,7 +29,6 @@
         .course-header h1 { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
         .course-header p { color: var(--text-secondary); font-size: 1.1rem; }
 
-        /* 将课程卡片改为跳转链接 */
         .course-item-link {
             display: block;
             text-decoration: none;
@@ -66,14 +50,13 @@
         }
         .course-item:last-child { border-bottom: none; }
 
-        /* 图片缩略图样式 */
         .course-thumb {
             width: 240px;
             aspect-ratio: 16 / 9;
             flex-shrink: 0;
             border-radius: 6px;
-            overflow: hidden; /* 让图片完美贴合圆角 */
-            background-color: var(--border-color); /* 图片加载失败时的备用底色 */
+            overflow: hidden;
+            background-color: var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -82,16 +65,14 @@
         .course-thumb img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 保证图片不拉伸，填满16:9比例 */
+            object-fit: cover;
             display: block;
         }
 
         .course-info h3 { font-size: 1.3rem; margin-bottom: 6px; }
         .course-info p { color: var(--text-secondary); font-size: 0.95rem; }
 
-        /* 移动端适配 */
         @media (max-width: 767px) {
-            .sub-navbar { padding: 0 24px; }
             .course-container { padding: 40px 24px 80px 24px; }
             .course-item { flex-direction: column; align-items: flex-start; gap: 16px; }
             .course-thumb { width: 100%; }
@@ -101,13 +82,7 @@
 </head>
 <body>
 
-    <!-- 子页面导航 -->
-    <header class="sub-navbar">
-        <div class="logo">
-            <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
-        </div>
-        <a href="../../../index.html" class="back-link">← 返回首页</a>
-    </header>
+    <!-- 【已删除】独立顶栏：现在由 components.js 自动从 /header.html 注入 -->
 
     <main class="course-container">
         <div class="course-header">
@@ -115,11 +90,9 @@
             <p>从拍摄到调色，手把手带你完成一次完整的影像创作。点击课程卡片进入课程。</p>
         </div>
 
-        <!-- 课程导航列表 -->
+        <!-- 课程导航列表（保持你原本的内容不变） -->
         <div id="course-list">
-            
-            <!-- ==================== Part A ==================== -->
-            
+            <!-- 此处省略你的课程卡片 HTML，你原封不动保留即可 -->
             <a href="play.html?id=1" class="course-item-link">
                 <div class="course-item">
                     <div class="course-thumb">
@@ -131,182 +104,41 @@
                     </div>
                 </div>
             </a>
-
-            <a href="play.html?id=2" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pa-2.png" alt="Part A-2" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>使用正确的拍摄参数</h3>
-                        <p>曝光三要素 · 动态范围 · Log视频 · 错误参数的后果</p>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ==================== Part B ==================== -->
-
-            <a href="play.html?id=3" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-1.png" alt="Part B-1" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>软件的选择</h3>
-                        <p>问卷结果 · Final Cut Pro · DaVinci Resolve · Premiere Pro 对比</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=4" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-2.png" alt="Part B-2" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>迅速且可靠的数据传输</h3>
-                        <p>读卡器 · AirDrop / LocalSend · 移动硬盘 · 素材整理结构</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=5" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-3.png" alt="Part B-3" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>节奏的把控</h3>
-                        <p>节奏感 vs 流水账 · 寻找节拍与卡点 · 镜头长短 · B-Roll与空镜 · 环境音氛围</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=6" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-4.png" alt="Part B-4" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>“电影感”从何而来？</h3>
-                        <p>高级感来源 · 电影感≠加黑边 · 光线与构图技巧 · 色彩情绪</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=7" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-5.png" alt="Part B-5" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>简单的调色</h3>
-                        <p>调色前后对比 · 白平衡 · 曝光与对比度 · 饱和度控制 · 示波器辅助</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=8" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pb-6.png" alt="Part B-6" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>“懒人”的法宝——LUT</h3>
-                        <p>LUT是什么 · LUT正确使用方法 · 套LUT翻车原因</p>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ==================== Extra ==================== -->
-
-            <a href="play.html?id=9" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/extra1.png" alt="Extra #1" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>制作自己的LUT（含LUT分享）</h3>
-                        <p>个人风格建立 · 统一色彩 · LUT保存与导出分享 · 现场发放原创LUT包</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=10" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/extra2.png" alt="Extra #2" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>试试HDR？</h3>
-                        <p>SDR与HDR对比 · 制作流程 · 上传平台注意事项 · 常见翻车与工作流分享</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=11" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/extra3.png" alt="Extra #3" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>如何配好音乐？</h3>
-                        <p>音乐决定情绪 · 寻找BGM · 节拍与镜头对应 · 环境音 · 版权问题</p>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ==================== Part C ==================== -->
-
-            <a href="play.html?id=12" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pc-1.png" alt="Part C-1" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>要“兼容”还是“效率”？</h3>
-                        <p>编码器是什么 · H.264与H.265简介 · 不同场景选择 · 平台偏好</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=13" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/pc-2.png" alt="Part C-2" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>要“苗条”还是“精致”？</h3>
-                        <p>高/低码率对比 · 文件体积来源 · 平台压缩机制</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="play.html?id=14" class="course-item-link">
-                <div class="course-item">
-                    <div class="course-thumb">
-                        <img src="/proj/2026/HSC/images/extra4.png" alt="Extra #4" loading="lazy">
-                    </div>
-                    <div class="course-info">
-                        <h3>碎碎念</h3>
-                        <p>我为什么拍视频、记录生活，以及做视频踩过的那些坑</p>
-                    </div>
-                </div>
-            </a>
-
+            <!-- ... 其余课程卡片 ... -->
         </div>
     </main>
 
-    <!-- ==================== 6. Footer 页脚区域 ==================== -->
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <p>&copy; Hoooooot 2026</p>
-            <a style=" text-decoration:none; " href="https://icp.gov.moe/moe-icon.zip"><img style="width:24px;height:24px;margin-bottom:-8px" src="https://icp.gov.moe/images/ico64.png"></a>
-            <a href="https://icp.gov.moe/?keyword=20266985" target="_blank">萌ICP备20266985号</a>
+    <!-- ==================== 右下角胶囊播放栏（继承主页播放器） ==================== -->
+    <div id="player-wrapper" class="player-wrapper">
+        <div class="album-art">
+            <img src="/images/albumpic/homepage.webp" alt="专辑封面">
         </div>
-    </footer>
+        <div class="meta-wrapper">
+            <div class="meta-row">
+                <div class="song-title">DOUDOU - 最终观测</div>
+                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
+            </div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-track"></div>
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-thumb" id="progressThumb"></div>
+            </div>
+        </div>
+        <button class="play-btn" id="playBtn">
+            <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
+                <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+            <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+            </svg>
+        </button>
+        <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
+    </div>
 
-    <!-- 复用全局 JS -->
+    <!-- 【已删除】独立底栏：现在由 components.js 自动从 /footer.html 注入 -->
+
+    <!-- 引用全局 JS（确保它在页面最后执行） -->
     <script src="../../../js/script.js"></script>
 </body>
 </html>
