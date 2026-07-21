@@ -65,39 +65,10 @@
         <div id="extra-actions" style="margin-top: 16px;"></div>
     </main>
 
-    <!-- ==================== 右下角胶囊播放栏（继承主页） ==================== -->
-    <div id="player-wrapper" class="player-wrapper">
-        <div class="album-art">
-            <img src="/images/albumpic/homepage.webp" alt="专辑封面">
-        </div>
-        <div class="meta-wrapper">
-            <div class="meta-row">
-                <div class="song-title">DOUDOU - 最终观测</div>
-                <span class="progress-time" id="progressTime">0:00 / 0:00</span>
-            </div>
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-track"></div>
-                <div class="progress-fill" id="progressFill"></div>
-                <div class="progress-thumb" id="progressThumb"></div>
-            </div>
-        </div>
-        <button class="play-btn" id="playBtn">
-            <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
-                <polygon points="6 3 20 12 6 21 6 3" />
-            </svg>
-            <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-            </svg>
-        </button>
-        <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
-    </div>
-
     <!-- 【已删除】独立底栏 -->
 
     <script src="../../../js/script.js"></script>
     <script>
-        // 你原本的课程数据 JS 逻辑原封不动
         // 课程数据（存放你的 B站 BV 号和标题）
         const courses = [
             // Part A
@@ -124,19 +95,62 @@
         const courseId = parseInt(urlParams.get('id'));
         const course = courses.find(c => c.id === courseId);
 
+        // ==================== 修复：处理 ID 不存在或未找到的情况 ====================
         if (course) {
+            // 如果找到了课程，正常渲染
             document.getElementById('course-title').textContent = course.title;
             document.getElementById('course-desc').textContent = course.desc;
             const iframeHTML = `<iframe src="//player.bilibili.com/player.html?isOutside=true&bvid=${course.bvid}&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>`;
             document.getElementById('video-box').innerHTML = iframeHTML;
 
-            // 保留你 id=9 的专属按钮逻辑
+            // 保留 id=9 的专属按钮逻辑（逻辑可继续保留）
             const actionContainer = document.getElementById('extra-actions');
             actionContainer.innerHTML = '';
             if (course.id === 9) {
-                // 按钮的样式会跟随主页的 CSS 变量
-                // ...你原本按钮的逻辑...
+                // ... 你原来的 LUT 按钮逻辑（如果还没写，这里可以暂时留空）
             }
+        } else {
+            // 【新增分支】：如果 ID 不存在或解析失败（例如 id=0 或乱码）
+            document.getElementById('course-title').textContent = '暂未更新';
+            document.getElementById('course-desc').textContent = '该课程内容尚未准备好，请稍后再来。';
+            document.getElementById('video-box').innerHTML = ''; // 清空视频区域
+
+            // 生成“返回课程列表”的胶囊按钮（与主页风格一致）
+            const actionContainer = document.getElementById('extra-actions');
+            actionContainer.innerHTML = '';
+            const backBtn = document.createElement('a');
+            backBtn.href = 'index.html';
+            backBtn.textContent = '← 返回课程列表';
+
+            // 应用与主页胶囊按钮相同的样式
+            backBtn.style.cssText = `
+                display: inline-block;
+                margin-top: 8px;
+                padding: 12px 28px;
+                border: 1px solid var(--text-primary, #000000);
+                border-radius: 999px;
+                background: transparent;
+                color: var(--text-primary, #000000);
+                font-size: 1rem;
+                font-weight: 700;
+                text-decoration: none;
+                transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+                cursor: pointer;
+            `;
+            
+            // 鼠标悬停交互（复刻主页按钮效果）
+            backBtn.addEventListener('mouseenter', () => {
+                backBtn.style.background = 'var(--text-primary, #000000)';
+                backBtn.style.color = 'var(--bg-color, #FFFFFF)';
+                backBtn.style.transform = 'translateY(-2px)';
+            });
+            backBtn.addEventListener('mouseleave', () => {
+                backBtn.style.background = 'transparent';
+                backBtn.style.color = 'var(--text-primary, #000000)';
+                backBtn.style.transform = 'translateY(0)';
+            });
+
+            actionContainer.appendChild(backBtn);
         }
     </script>
 </body>
