@@ -18,12 +18,11 @@
 
     <!-- 【测速页专属微调样式】 -->
     <style>
-        /* 由于页面只有卡牌一个元素，直接垂直撑满 */
         main.speed-main {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - var(--nav-height, 42px) - 40px); /* 减去顶栏和底栏的高度 */
+            min-height: calc(100vh - var(--nav-height, 42px) - 40px);
             padding: 40px 24px;
             background-color: var(--bg-color);
             transition: background var(--transition-theme);
@@ -33,14 +32,13 @@
             width: 100%;
             max-width: 480px;
             padding: 50px 45px;
-            background: #FFFFFF; /* 保持卡片纯白背景 */
+            background: #FFFFFF;
             border-radius: 32px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04); /* 更克制的阴影 */
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             transition: background var(--transition-theme), border var(--transition-theme);
         }
-        /* 深色模式下卡片背景微调 */
         [data-theme="dark"] .speed-card {
             background: var(--bg-color);
             border-color: var(--border-color);
@@ -97,7 +95,6 @@
             font-weight: 600;
         }
 
-        /* 复用主页胶囊按钮风格 */
         .speed-btn {
             display: inline-block;
             margin-top: 28px;
@@ -136,10 +133,6 @@
     </style>
 </head>
 <body>
-
-    <!-- 【已移除】独立顶栏。现在由 components.js 从根目录 /header.html 注入 -->
-    <!-- 【已移除】播放栏。严格按照要求不加入播放栏 -->
-
     <main class="speed-main">
         <div class="speed-card">
             <div class="speed-header">
@@ -157,26 +150,17 @@
             <div class="speed-info">
                 <div>延迟 RTT <span class="value" id="ping">--</span></div>
                 <div>已传输 <span class="value" id="data">0 MB</span></div>
-                <div>服务器 <span class="value">Hoooooot</span></div>
+                <div>服务器 <span class="value">日本</span></div>
                 <div>状态 <span class="value" id="quality">--</span></div>
             </div>
-
-            <!-- 【已删除】进度条 HTML 结构 -->
 
             <button class="speed-btn" id="start">开始检测</button>
         </div>
     </main>
 
-    <!-- 【已移除】独立底栏。现在由 components.js 从根目录 /footer.html 注入 -->
-
-    <!-- 引用全局 JS（确保它在页面最后执行，但不要影响测速逻辑） -->
     <script src="/js/script.js"></script>
 
-    <!-- 【保留】原有的测速核心逻辑 -->
     <script>
-        // 【⚠️ 重要路径说明】
-        // 请确保你的服务器上，在 /ConnectionTest/assets/connection/ 目录下
-        // 确实存放了一个名为 test-50MB.bin 的文件。
         const FILE = "assets/connection/test-50MB.bin";
 
         const speed = document.getElementById("speed");
@@ -184,12 +168,10 @@
         const ping = document.getElementById("ping");
         const data = document.getElementById("data");
         const quality = document.getElementById("quality");
-        // 【已删除】 bar 变量
         const button = document.getElementById("start");
 
         let running = false;
 
-        // RTT测试
         async function testPing() {
             const start = performance.now();
             await fetch(
@@ -230,7 +212,8 @@
                     total += value.length;
 
                     let now = performance.now();
-                    if (now - last > 200) {
+                    // 【修复1】：把 200ms 更新间隔缩小为 50ms，避免网络太快导致不更新
+                    if (now - last > 50) {
                         let seconds = (now - last) / 1000;
                         let bytes = total - lastBytes;
                         let Mbps = bytes * 8 / seconds / 1000000;
@@ -247,6 +230,9 @@
                 let average = total * 8 / totalTime / 1000000;
 
                 speed.textContent = average.toFixed(2);
+                // 【修复2】：强制在最终结束时，展示已传输的完整大小，防止因跳过循环而停留在0 MB
+                data.textContent = (total / 1024 / 1024).toFixed(1) + " MB";
+
                 status.textContent = "检测完成";
 
                 if (average >= 100) quality.textContent = "Excellent";
