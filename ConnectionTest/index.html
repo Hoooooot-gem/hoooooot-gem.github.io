@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connection Test</title>
 
-    <!-- 【全局组件】：自动加载顶栏和底栏 -->
-    <script src="/js/components.js"></script>
-
     <!-- 【全局样式】 -->
     <link rel="stylesheet" href="/css/style.css">
     
@@ -133,6 +130,21 @@
     </style>
 </head>
 <body>
+    <!-- 【新增】用 JS 只注入顶栏，不要 Footer -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 只请求顶栏
+                const headerResponse = await fetch('/header.html');
+                const headerHTML = await headerResponse.text();
+                // 插入到 body 最前面
+                document.body.insertAdjacentHTML('afterbegin', headerHTML);
+            } catch (error) {
+                console.error('顶栏加载失败', error);
+            }
+        });
+    </script>
+
     <main class="speed-main">
         <div class="speed-card">
             <div class="speed-header">
