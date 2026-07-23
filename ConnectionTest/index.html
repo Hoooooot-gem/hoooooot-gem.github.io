@@ -149,7 +149,6 @@
 
             <div class="speed-info">
                 <div>延迟 RTT <span class="value" id="ping">--</span></div>
-                <div>已传输 <span class="value" id="data">0 MB</span></div>
                 <div>服务器 <span class="value">日本</span></div>
                 <div>状态 <span class="value" id="quality">--</span></div>
             </div>
@@ -166,7 +165,6 @@
         const speed = document.getElementById("speed");
         const status = document.getElementById("status");
         const ping = document.getElementById("ping");
-        const data = document.getElementById("data");
         const quality = document.getElementById("quality");
         const button = document.getElementById("start");
 
@@ -212,14 +210,13 @@
                     total += value.length;
 
                     let now = performance.now();
-                    // 【修复1】：把 200ms 更新间隔缩小为 50ms，避免网络太快导致不更新
+                    // 每 50ms 刷新一次速度
                     if (now - last > 50) {
                         let seconds = (now - last) / 1000;
                         let bytes = total - lastBytes;
                         let Mbps = bytes * 8 / seconds / 1000000;
 
                         speed.textContent = Mbps.toFixed(1);
-                        data.textContent = (total / 1024 / 1024).toFixed(1) + " MB";
 
                         last = now;
                         lastBytes = total;
@@ -230,8 +227,6 @@
                 let average = total * 8 / totalTime / 1000000;
 
                 speed.textContent = average.toFixed(2);
-                // 【修复2】：强制在最终结束时，展示已传输的完整大小，防止因跳过循环而停留在0 MB
-                data.textContent = (total / 1024 / 1024).toFixed(1) + " MB";
 
                 status.textContent = "检测完成";
 
