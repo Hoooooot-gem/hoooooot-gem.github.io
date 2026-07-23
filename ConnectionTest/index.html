@@ -213,7 +213,9 @@
 
                 status.textContent = "正在传输测试数据...";
 
-                const response = await fetch(FILE + "?test=" + Date.now());
+                const response = await fetch(FILE + "?test=" + Date.now(), {
+                    cache: "no-store"
+                });
                 const reader = response.body.getReader();
 
                 let total = 0;
