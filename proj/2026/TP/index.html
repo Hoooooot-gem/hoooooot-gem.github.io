@@ -3,8 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中文打字练习</title>
+    <title>Hoooooot's Typing Practice</title>
+
+    <!-- 【新增】只加载顶栏，不要底栏 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 从根目录请求顶栏
+                const headerResponse = await fetch('/header.html');
+                const headerHTML = await headerResponse.text();
+                // 插入到 body 最前面
+                document.body.insertAdjacentHTML('afterbegin', headerHTML);
+            } catch (error) {
+                console.error('顶栏加载失败', error);
+            }
+        });
+    </script>
+
+    <!-- 【全局样式】：复用你网站的全局 CSS，确保顶栏样式完全一致 -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+
     <style>
+        /* 此处保留你原本的打字应用专属样式 */
         :root {
             --bg: #ffffff;
             --text-primary: #000000;
@@ -34,20 +59,29 @@
             box-sizing: border-box;
         }
 
+        /* 【布局修正】：避免顶栏和卡片布局错乱 */
         body {
             background-color: var(--bg);
             font-family: var(--font-display);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column; /* 改为纵向列，顶栏在上，内容在下 */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 【新增】：主内容包裹层，用来取代原来的 body 居中效果 */
+        main.main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            width: 100%;
         }
 
         .container {
@@ -500,79 +534,85 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo-area">
-                <div class="logo-dot"></div>
-                <span class="logo-text">打字练习</span>
+    <!-- 【此时将自动插入顶栏】 -->
+
+    <!-- 【新增】用 main.main-content 包裹你的核心内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo-area">
+                    <div class="logo-dot"></div>
+                    <span class="logo-text">打字练习</span>
+                </div>
+                <div class="text-selector" id="textSelector">
+                    <button class="text-btn active" data-index="0">短句</button>
+                    <button class="text-btn" data-index="1">段落</button>
+                    <button class="text-btn" data-index="2">长篇</button>
+                </div>
             </div>
-            <div class="text-selector" id="textSelector">
-                <button class="text-btn active" data-index="0">短句</button>
-                <button class="text-btn" data-index="1">段落</button>
-                <button class="text-btn" data-index="2">长篇</button>
+
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">速度</span>
+                    <span class="stat-value" id="speedDisplay">0</span>
+                    <span style="font-size:12px;color:#999;">字/分</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-label">准确率</span>
+                    <span class="stat-value small" id="accuracyDisplay">—</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-label">用时</span>
+                    <span class="stat-value small" id="timeDisplay">0s</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-label">进度</span>
+                    <span class="stat-value small" id="progressDisplay">0%</span>
+                </div>
             </div>
+
+            <!-- Display Area -->
+            <div class="display-area" id="displayArea" tabindex="0">
+                <div class="chars-container" id="charsContainer">
+                    <!-- Character spans will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="input-wrapper">
+                <textarea
+                class="typing-input"
+                id="typingInput"
+                placeholder="点击此处开始打字..."
+                rows="2"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+            ></textarea>
+            <span class="input-hint" id="inputHint">⌨ 使用输入法键入中文</span>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-label">速度</span>
-                <span class="stat-value" id="speedDisplay">0</span>
-                <span style="font-size:12px;color:#999;">字/分</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-label">准确率</span>
-                <span class="stat-value small" id="accuracyDisplay">—</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-label">用时</span>
-                <span class="stat-value small" id="timeDisplay">0s</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-label">进度</span>
-                <span class="stat-value small" id="progressDisplay">0%</span>
-            </div>
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn primary" id="btnRestart">重新开始</button>
+            <button class="btn ghost" id="btnNextText">换一段文字</button>
         </div>
 
-        <!-- Display Area -->
-        <div class="display-area" id="displayArea" tabindex="0">
-            <div class="chars-container" id="charsContainer">
-                <!-- Character spans will be rendered here -->
-            </div>
+        <!-- Completion Badge -->
+        <div class="completion-badge" id="completionBadge">
+            <span class="badge-icon">✓</span>
+            <span class="badge-text" id="completionText"></span>
         </div>
-
-        <!-- Input -->
-        <div class="input-wrapper">
-            <textarea
-            class="typing-input"
-            id="typingInput"
-            placeholder="点击此处开始打字..."
-            rows="2"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-        ></textarea>
-        <span class="input-hint" id="inputHint">⌨ 使用输入法键入中文</span>
     </div>
+</main>
 
-    <!-- Actions -->
-    <div class="actions">
-        <button class="btn primary" id="btnRestart">重新开始</button>
-        <button class="btn ghost" id="btnNextText">换一段文字</button>
-    </div>
-
-    <!-- Completion Badge -->
-    <div class="completion-badge" id="completionBadge">
-        <span class="badge-icon">✓</span>
-        <span class="badge-text" id="completionText"></span>
-    </div>
-</div>
-
+<!-- 【保留】原有打字练习 JS 逻辑 -->
 <script>
     (function() {
         // ============ 文本库 ============
