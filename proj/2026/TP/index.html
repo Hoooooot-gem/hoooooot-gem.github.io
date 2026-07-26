@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文打字练习</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #555555;
+            --text-tertiary: #999999;
+            --text-pending: #c8c8c8;
+            --border: #e0e0e0;
+            --border-light: #eeeeee;
+            --surface: #f8f8f8;
+            --correct: #000000;
+            --error-mark: #000000;
+            --current-underline: #000000;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition-fast: 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --font-display: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, system-ui, sans-serif;
+            --font-mono: 'SF Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: var(--font-display);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #000;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: var(--text-primary);
+        }
+
+        .text-selector {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 3px;
+            border: 1px solid var(--border-light);
+        }
+
+        .text-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 16px;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+            position: relative;
+        }
+
+        .text-btn:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.04);
+        }
+        .text-btn:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .text-btn.active {
+            background: #000;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        .text-btn.active:hover {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            font-variant-numeric: tabular-nums;
+            font-family: var(--font-mono);
+            line-height: 1;
+        }
+
+        .stat-value.small {
+            font-size: 22px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 36px;
+            background: var(--border);
+            flex-shrink: 0;
+            align-self: flex-end;
+            margin-bottom: 2px;
+        }
+
+        /* Display area */
+        .display-area {
+            position: relative;
+            cursor: text;
+            padding: 24px 0;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            min-height: 120px;
+            display: flex;
+            align-items: flex-start;
+            transition: border-color var(--transition-smooth);
+        }
+
+        .display-area.focused {
+            border-top-color: #000;
+            border-bottom-color: #000;
+        }
+
+        .display-area.completed {
+            border-top-color: #000;
+            border-bottom-color: #000;
+            background: #fafafa;
+        }
+
+        .chars-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px 3px;
+            align-items: flex-end;
+            line-height: 1.9;
+            width: 100%;
+        }
+
+        .char-span {
+            display: inline-block;
+            font-size: 26px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: var(--text-pending);
+            transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+            position: relative;
+            padding: 2px 1px;
+            border-radius: 3px;
+            min-width: 0.6em;
+            text-align: center;
+            cursor: default;
+        }
+
+        .char-span.correct {
+            color: #000;
+            font-weight: 500;
+        }
+
+        .char-span.error {
+            color: #000;
+            text-decoration: underline;
+            text-decoration-color: #000;
+            text-decoration-style: wavy;
+            text-underline-offset: 5px;
+            text-decoration-thickness: 1.5px;
+        }
+
+        .char-span.current {
+            color: #000;
+            font-weight: 600;
+            border-bottom: 2.5px solid #000;
+            padding-bottom: 4px;
+            animation: cursorPulse 1.6s ease-in-out infinite;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .char-span.pending {
+            color: #c8c8c8;
+            font-weight: 400;
+        }
+
+        @keyframes cursorPulse {
+            0%,
+            100% {
+                border-bottom-color: #000;
+            }
+            50% {
+                border-bottom-color: #555;
+            }
+        }
+
+        /* Input area */
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .typing-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid var(--border);
+            background: transparent;
+            font-family: var(--font-display);
+            font-size: 20px;
+            padding: 14px 4px;
+            color: #000;
+            outline: none;
+            transition: border-color var(--transition-smooth);
+            letter-spacing: 0.5px;
+            resize: none;
+            rows: 2;
+            line-height: 1.6;
+            caret-color: #000;
+            border-radius: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .typing-input:focus {
+            border-bottom-color: #000;
+            border-bottom-width: 2px;
+        }
+
+        .typing-input::placeholder {
+            color: #b0b0b0;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+        .typing-input:focus::placeholder {
+            color: #d0d0d0;
+        }
+
+        .typing-input.completed-input {
+            border-bottom-color: #000;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Hint */
+        .input-hint {
+            position: absolute;
+            right: 4px;
+            bottom: -22px;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            transition: opacity var(--transition-fast);
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1.5px solid #000;
+            background: #fff;
+            color: #000;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: #000;
+            color: #fff;
+        }
+        .btn:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+
+        .btn.primary {
+            background: #000;
+            color: #fff;
+            font-weight: 600;
+            border: 1.5px solid #000;
+        }
+        .btn.primary:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #fff;
+        }
+        .btn.primary:active {
+            background: #333;
+            border-color: #333;
+            transform: scale(0.97);
+        }
+
+        .btn.ghost {
+            border: 1.5px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+        .btn.ghost:hover {
+            background: var(--surface);
+            border-color: var(--border);
+            color: #000;
+        }
+
+        /* Completion overlay */
+        .completion-badge {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: #000;
+            color: #fff;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            animation: fadeInUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .completion-badge.visible {
+            display: flex;
+        }
+        .completion-badge .badge-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        .completion-badge .badge-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .completion-badge .badge-text strong {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px 16px;
+                gap: 28px;
+            }
+            .char-span {
+                font-size: 21px;
+                letter-spacing: 0.5px;
+            }
+            .typing-input {
+                font-size: 17px;
+                padding: 12px 2px;
+            }
+            .stat-value {
+                font-size: 22px;
+            }
+            .stat-value.small {
+                font-size: 18px;
+            }
+            .stats-bar {
+                gap: 20px;
+            }
+            .text-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            .btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .header {
+                gap: 12px;
+            }
+            .display-area {
+                padding: 16px 0;
+                min-height: 90px;
+            }
+            .completion-badge {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .char-span {
+                font-size: 18px;
+                letter-spacing: 0px;
+                gap: 0px 1px;
+            }
+            .typing-input {
+                font-size: 15px;
+            }
+            .stats-bar {
+                gap: 14px;
+            }
+            .stat-value {
+                font-size: 19px;
+            }
+            .stat-value.small {
+                font-size: 16px;
+            }
+            .text-selector {
+                gap: 2px;
+            }
+            .text-btn {
+                padding: 5px 10px;
+                font-size: 11px;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-dot"></div>
+                <span class="logo-text">打字练习</span>
+            </div>
+            <div class="text-selector" id="textSelector">
+                <button class="text-btn active" data-index="0">短句</button>
+                <button class="text-btn" data-index="1">段落</button>
+                <button class="text-btn" data-index="2">长篇</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">速度</span>
+                <span class="stat-value" id="speedDisplay">0</span>
+                <span style="font-size:12px;color:#999;">字/分</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">准确率</span>
+                <span class="stat-value small" id="accuracyDisplay">—</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">用时</span>
+                <span class="stat-value small" id="timeDisplay">0s</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">进度</span>
+                <span class="stat-value small" id="progressDisplay">0%</span>
+            </div>
+        </div>
+
+        <!-- Display Area -->
+        <div class="display-area" id="displayArea" tabindex="0">
+            <div class="chars-container" id="charsContainer">
+                <!-- Character spans will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-wrapper">
+            <textarea
+            class="typing-input"
+            id="typingInput"
+            placeholder="点击此处开始打字..."
+            rows="2"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+        ></textarea>
+        <span class="input-hint" id="inputHint">⌨ 使用输入法键入中文</span>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+        <button class="btn primary" id="btnRestart">重新开始</button>
+        <button class="btn ghost" id="btnNextText">换一段文字</button>
+    </div>
+
+    <!-- Completion Badge -->
+    <div class="completion-badge" id="completionBadge">
+        <span class="badge-icon">✓</span>
+        <span class="badge-text" id="completionText"></span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ============ 文本库 ============
+        const textLibrary = [
+            // 短句
+            [
+                "学而时习之，不亦说乎。",
+                "千里之行，始于足下。",
+                "读书破万卷，下笔如有神。",
+                "山重水复疑无路，柳暗花明又一村。",
+                "路漫漫其修远兮，吾将上下而求索。",
+                "人生自古谁无死，留取丹心照汗青。",
+                "春风得意马蹄疾，一日看尽长安花。",
+                "不畏浮云遮望眼，自缘身在最高层。",
+                "纸上得来终觉浅，绝知此事要躬行。",
+                "海内存知己，天涯若比邻。",
+                "会当凌绝顶，一览众山小。",
+                "但愿人长久，千里共婵娟。",
+            ],
+            // 段落
+            [
+                "生活不止眼前的苟且，还有诗和远方的田野。我们赤手空拳来到人世间，为了找到那片海不顾一切。",
+                "一个人知道自己为什么而活，就可以忍受任何一种生活。凡是杀不死我的，必使我更强大。",
+                "世上只有一种真正的英雄主义，那就是在认清生活的真相后，依然热爱生活。这才是真正的勇气。",
+                "时间是一个伟大的作者，它会给每个人写出完美的结局来。我们需要做的就是耐心等待，并且在这个过程中不断成长。",
+                "真正的自由不是想做什么就做什么，而是不想做什么就可以不做什么。自律给予我们的是更深层次的解放。",
+                "学习的本质，不在于记住哪些知识，而在于它触发了你怎样的思考。教育就是当一个人把在学校所学全部忘光之后剩下的东西。",
+            ],
+            // 长篇
+            [
+                "古之学者必有师。师者，所以传道受业解惑也。人非生而知之者，孰能无惑？惑而不从师，其为惑也，终不解矣。生乎吾前，其闻道也固先乎吾，吾从而师之；生乎吾后，其闻道也亦先乎吾，吾从而师之。吾师道也，夫庸知其年之先后生于吾乎？是故无贵无贱，无长无少，道之所存，师之所存也。",
+                "燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。但是，聪明的，你告诉我，我们的日子为什么一去不复返呢？是有人偷了他们罢：那是谁？又藏在何处呢？是他们自己逃走了罢：现在又到了哪里呢？我不知道他们给了我多少日子，但我的手确乎是渐渐空虚了。",
+                "故天将降大任于是人也，必先苦其心志，劳其筋骨，饿其体肤，空乏其身，行拂乱其所为，所以动心忍性，曾益其所不能。人恒过，然后能改；困于心，衡于虑，而后作；征于色，发于声，而后喻。入则无法家拂士，出则无敌国外患者，国恒亡。然后知生于忧患而死于安乐也。",
+            ],
+        ];
+
+        // ============ DOM元素 ============
+        const displayArea = document.getElementById('displayArea');
+        const charsContainer = document.getElementById('charsContainer');
+        const typingInput = document.getElementById('typingInput');
+        const inputHint = document.getElementById('inputHint');
+        const speedDisplay = document.getElementById('speedDisplay');
+        const accuracyDisplay = document.getElementById('accuracyDisplay');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const progressDisplay = document.getElementById('progressDisplay');
+        const completionBadge = document.getElementById('completionBadge');
+        const completionText = document.getElementById('completionText');
+        const btnRestart = document.getElementById('btnRestart');
+        const btnNextText = document.getElementById('btnNextText');
+        const textSelector = document.getElementById('textSelector');
+        const textBtns = textSelector.querySelectorAll('.text-btn');
+
+        // ============ 状态 ============
+        let currentCategoryIndex = 0; // 0=短句, 1=段落, 2=长篇
+        let currentTextIndex = 0;
+        let targetText = '';
+        let isComposing = false;
+        let hasStarted = false;
+        let startTime = null;
+        let timerInterval = null;
+        let totalKeystrokes = 0;
+        let correctKeystrokes = 0;
+        let isCompleted = false;
+        let lastProcessedLength = 0;
+
+        // ============ 初始化 ============
+        function getRandomText(categoryIndex) {
+            const pool = textLibrary[categoryIndex];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        function pickText() {
+            targetText = getRandomText(currentCategoryIndex);
+            currentTextIndex = Math.floor(Math.random() * textLibrary[currentCategoryIndex].length);
+            targetText = textLibrary[currentCategoryIndex][currentTextIndex];
+            // 清理文本（去除多余空白，保留中文标点和内容）
+            targetText = targetText.replace(/\s+/g, ' ').trim();
+        }
+
+        function renderChars() {
+            charsContainer.innerHTML = '';
+            for (let i = 0; i < targetText.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'char-span pending';
+                span.textContent = targetText[i];
+                span.setAttribute('data-index', i);
+                charsContainer.appendChild(span);
+            }
+            // 初始状态：第一个字符标记为current
+            if (targetText.length > 0) {
+                const firstChar = charsContainer.querySelector('[data-index="0"]');
+                if (firstChar) {
+                    firstChar.classList.remove('pending');
+                    firstChar.classList.add('current');
+                }
+            }
+        }
+
+        function resetState() {
+            pickText();
+            renderChars();
+            typingInput.value = '';
+            typingInput.classList.remove('completed-input');
+            hasStarted = false;
+            startTime = null;
+            totalKeystrokes = 0;
+            correctKeystrokes = 0;
+            isCompleted = false;
+            lastProcessedLength = 0;
+            isComposing = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            updateStats();
+            completionBadge.classList.remove('visible');
+            displayArea.classList.remove('completed');
+            displayArea.classList.remove('focused');
+            inputHint.style.opacity = '1';
+            typingInput.placeholder = '点击此处开始打字...';
+            typingInput.disabled = false;
+            typingInput.focus();
+            updateAllCharStates(0);
+        }
+
+        function updateAllCharStates(inputLen) {
+            const allSpans = charsContainer.querySelectorAll('.char-span');
+            allSpans.forEach(span => {
+                const idx = parseInt(span.getAttribute('data-index'));
+                span.classList.remove('correct', 'error', 'current', 'pending');
+                if (idx < inputLen) {
+                    // 已输入位置：检查是否正确
+                    const inputChar = typingInput.value[idx];
+                    const targetChar = targetText[idx];
+                    if (inputChar === targetChar) {
+                        span.classList.add('correct');
+                    } else {
+                        span.classList.add('error');
+                    }
+                } else if (idx === inputLen && inputLen < targetText.length) {
+                    // 当前待输入位置
+                    span.classList.add('current');
+                } else if (idx > inputLen) {
+                    // 未输入
+                    span.classList.add('pending');
+                }
+            });
+            // 处理inputLen超出targetText的情况
+            if (inputLen >= targetText.length && inputLen > 0) {
+                // 所有目标字符已被覆盖
+                const lastTargetSpan = charsContainer.querySelector(
+                    `[data-index="${targetText.length - 1}"]`);
+                if (lastTargetSpan) {
+                    // 确保最后一个字符也没有current标记
+                    const allCurrent = charsContainer.querySelectorAll('.current');
+                    allCurrent.forEach(s => {
+                        if (parseInt(s.getAttribute('data-index')) >= targetText.length) {
+                            s.classList.remove('current');
+                            s.classList.add('pending');
+                        }
+                    });
+                }
+            }
+        }
+
+        function updateStats() {
+            const now = Date.now();
+            let elapsedSeconds = 0;
+            if (hasStarted && startTime && !isCompleted) {
+                elapsedSeconds = (now - startTime) / 1000;
+            } else if (isCompleted && startTime) {
+                // 使用完成时的时间
+                elapsedSeconds = (completionTime - startTime) / 1000;
+            }
+
+            const inputLen = Math.min(typingInput.value.length, targetText.length);
+            const progressPercent = targetText.length > 0 ? Math.round((inputLen / targetText.length) *
+                100) : 0;
+
+            // 速度：正确字符数/分钟
+            let speed = 0;
+            if (elapsedSeconds > 0 && correctKeystrokes > 0) {
+                speed = Math.round((correctKeystrokes / elapsedSeconds) * 60);
+            }
+
+            // 准确率
+            let accuracy = '—';
+            if (totalKeystrokes > 0) {
+                accuracy = Math.round((correctKeystrokes / totalKeystrokes) * 100) + '%';
+            }
+
+            speedDisplay.textContent = speed;
+            accuracyDisplay.textContent = accuracy;
+            timeDisplay.textContent = Math.round(elapsedSeconds) + 's';
+            progressDisplay.textContent = progressPercent + '%';
+        }
+
+        let completionTime = null;
+
+        function checkCompletion() {
+            const inputLen = typingInput.value.length;
+            if (inputLen >= targetText.length && !isCompleted) {
+                // 检查是否所有字符都正确
+                let allCorrect = true;
+                for (let i = 0; i < targetText.length; i++) {
+                    if (typingInput.value[i] !== targetText[i]) {
+                        allCorrect = false;
+                        break;
+                    }
+                }
+                if (allCorrect && targetText.length > 0) {
+                    completeExercise();
+                }
+            }
+        }
+
+        function completeExercise() {
+            isCompleted = true;
+            completionTime = Date.now();
+            clearInterval(timerInterval);
+            timerInterval = null;
+            displayArea.classList.add('completed');
+            typingInput.classList.add('completed-input');
+            typingInput.disabled = true;
+            inputHint.style.opacity = '0';
+            updateStats();
+
+            // 移除current标记
+            const allCurrent = charsContainer.querySelectorAll('.current');
+            allCurrent.forEach(s => s.classList.remove('current'));
+
+            // 显示完成徽章
+            const elapsedMin = ((completionTime - startTime) / 60000).toFixed(1);
+            const speedVal = speedDisplay.textContent;
+            const accVal = accuracyDisplay.textContent;
+            completionText.innerHTML =
+                `<strong>太棒了！</strong><br>用时 ${elapsedMin} 分钟 · 速度 ${speedVal} 字/分 · 准确率 ${accVal}`;
+            completionBadge.classList.add('visible');
+
+            // 自动聚焦到display area以便快速重新开始
+            setTimeout(() => {
+                displayArea.focus();
+            }, 300);
+        }
+
+        function processInput() {
+            if (isComposing) return;
+            if (isCompleted) return;
+
+            const inputValue = typingInput.value;
+            const inputLen = inputValue.length;
+
+            // 检测新输入的字符
+            if (inputLen > lastProcessedLength) {
+                // 有新字符输入
+                const newCharsCount = inputLen - lastProcessedLength;
+                totalKeystrokes += newCharsCount;
+
+                // 检查新字符的正确性
+                for (let i = lastProcessedLength; i < inputLen; i++) {
+                    if (i < targetText.length && inputValue[i] === targetText[i]) {
+                        correctKeystrokes++;
+                    }
+                }
+
+                if (!hasStarted && inputLen > 0) {
+                    hasStarted = true;
+                    startTime = Date.now();
+                    timerInterval = setInterval(updateStats, 200);
+                    typingInput.placeholder = '';
+                    inputHint.style.opacity = '0.4';
+                    displayArea.classList.add('focused');
+                }
+            } else if (inputLen < lastProcessedLength) {
+                // 字符被删除（退格）
+                const removedCount = lastProcessedLength - inputLen;
+                // 回退统计：重新计算correctKeystrokes
+                recalculateCorrectKeystrokes(inputLen);
+                // totalKeystrokes不减少（保持总击键次数记录）
+            }
+
+            lastProcessedLength = inputLen;
+            updateAllCharStates(inputLen);
+            updateStats();
+            checkCompletion();
+
+            // 如果输入完成但有不正确的字符，不触发完成
+            if (inputLen >= targetText.length && !isCompleted) {
+                let allCorrect = true;
+                for (let i = 0; i < targetText.length; i++) {
+                    if (inputValue[i] !== targetText[i]) {
+                        allCorrect = false;
+                        break;
+                    }
+                }
+                if (allCorrect && targetText.length > 0) {
+                    completeExercise();
+                }
+            }
+        }
+
+        function recalculateCorrectKeystrokes(upToLen) {
+            correctKeystrokes = 0;
+            const inputValue = typingInput.value;
+            for (let i = 0; i < Math.min(upToLen, targetText.length); i++) {
+                if (i < inputValue.length && inputValue[i] === targetText[i]) {
+                    correctKeystrokes++;
+                }
+            }
+        }
+
+        // ============ 事件监听 ============
+        typingInput.addEventListener('compositionstart', () => {
+            isComposing = true;
+        });
+
+        typingInput.addEventListener('compositionend', () => {
+            isComposing = false;
+            // 组合输入结束后处理
+            processInput();
+        });
+
+        typingInput.addEventListener('input', () => {
+            if (!isComposing) {
+                processInput();
+            }
+        });
+
+        typingInput.addEventListener('keydown', (e) => {
+            if (isCompleted && e.key !== 'Enter' && e.key !== ' ') {
+                // 完成后不允许继续输入，但允许Enter重新开始
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            // 阻止Enter键换行
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (isCompleted) {
+                    resetState();
+                }
+            }
+            // 如果已完成，阻止大部分按键
+            if (isCompleted && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+            }
+        });
+
+        // 点击显示区域聚焦输入框
+        displayArea.addEventListener('click', (e) => {
+            if (!isCompleted) {
+                typingInput.focus();
+            } else {
+                resetState();
+            }
+        });
+
+        // 按钮事件
+        btnRestart.addEventListener('click', () => {
+            resetState();
+        });
+
+        btnNextText.addEventListener('click', () => {
+            currentTextIndex = (currentTextIndex + 1) % textLibrary[currentCategoryIndex].length;
+            targetText = textLibrary[currentCategoryIndex][currentTextIndex].replace(/\s+/g, ' ').trim();
+            resetState();
+        });
+
+        // 文本类型选择
+        textBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                textBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategoryIndex = parseInt(btn.getAttribute('data-index'));
+                currentTextIndex = 0;
+                resetState();
+            });
+        });
+
+        // 键盘快捷键：Ctrl+R 重新开始
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                resetState();
+            }
+            // Escape键重新开始
+            if (e.key === 'Escape' && !isComposing) {
+                resetState();
+            }
+        });
+
+        // 窗口失焦时暂停计时器的视觉更新（但不停计时）
+        window.addEventListener('blur', () => {
+            if (timerInterval && !isCompleted) {
+                // 计时器继续，但降低更新频率
+            }
+        });
+
+        // 移动端：点击容器区域时聚焦
+        document.querySelector('.container').addEventListener('click', function(e) {
+            if (!isCompleted && e.target === this) {
+                typingInput.focus();
+            }
+        });
+
+        // ============ 初始渲染 ============
+        pickText();
+        renderChars();
+        updateStats();
+        // 自动聚焦输入框
+        setTimeout(() => {
+            typingInput.focus();
+        }, 400);
+
+        // ============ 窗口大小改变时重绘 ============
+        let resizeDebounce;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeDebounce);
+            resizeDebounce = setTimeout(() => {
+                const inputLen = Math.min(typingInput.value.length, targetText.length);
+                updateAllCharStates(lastProcessedLength);
+            }, 200);
+        });
+
+        console.log('⌨  中文打字练习已就绪');
+        console.log('   - 点击显示区域或输入框开始打字');
+        console.log('   - Ctrl+R 或 Esc 重新开始');
+        console.log('   - 选择短句/段落/长篇切换难度');
+        console.log('   - 纯黑白Apple简约风格');
+    })();
+</script>
+</body>
+</html>
