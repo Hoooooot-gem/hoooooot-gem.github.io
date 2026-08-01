@@ -1,7 +1,7 @@
 {
-  "name": "Hoooooot's",
-  "short_name": "Hoooooot's",
-  "description": "Hoooooot 的个人网站。Student Filmmaker & Creator，通过影像与设计讲述故事。",
+  "name": "Hoooooot 与开发",
+  "short_name": "Hoooooot 与开发",
+  "description": "Hoooooot 与开发。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
