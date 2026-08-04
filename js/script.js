@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }, { threshold: 0.3 });
-    document.querySelectorAll('#about, #summer-camp, #portfolio, #timeline, #contact').forEach(section => {
+    document.querySelectorAll('#tools, #about, #summer-camp, #portfolio, #timeline, #contact').forEach(section => {
         activeObserver.observe(section);
     });
     window.addEventListener('scroll', () => {

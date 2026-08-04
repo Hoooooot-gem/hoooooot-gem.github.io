@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能调色板</title>
+    <style>
+        /* ============================================================
+           采用主站 Hoooooot's 的 Apple 极简主义设计语言
+           字体、变量、卡片、按钮、输入框完全同步
+           ============================================================ */
+
+        /* --- 0. 引入自定义字体 --- */
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('/fonts/Inter-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('/fonts/Inter-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* --- 1. CSS 变量 (兼容主站极简浅色主题) --- */
+        :root {
+            --bg-color: #FFFFFF;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #EAEAEA;
+            --surface: #F8F8F8;
+            --font-family: 'CustomFont', -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+            --font-weight-bold: 700;
+            --font-weight-regular: 400;
+            --transition-smooth: 0.3s ease;
+        }
+
+        /* --- 2. 全局重置与基础样式 --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- 3. 主容器 (与主页 Speed Card 同款设计) --- */
+        .container {
+            width: min(1020px, 100%);
+            background: var(--bg-color);
+            border-radius: 32px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            transition: box-shadow var(--transition-smooth);
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* --- 4. 标题排版 --- */
+        h1 {
+            margin: 0 0 28px 0;
+            font-size: 28px;
+            font-weight: var(--font-weight-bold);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        h1 .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            /* 去掉原本的彩色渐变，保持黑白灰克制 */
+            background: transparent; 
+        }
+
+        /* --- 5. 主内容网格布局 --- */
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* --- 6. 调色板与色相条画布 (保留原样，外层做黑白灰处理) --- */
+        .canvas-area {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .canvas-wrapper, .hue-wrapper {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            cursor: crosshair;
+            transition: box-shadow 0.2s;
+        }
+
+        .canvas-wrapper:active, .hue-wrapper:active {
+            transform: scale(0.99);
+            transition: transform 0.1s;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+        }
+
+        #palette { aspect-ratio: 1.6; }
+        #hue { height: 38px; }
+
+        /* --- 7. 侧边信息面板 (取色、输入) --- */
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .preview-wrap {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .preview {
+            flex: 1;
+            min-height: 130px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: background 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-shade {
+            width: 50px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+            transition: background 0.15s ease;
+        }
+
+        /* --- 8. 颜色值输入框 (深灰色底 + 黑色边框) --- */
+        .values {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .field {
+            background: var(--surface);
+            border-radius: 14px;
+            padding: 11px 15px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .field:focus-within {
+            background: var(--bg-color);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .field .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 36px;
+        }
+
+        input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            font-family: 'SF Mono', 'CustomFont', 'Consolas', monospace;
+            color: var(--text-primary);
+            min-width: 0;
+            padding: 2px 0;
+        }
+
+        /* --- 9. 复制与屏幕取色按钮 (主页胶囊按钮设计) --- */
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            border: 1px solid var(--text-primary);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            flex-shrink: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.97) translateY(-1px);
+            transition: transform 80ms ease-out;
+        }
+
+        .copy-btn.copied {
+            background: var(--text-primary) !important;
+            color: var(--bg-color) !important;
+            border-color: var(--text-primary) !important;
+        }
+
+        button#eye {
+            width: 100%;
+            margin-top: 6px;
+            padding: 14px 20px;
+            border: 1px solid var(--text-primary);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button#eye:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+        }
+
+        button#eye:active {
+            transform: scale(0.97) translateY(-1px);
+            transition: transform 80ms ease-out;
+        }
+
+        /* --- 10. Toast 提示 (深色毛玻璃) --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #FFFFFF;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- 11. 响应式设计 (与主页适配) --- */
+        @media (max-width: 750px) {
+            .main {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .container {
+                padding: 20px 16px;
+                border-radius: 24px;
+            }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .panel { gap: 14px; }
+            .preview { min-height: 100px; }
+            .preview-shade { width: 40px; }
+            .field { padding: 10px 13px; }
+            input { font-size: 13px; }
+            #hue { height: 32px; }
+            .copy-btn { width: 28px; height: 28px; font-size: 14px; }
+        }
+
+        @media (max-width: 400px) {
+            .container { padding: 16px 12px; border-radius: 18px; }
+            h1 { font-size: 18px; }
+            .preview { min-height: 80px; }
+            .field { padding: 8px 10px; }
+            input { font-size: 12px; }
+            .copy-btn { width: 26px; height: 26px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>
+            <span class="icon">🎨</span>
+            智能调色板
+        </h1>
+
+        <div class="main">
+            <!-- 调色板区域 -->
+            <div class="canvas-area">
+                <div class="canvas-wrapper">
+                    <canvas id="palette"></canvas>
+                </div>
+                <div class="hue-wrapper">
+                    <canvas id="hue"></canvas>
+                </div>
+            </div>
+
+            <!-- 侧边栏 -->
+            <div class="panel">
+                <!-- 颜色预览 -->
+                <div class="preview-wrap">
+                    <div id="preview" class="preview"></div>
+                    <div id="previewShade" class="preview-shade"></div>
+                </div>
+
+                <!-- 颜色值 -->
+                <div class="values">
+                    <div class="field">
+                        <label>HEX</label>
+                        <span class="color-dot" style="background:#000000;"></span>
+                        <input id="hex" placeholder="#000000">
+                        <button class="copy-btn" data-target="hex" title="复制 HEX">📋</button>
+                    </div>
+                    <div class="field">
+                        <label>RGB</label>
+                        <span class="color-dot" style="background:#000000;"></span>
+                        <input id="rgb" placeholder="rgb(0, 0, 0)">
+                        <button class="copy-btn" data-target="rgb" title="复制 RGB">📋</button>
+                    </div>
+                    <div class="field">
+                        <label>HSL</label>
+                        <span class="color-dot" style="background:#000000;"></span>
+                        <input id="hsl" placeholder="hsl(0, 0%, 0%)">
+                        <button class="copy-btn" data-target="hsl" title="复制 HSL">📋</button>
+                    </div>
+                    <div class="field">
+                        <label>CMYK</label>
+                        <span class="color-dot" style="background:#000000;"></span>
+                        <input id="cmyk" placeholder="cmyk(0%, 0%, 0%, 100%)">
+                        <button class="copy-btn" data-target="cmyk" title="复制 CMYK">📋</button>
+                    </div>
+                </div>
+
+                <!-- 屏幕取色按钮 -->
+                <button id="eye">
+                    <span class="btn-icon">💉</span> 屏幕取色
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示 Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 【保留】原有 Core 调色板 JavaScript 功能 --->
+    <script>
+        (function() {
+            // ============ DOM 元素 ============
+            const paletteCanvas = document.getElementById('palette');
+            const hueCanvas = document.getElementById('hue');
+            const pctx = paletteCanvas.getContext('2d');
+            const hctx = hueCanvas.getContext('2d');
+
+            const preview = document.getElementById('preview');
+            const previewShade = document.getElementById('previewShade');
+            const hexInput = document.getElementById('hex');
+            const rgbInput = document.getElementById('rgb');
+            const hslInput = document.getElementById('hsl');
+            const cmykInput = document.getElementById('cmyk');
+            const eyeBtn = document.getElementById('eye');
+            const toast = document.getElementById('toast');
+
+            // 复制按钮
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            // ============ 状态 ============
+            let color = { r: 255, g: 60, b: 80 }; // 初始：活泼的红色
+            let hue = 354; // 对应初始颜色的色相
+            let saturation = 0.76; // HSV 饱和度
+            let value = 1; // HSV 亮度
+
+            let toastTimer = null;
+
+            // ============ Toast ============
+            function showToast(msg) {
+                if (toastTimer) clearTimeout(toastTimer);
+                toast.textContent = msg;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                    toastTimer = null;
+                }, 1800);
+            }
+
+            // ============ 复制功能 ============
+            async function copyToClipboard(text, button) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    // 视觉反馈
+                    button.classList.add('copied');
+                    button.innerHTML = '✓';
+                    showToast('✅ 已复制：' + text);
+
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        button.innerHTML = '📋';
+                    }, 1200);
+                } catch (err) {
+                    showToast('❌ 复制失败，请手动复制');
+                }
+            }
+
+            // 为所有复制按钮绑定事件
+            copyButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const targetId = btn.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    if (input && input.value) {
+                        copyToClipboard(input.value, btn);
+                    }
+                });
+            });
+
+            // ============ Canvas 尺寸调整 ============
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                const pw = paletteCanvas.clientWidth;
+                const ph = paletteCanvas.clientHeight;
+                paletteCanvas.width = Math.round(pw * dpr);
+                paletteCanvas.height = Math.round(ph * dpr);
+
+                const hw = hueCanvas.clientWidth;
+                const hh = hueCanvas.clientHeight;
+                hueCanvas.width = Math.round(hw * dpr);
+                hueCanvas.height = Math.round(hh * dpr);
+
+                drawHue();
+                drawPalette();
+            }
+
+            window.addEventListener('resize', resize);
+
+            // ============ 绘制色相条 ============
+            function drawHue() {
+                const w = hueCanvas.width;
+                const h = hueCanvas.height;
+                hctx.clearRect(0, 0, w, h);
+
+                // 色相渐变
+                const grad = hctx.createLinearGradient(0, 0, w, 0);
+                const stops = [
+                    { pos: 0, h: 0 },
+                    { pos: 1 / 6, h: 60 },
+                    { pos: 2 / 6, h: 120 },
+                    { pos: 3 / 6, h: 180 },
+                    { pos: 4 / 6, h: 240 },
+                    { pos: 5 / 6, h: 300 },
+                    { pos: 1, h: 360 },
+                ];
+                stops.forEach(s => {
+                    grad.addColorStop(s.pos, `hsl(${s.h},100%,50%)`);
+                });
+                hctx.fillStyle = grad;
+                hctx.fillRect(0, 0, w, h);
+
+                // 微妙的顶部高光
+                const highlight = hctx.createLinearGradient(0, 0, 0, h);
+                highlight.addColorStop(0, 'rgba(255,255,255,0.25)');
+                highlight.addColorStop(0.5, 'rgba(255,255,255,0)');
+                highlight.addColorStop(1, 'rgba(0,0,0,0.15)');
+                hctx.fillStyle = highlight;
+                hctx.fillRect(0, 0, w, h);
+
+                // 色相指示器
+                const indicatorX = (hue / 360) * w;
+                const indicatorW = Math.max(3, h * 0.22);
+
+                // 指示器阴影
+                hctx.fillStyle = 'rgba(0,0,0,0.3)';
+                hctx.beginPath();
+                hctx.roundRect(indicatorX - indicatorW / 2 - 1, h * 0.08 + 1, indicatorW + 2, h * 0.84, indicatorW / 2);
+                hctx.fill();
+
+                // 指示器主体
+                hctx.fillStyle = '#fff';
+                hctx.beginPath();
+                hctx.roundRect(indicatorX - indicatorW / 2, h * 0.08, indicatorW, h * 0.84, indicatorW / 2);
+                hctx.fill();
+
+                // 指示器边框
+                hctx.strokeStyle = 'rgba(0,0,0,0.25)';
+                hctx.lineWidth = 1.5;
+                hctx.stroke();
+            }
+
+            // ============ 绘制调色板 (HSV 空间) ============
+            function drawPalette() {
+                const w = paletteCanvas.width;
+                const h = paletteCanvas.height;
+                pctx.clearRect(0, 0, w, h);
+
+                // 1. 填充纯色相
+                pctx.fillStyle = `hsl(${hue},100%,50%)`;
+                pctx.fillRect(0, 0, w, h);
+
+                // 2. 白色渐变 (水平方向，控制饱和度)
+                const whiteGrad = pctx.createLinearGradient(0, 0, w, 0);
+                whiteGrad.addColorStop(0, 'rgba(255,255,255,1)');
+                whiteGrad.addColorStop(1, 'rgba(255,255,255,0)');
+                pctx.fillStyle = whiteGrad;
+                pctx.fillRect(0, 0, w, h);
+
+                // 3. 黑色渐变 (垂直方向，控制亮度)
+                const blackGrad = pctx.createLinearGradient(0, 0, 0, h);
+                blackGrad.addColorStop(0, 'rgba(0,0,0,0)');
+                blackGrad.addColorStop(1, 'rgba(0,0,0,1)');
+                pctx.fillStyle = blackGrad;
+                pctx.fillRect(0, 0, w, h);
+
+                // 4. 指示器
+                const ix = saturation * w;
+                const iy = (1 - value) * h;
+                const radius = Math.max(7, Math.min(w, h) * 0.04);
+
+                // 外圈阴影
+                pctx.fillStyle = 'rgba(0,0,0,0.35)';
+                pctx.beginPath();
+                pctx.arc(ix + 1, iy + 1.5, radius, 0, Math.PI * 2);
+                pctx.fill();
+
+                // 外圈白色
+                pctx.strokeStyle = '#fff';
+                pctx.lineWidth = Math.max(2.5, radius * 0.35);
+                pctx.beginPath();
+                pctx.arc(ix, iy, radius, 0, Math.PI * 2);
+                pctx.stroke();
+
+                // 内圈深色描边
+                pctx.strokeStyle = 'rgba(0,0,0,0.5)';
+                pctx.lineWidth = Math.max(1.2, radius * 0.18);
+                pctx.beginPath();
+                pctx.arc(ix, iy, radius, 0, Math.PI * 2);
+                pctx.stroke();
+
+                // 中心小点（显示当前颜色的互补色或对比色）
+                const dotR = Math.max(2.5, radius * 0.32);
+                const lum = (color.r * 0.299 + color.g * 0.587 + color.b * 0.114) / 255;
+                pctx.fillStyle = lum > 0.55 ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.85)';
+                pctx.beginPath();
+                pctx.arc(ix, iy, dotR, 0, Math.PI * 2);
+                pctx.fill();
+            }
+
+            // ============ 颜色空间转换 ============
+
+            function rgbToHex(c) {
+                return '#' + [c.r, c.g, c.b]
+                    .map(x => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, '0'))
+                    .join('');
+            }
+
+            function hexToRgb(hex) {
+                hex = hex.replace('#', '').trim();
+                if (hex.length === 3) hex = [...hex].map(x => x + x).join('');
+                if (hex.length !== 6) return null;
+                const r = parseInt(hex.slice(0, 2), 16);
+                const g = parseInt(hex.slice(2, 4), 16);
+                const b = parseInt(hex.slice(4, 6), 16);
+                if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+                return { r, g, b };
+            }
+
+            function rgbToHsl(c) {
+                const r = c.r / 255;
+                const g = c.g / 255;
+                const b = c.b / 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                const l = (max + min) / 2;
+                let h, s;
+
+                if (max === min) {
+                    h = 0;
+                    s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h *= 60;
+                }
+                // 确保 h 在 0-360 范围内
+                h = ((h % 360) + 360) % 360;
+                return { h, s, l };
+            }
+
+            function hslToRgb(h, s, l) {
+                h = ((h % 360) + 360) % 360;
+                s = Math.max(0, Math.min(1, s));
+                l = Math.max(0, Math.min(1, l));
+
+                if (s === 0) {
+                    const v = Math.round(l * 255);
+                    return { r: v, g: v, b: v };
+                }
+
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                const r = hue2rgb(p, q, h / 360 + 1 / 3);
+                const g = hue2rgb(p, q, h / 360);
+                const b = hue2rgb(p, q, h / 360 - 1 / 3);
+
+                return {
+                    r: Math.round(r * 255),
+                    g: Math.round(g * 255),
+                    b: Math.round(b * 255),
+                };
+            }
+
+            function rgbToHsv(c) {
+                const r = c.r / 255;
+                const g = c.g / 255;
+                const b = c.b / 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                const d = max - min;
+                let h = 0;
+                const v = max;
+                const s = max === 0 ? 0 : d / max;
+
+                if (d !== 0) {
+                    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+                    else if (max === g) h = (b - r) / d + 2;
+                    else h = (r - g) / d + 4;
+                    h *= 60;
+                }
+                h = ((h % 360) + 360) % 360;
+                return { h, s, v };
+            }
+
+            function hsvToRgb(h, s, v) {
+                h = ((h % 360) + 360) % 360;
+                s = Math.max(0, Math.min(1, s));
+                v = Math.max(0, Math.min(1, v));
+                const c = v * s;
+                const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+                const m = v - c;
+                let r, g, b;
+                if (h < 60)[r, g, b] = [c, x, 0];
+                else if (h < 120)[r, g, b] = [x, c, 0];
+                else if (h < 180)[r, g, b] = [0, c, x];
+                else if (h < 240)[r, g, b] = [0, x, c];
+                else if (h < 300)[r, g, b] = [x, 0, c];
+                else[r, g, b] = [c, 0, x];
+                return {
+                    r: Math.round((r + m) * 255),
+                    g: Math.round((g + m) * 255),
+                    b: Math.round((b + m) * 255),
+                };
+            }
+
+            function rgbToCmyk(c) {
+                const r = c.r / 255;
+                const g = c.g / 255;
+                const b = c.b / 255;
+                const k = 1 - Math.max(r, g, b);
+                if (k >= 0.9999) return { c: 0, m: 0, y: 0, k: 1 };
+                const denom = 1 - k;
+                return {
+                    c: (1 - r - k) / denom,
+                    m: (1 - g - k) / denom,
+                    y: (1 - b - k) / denom,
+                    k,
+                };
+            }
+
+            function cmykToRgb(c, m, y, k) {
+                const factor = 1 - k;
+                return {
+                    r: Math.round(255 * (1 - c) * factor),
+                    g: Math.round(255 * (1 - m) * factor),
+                    b: Math.round(255 * (1 - y) * factor),
+                };
+            }
+
+            // ============ 更新所有显示 ============
+            function update(options = {}) {
+                const { fromPalette = false, fromHue = false } = options;
+
+                // 裁剪颜色值
+                color.r = Math.round(Math.max(0, Math.min(255, color.r)));
+                color.g = Math.round(Math.max(0, Math.min(255, color.g)));
+                color.b = Math.round(Math.max(0, Math.min(255, color.b)));
+
+                // 从当前颜色同步 HSV
+                const hsv = rgbToHsv(color);
+                if (!fromPalette && !fromHue) {
+                    // 如果是从输入框或取色器更新，同步 hue, saturation, value
+                    hue = hsv.h;
+                    saturation = hsv.s;
+                    value = hsv.v;
+                }
+                // 如果是从调色板点击更新，hue/saturation/value 已经在事件处理中设置
+                // 如果是从色相条点击更新，hue 已经设置，saturation/value 保持不变
+
+                // 更新预览
+                const rgbStr = `rgb(${color.r},${color.g},${color.b})`;
+                preview.style.background = rgbStr;
+                previewShade.style.background = rgbStr;
+
+                // 更新输入框
+                hexInput.value = rgbToHex(color);
+                rgbInput.value = `rgb(${color.r}, ${color.g}, ${color.b})`;
+
+                const hsl = rgbToHsl(color);
+                hslInput.value =
+                    `hsl(${Math.round(hsl.h)}, ${Math.round(hsl.s * 100)}%, ${Math.round(hsl.l * 100)}%)`;
+
+                const cmyk = rgbToCmyk(color);
+                cmykInput.value =
+                    `cmyk(${Math.round(cmyk.c * 100)}%, ${Math.round(cmyk.m * 100)}%, ${Math.round(cmyk.y * 100)}%, ${Math.round(cmyk.k * 100)}%)`;
+
+                // 重绘
+                drawHue();
+                drawPalette();
+            }
+
+            // ============ 事件处理 ============
+
+            // 调色板点击
+            paletteCanvas.addEventListener('click', (e) => {
+                const rect = paletteCanvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                saturation = Math.max(0, Math.min(1, x));
+                value = Math.max(0, Math.min(1, 1 - y));
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromPalette: true });
+            });
+
+            // 色相条点击
+            hueCanvas.addEventListener('click', (e) => {
+                const rect = hueCanvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                hue = Math.max(0, Math.min(360, x * 360));
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromHue: true });
+            });
+
+            // 调色板拖拽支持
+            let isDraggingPalette = false;
+            paletteCanvas.addEventListener('pointerdown', (e) => {
+                isDraggingPalette = true;
+                paletteCanvas.setPointerCapture(e.pointerId);
+                // 立即更新
+                const rect = paletteCanvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                saturation = Math.max(0, Math.min(1, x));
+                value = Math.max(0, Math.min(1, 1 - y));
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromPalette: true });
+            });
+            paletteCanvas.addEventListener('pointermove', (e) => {
+                if (!isDraggingPalette) return;
+                const rect = paletteCanvas.getBoundingClientRect();
+                const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+                saturation = x;
+                value = 1 - y;
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromPalette: true });
+            });
+            paletteCanvas.addEventListener('pointerup', () => { isDraggingPalette = false; });
+            paletteCanvas.addEventListener('pointerleave', () => { isDraggingPalette = false; });
+
+            // 色相条拖拽支持
+            let isDraggingHue = false;
+            hueCanvas.addEventListener('pointerdown', (e) => {
+                isDraggingHue = true;
+                hueCanvas.setPointerCapture(e.pointerId);
+                const rect = hueCanvas.getBoundingClientRect();
+                hue = Math.max(0, Math.min(360, ((e.clientX - rect.left) / rect.width) * 360));
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromHue: true });
+            });
+            hueCanvas.addEventListener('pointermove', (e) => {
+                if (!isDraggingHue) return;
+                const rect = hueCanvas.getBoundingClientRect();
+                hue = Math.max(0, Math.min(360, ((e.clientX - rect.left) / rect.width) * 360));
+                color = hsvToRgb(hue, saturation, value);
+                update({ fromHue: true });
+            });
+            hueCanvas.addEventListener('pointerup', () => { isDraggingHue = false; });
+            hueCanvas.addEventListener('pointerleave', () => { isDraggingHue = false; });
+
+            // HEX 输入
+            hexInput.addEventListener('change', () => {
+                const rgb = hexToRgb(hexInput.value);
+                if (rgb) {
+                    color = rgb;
+                    update();
+                } else {
+                    showToast('⚠️ 无效的 HEX 值，请输入如 #ff6040');
+                    update(); // 恢复显示
+                }
+            });
+            hexInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') hexInput.blur();
+            });
+
+            // RGB 输入
+            rgbInput.addEventListener('change', () => {
+                const nums = rgbInput.value.match(/\d+/g);
+                if (nums && nums.length >= 3) {
+                    color = { r: +nums[0], g: +nums[1], b: +nums[2] };
+                    update();
+                } else {
+                    showToast('⚠️ 无效的 RGB 值，请输入如 rgb(255,96,80)');
+                    update();
+                }
+            });
+            rgbInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') rgbInput.blur();
+            });
+
+            // HSL 输入
+            hslInput.addEventListener('change', () => {
+                const nums = hslInput.value.match(/\d+/g);
+                if (nums && nums.length >= 3) {
+                    color = hslToRgb(+nums[0], +nums[1] / 100, +nums[2] / 100);
+                    update();
+                } else {
+                    showToast('⚠️ 无效的 HSL 值，请输入如 hsl(354,76%,65%)');
+                    update();
+                }
+            });
+            hslInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') hslInput.blur();
+            });
+
+            // CMYK 输入
+            cmykInput.addEventListener('change', () => {
+                const nums = cmykInput.value.match(/\d+/g);
+                if (nums && nums.length >= 4) {
+                    color = cmykToRgb(nums[0] / 100, nums[1] / 100, nums[2] / 100, nums[3] / 100);
+                    update();
+                } else {
+                    showToast('⚠️ 无效的 CMYK 值，请输入如 cmyk(0%,62%,69%,0%)');
+                    update();
+                }
+            });
+            cmykInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') cmykInput.blur();
+            });
+
+            // 屏幕取色
+            eyeBtn.addEventListener('click', async () => {
+                if (!window.EyeDropper) {
+                    showToast('⚠️ 当前浏览器不支持屏幕取色，请使用 Chrome/Edge 最新版');
+                    return;
+                }
+                try {
+                    const eye = new EyeDropper();
+                    const result = await eye.open();
+                    const rgb = hexToRgb(result.sRGBHex);
+                    if (rgb) {
+                        color = rgb;
+                        update();
+                        showToast('✅ 已取色：' + result.sRGBHex);
+                    }
+                } catch (e) {
+                    // 用户取消取色，静默处理
+                }
+            });
+
+            // ============ 键盘快捷键 ============
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+C 复制 HEX (当没有聚焦输入框时)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c' &&
+                    document.activeElement === document.body) {
+                    const hexVal = rgbToHex(color);
+                    navigator.clipboard.writeText(hexVal).then(() => {
+                        showToast('📋 已复制：' + hexVal);
+                    }).catch(() => {});
+                }
+            });
+
+            // ============ 初始化 ============
+            function init() {
+                // 初始颜色：活泼的珊瑚红
+                color = { r: 255, g: 60, b: 80 };
+                const hsv = rgbToHsv(color);
+                hue = hsv.h;
+                saturation = hsv.s;
+                value = hsv.v;
+                resize();
+                update();
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
