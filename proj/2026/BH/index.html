@@ -1,304 +1,630 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoooooot Search</title>
-    <!-- 引入图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --text-color: #ffffff;
-            --accent-color: #4f7eff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Hoooooot Search</title>
+<style>
+:root{
+  --bg:#f5f5f7;
+  --bg-rgb:245,245,247;
+  --text:#1d1d1f;
+  --secondary:rgba(29,29,31,.62);
+  --tertiary:rgba(29,29,31,.42);
+  --glass:rgba(255,255,255,.62);
+  --glass-strong:rgba(255,255,255,.78);
+  --glass-border:rgba(255,255,255,.68);
+  --shadow:0 24px 70px rgba(0,0,0,.10),0 2px 10px rgba(0,0,0,.06);
+  --hairline:rgba(29,29,31,.10);
+  --accent:#0071e3;
+  --accent-soft:rgba(0,113,227,.11);
+  --input:rgba(255,255,255,.72);
+  --key:rgba(29,29,31,.07);
+  --icon-bg:rgba(29,29,31,.055);
+  --spring:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#050506; --bg-rgb:5,5,6; --text:#f5f5f7;
+    --secondary:rgba(245,245,247,.64); --tertiary:rgba(245,245,247,.40);
+    --glass:rgba(28,28,30,.60); --glass-strong:rgba(30,30,32,.78);
+    --glass-border:rgba(255,255,255,.12);
+    --shadow:0 28px 80px rgba(0,0,0,.40),0 2px 14px rgba(0,0,0,.22);
+    --hairline:rgba(255,255,255,.10); --accent:#2997ff;
+    --accent-soft:rgba(41,151,255,.16); --input:rgba(28,28,30,.74);
+    --key:rgba(255,255,255,.08); --icon-bg:rgba(255,255,255,.07);
+  }
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",
+    "PingFang SC","Hiragino Sans GB",Arial,sans-serif;
+  color:var(--text); background:var(--bg); overflow:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+button,input{font:inherit}
+button{color:inherit}
+::selection{background:rgba(0,113,227,.22)}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+.ambient{
+  position:fixed; inset:-18%; pointer-events:none; z-index:-2;
+  background:
+    radial-gradient(42% 45% at 18% 18%, rgba(120,180,255,.20), transparent 72%),
+    radial-gradient(40% 46% at 84% 80%, rgba(205,160,255,.15), transparent 70%),
+    radial-gradient(35% 38% at 54% 48%, rgba(255,255,255,.30), transparent 75%);
+  filter:blur(38px); opacity:.9;
+}
+@media(prefers-color-scheme:dark){
+  .ambient{opacity:.48; background:
+    radial-gradient(42% 45% at 15% 18%,rgba(25,95,180,.34),transparent 72%),
+    radial-gradient(40% 46% at 85% 82%,rgba(100,55,170,.28),transparent 70%),
+    radial-gradient(35% 38% at 52% 50%,rgba(255,255,255,.05),transparent 75%)}
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "MiSans", "Helvetica Neue", Arial, sans-serif;
-            background-color: #0c0c0e;
-            color: var(--text-color);
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
+.app{
+  width:min(100%,1180px); height:100%;
+  margin:auto; padding:clamp(28px,6vh,72px) clamp(22px,5vw,72px) 30px;
+  display:flex; flex-direction:column;
+}
+.topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  min-height:36px;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; user-select:none;
+}
+.brand-mark{
+  width:28px;height:28px;border-radius:9px;
+  display:grid;place-items:center;
+  background:var(--text); color:var(--bg);
+  font-weight:800; font-size:13px; letter-spacing:-.06em;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+.brand-name{font-size:15px;font-weight:650;letter-spacing:-.015em}
+.top-actions{display:flex;gap:7px}
+.icon-button{
+  width:36px;height:36px;border:0;border-radius:50%;
+  background:transparent; display:grid;place-items:center;
+  cursor:pointer; transition:transform 280ms var(--spring),background 180ms ease;
+}
+.icon-button:hover{background:var(--key)}
+.icon-button:active{transform:scale(.91)}
+.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-        /* 动态背景 */
-        .background-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            z-index: -1;
-            opacity: 0.5;
-            animation: float 12s infinite ease-in-out;
-        }
+.hero{
+  width:min(100%,790px); margin:auto;
+  display:flex; flex-direction:column; align-items:center;
+  transform:translateY(-2vh);
+}
+.date{
+  color:var(--secondary); font-size:14px; font-weight:500;
+  letter-spacing:.005em; margin-bottom:13px; text-align:center;
+}
+.time{
+  font-size:clamp(52px,8vw,86px); line-height:.96; font-weight:300;
+  letter-spacing:-.055em; font-variant-numeric:tabular-nums;
+  margin:0 0 14px;
+}
+.greeting{
+  margin:0 0 32px; color:var(--secondary);
+  font-size:clamp(17px,2vw,20px); font-weight:450; letter-spacing:-.015em;
+}
 
-        .blob-1 { width: 450px; height: 450px; background: linear-gradient(135deg, #ff00cc, #333399); top: -100px; left: -100px; }
-        .blob-2 { width: 550px; height: 550px; background: linear-gradient(135deg, #00c6ff, #0072ff); bottom: -150px; right: -150px; animation-delay: 2s; }
-        .blob-3 { width: 350px; height: 350px; background: linear-gradient(135deg, #7928ca, #ff0080); top: 30%; left: 25%; animation: float 15s infinite ease-in-out reverse; }
+.search-shell{
+  width:100%; position:relative; z-index:5;
+}
+.search{
+  min-height:64px; width:100%; display:flex; align-items:center;
+  padding:7px 8px 7px 20px; border-radius:24px;
+  background:var(--input); border:1px solid var(--glass-border);
+  box-shadow:0 12px 40px rgba(0,0,0,.07), inset 0 1px rgba(255,255,255,.34);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  transition:box-shadow 300ms var(--spring),transform 300ms var(--spring),background 250ms ease;
+}
+.search:focus-within{
+  box-shadow:0 18px 48px rgba(0,0,0,.12),0 0 0 4px var(--accent-soft);
+  transform:scale(1.008);
+}
+.search-icon{width:21px;height:21px;flex:none;color:var(--tertiary);margin-right:13px}
+.search-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.search input{
+  min-width:0;flex:1;border:0;outline:0;background:transparent;color:var(--text);
+  font-size:17px;letter-spacing:-.012em;
+}
+.search input::placeholder{color:var(--tertiary)}
+.engine{
+  position:relative; flex:none;
+}
+.engine-button{
+  height:48px; padding:0 13px; border:0; border-radius:17px;
+  background:transparent; display:flex;align-items:center;gap:8px;
+  cursor:pointer; transition:background 180ms ease,transform 280ms var(--spring);
+}
+.engine-button:hover{background:var(--key)}
+.engine-button:active{transform:scale(.96)}
+.engine-logo{width:20px;height:20px;display:grid;place-items:center}
+.engine-logo svg{width:100%;height:100%}
+.engine-name{font-size:13px;font-weight:600}
+.chevron{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;opacity:.55}
+.search-submit{
+  width:48px;height:48px;border:0;border-radius:17px;
+  background:var(--text);color:var(--bg);display:grid;place-items:center;
+  cursor:pointer; transition:transform 280ms var(--spring),opacity 180ms ease;
+}
+.search-submit:hover{opacity:.86}
+.search-submit:active{transform:scale(.91)}
+.search-submit svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, 60px) scale(1.1); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
+.engine-menu{
+  position:absolute;right:0;top:calc(100% + 10px);min-width:180px;
+  padding:7px;border-radius:18px;background:var(--glass-strong);
+  border:1px solid var(--glass-border);box-shadow:var(--shadow);
+  backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+  opacity:0;transform:translateY(-6px) scale(.97);pointer-events:none;
+  transform-origin:top right;transition:opacity 180ms ease,transform 350ms var(--spring);
+}
+.engine.open .engine-menu{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.engine-option{
+  width:100%;height:42px;padding:0 11px;border:0;background:transparent;
+  border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;
+  transition:background 150ms ease,transform 250ms var(--spring);
+}
+.engine-option:hover{background:var(--key)}
+.engine-option:active{transform:scale(.97)}
+.engine-option.active{background:var(--accent-soft);color:var(--accent)}
+.engine-option span{font-size:14px;font-weight:550}
 
-        /* 玻璃卡片 */
-        .glass-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            box-shadow: var(--glass-shadow);
-            padding: 45px;
-            width: 90%;
-            max-width: 850px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 35px;
-            z-index: 10;
-        }
+.shortcuts{
+  width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;
+  margin-top:28px;
+}
+.shortcut{
+  position:relative;min-width:0;min-height:102px;padding:18px 12px;
+  border-radius:21px;text-decoration:none;color:var(--text);
+  background:var(--glass);border:1px solid var(--glass-border);
+  box-shadow:0 8px 28px rgba(0,0,0,.055);
+  backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;user-select:none;
+  transition:transform 360ms var(--spring),box-shadow 360ms var(--spring),background 220ms ease;
+}
+.shortcut:hover{transform:translateY(-4px) scale(1.012);box-shadow:0 16px 38px rgba(0,0,0,.11)}
+.shortcut:active{transform:scale(.95);transition-duration:90ms}
+.shortcut:focus-visible,.icon-button:focus-visible,.engine-button:focus-visible,.search-submit:focus-visible{
+  outline:3px solid var(--accent-soft);outline-offset:2px;
+}
+.shortcut-icon{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  background:var(--icon-bg);overflow:hidden;
+}
+.shortcut-icon svg{width:27px;height:27px}
+.shortcut-name{font-size:12px;font-weight:550;color:var(--secondary);letter-spacing:.005em}
+.shortcut .remove{
+  position:absolute;right:8px;top:8px;width:24px;height:24px;border:0;border-radius:50%;
+  background:var(--key);display:none;place-items:center;cursor:pointer;
+}
+.editing .shortcut .remove{display:grid}
+.remove svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+.editing .shortcut{cursor:grab}
+.editing .shortcut:active{cursor:grabbing}
 
-        .header-section { display: flex; flex-direction: column; gap: 8px; }
-        .clock-widget { font-size: 14px; color: rgba(255, 255, 255, 0.5); letter-spacing: 2px; }
-        #time-display { font-size: 52px; font-weight: 200; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-        .logo {
-            font-size: 38px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, #a6c1ee 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
+.footer{
+  display:flex;align-items:center;justify-content:space-between;
+  color:var(--tertiary);font-size:11px;min-height:28px;
+}
+.footer kbd{
+  padding:2px 6px;border-radius:6px;background:var(--key);font-size:10px;
+  font-family:inherit;color:var(--secondary);
+}
+.hint{display:flex;align-items:center;gap:6px}
 
-        /* 搜索框 */
-        .search-wrapper {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px;
-            transition: all 0.4s ease;
-        }
+.scrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.20);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity 260ms ease;z-index:20;
+}
+.scrim.visible{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;right:18px;top:18px;width:min(360px,calc(100vw - 36px));
+  padding:22px;border-radius:26px;background:var(--glass-strong);
+  border:1px solid var(--glass-border);box-shadow:var(--shadow);
+  backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);
+  z-index:30;transform:translateY(-12px) scale(.97);opacity:0;pointer-events:none;
+  transform-origin:top right;transition:transform 400ms var(--spring),opacity 220ms ease;
+}
+.sheet.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+.sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.sheet-title{font-size:20px;font-weight:650;letter-spacing:-.025em}
+.close{width:32px;height:32px;border:0;border-radius:50%;background:var(--key);display:grid;place-items:center;cursor:pointer}
+.close:active{transform:scale(.9)}
+.close svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.setting{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:14px 0;border-top:1px solid var(--hairline);
+}
+.setting-label strong{display:block;font-size:14px;font-weight:600}
+.setting-label span{display:block;margin-top:3px;font-size:12px;color:var(--tertiary)}
+.switch{
+  width:46px;height:28px;border:0;border-radius:20px;background:rgba(120,120,128,.22);
+  padding:3px;cursor:pointer;transition:background 180ms ease;
+}
+.switch span{display:block;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform 350ms var(--spring)}
+.switch.on{background:var(--accent)}
+.switch.on span{transform:translateX(18px)}
+.edit-toggle{
+  width:100%;height:42px;border:0;border-radius:13px;background:var(--key);
+  cursor:pointer;font-size:14px;font-weight:600;margin-top:9px;
+  transition:transform 280ms var(--spring),background 180ms ease;
+}
+.edit-toggle:active{transform:scale(.97)}
 
-        .search-wrapper:focus-within {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(79, 126, 255, 0.6);
-        }
+.toast{
+  position:fixed;left:50%;bottom:30px;z-index:50;
+  padding:10px 15px;border-radius:14px;background:rgba(30,30,32,.88);color:#fff;
+  font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.18);
+  opacity:0;transform:translate(-50%,10px);pointer-events:none;
+  transition:opacity 180ms ease,transform 350ms var(--spring);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 
-        .search-engine-select {
-            appearance: none;
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 10px 20px;
-            cursor: pointer;
-            outline: none;
-            font-weight: 600;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .search-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 15px;
-            color: #fff;
-            font-size: 17px;
-            outline: none;
-        }
-
-        .search-button {
-            background: linear-gradient(135deg, #4f7eff, #395bb8);
-            border: none;
-            color: white;
-            padding: 12px 28px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* 快捷链接 */
-        .shortcuts-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr); /* 修改为5列以适应Gmail删除后的数量 */
-            gap: 15px;
-        }
-
-        @media (max-width: 650px) {
-            .shortcuts-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        .shortcut-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 20px 10px;
-            border-radius: 24px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .shortcut-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-8px);
-        }
-
-        .icon-box {
-            width: 36px;
-            height: 36px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .icon-box svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .shortcut-name {
-            font-size: 12px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.85);
-        }
-    </style>
+@media(max-width:760px){
+  .app{padding:24px 18px 18px}
+  .hero{transform:translateY(-3vh)}
+  .shortcuts{grid-template-columns:repeat(3,1fr);gap:10px}
+  .shortcut{min-height:92px;padding:14px 8px}
+  .shortcut:nth-child(4),.shortcut:nth-child(5){display:none}
+  .engine-name{display:none}
+  .engine-button{padding:0 9px}
+  .search{min-height:58px;border-radius:21px;padding-left:15px}
+  .search-submit,.engine-button{height:44px}
+  .search-submit{width:44px;border-radius:15px}
+}
+@media(max-width:430px){
+  .brand-name{font-size:14px}
+  .time{font-size:56px}
+  .date{font-size:13px}
+  .greeting{font-size:16px;margin-bottom:25px}
+  .shortcuts{margin-top:20px}
+  .footer{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation:none!important;
+    transition-duration:120ms!important;
+  }
+  .shortcut:hover{transform:none}
+  .search:focus-within{transform:none}
+  .ambient{display:none}
+}
+@media(prefers-reduced-transparency:reduce){
+  .search,.shortcut,.sheet,.engine-menu{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--glass-strong)}
+}
+@media(prefers-contrast:more){
+  .search,.shortcut,.sheet,.engine-menu{border:1px solid currentColor}
+}
+</style>
 </head>
 <body>
-    <div class="background-blob blob-1"></div>
-    <div class="background-blob blob-2"></div>
-    <div class="background-blob blob-3"></div>
+<div class="ambient" aria-hidden="true"></div>
 
-    <div class="glass-container">
-        <div class="header-section">
-            <div class="clock-widget">
-                <span id="date-display">...</span> • <span id="greeting">你好</span>
-            </div>
-            <div id="time-display">00:00:00</div>
-            <div class="logo">Hoooooot Search</div>
-        </div>
-
-        <div class="search-wrapper">
-            <select id="search-engine-select" class="search-engine-select">
-                <option value="bing">Bing</option>
-                <option value="google">Google</option>
-                <option value="baidu">百度</option>
-                <option value="youtube">YouTube</option>
-            </select>
-            <input type="text" id="search-input" class="search-input" placeholder="探索未知的世界..." autocomplete="off">
-            <button id="search-button" class="search-button">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </div>
-
-        <div class="shortcuts-grid">
-            <!-- Google -->
-            <a href="https://www.google.com" class="shortcut-item">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                </div>
-                <span class="shortcut-name">Google</span>
-            </a>
-
-            <!-- GitHub -->
-            <a href="https://github.com" class="shortcut-item">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#ffffff" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </div>
-                <span class="shortcut-name">GitHub</span>
-            </a>
-
-            <!-- Gemini -->
-            <a href="https://gemini.google.com" class="shortcut-item">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#4E86F8" d="M12 24c0-6.627-5.373-12-12-12 6.627 0 12-5.373 12-12 0 6.627 5.373 12 12 12-6.627 0-12 5.373-12 12Z"/>
-                    </svg>
-                </div>
-                <span class="shortcut-name">Gemini</span>
-            </a>
-
-            <!-- X -->
-            <a href="https://x.com" class="shortcut-item">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
-                    </svg>
-                </div>
-                <span class="shortcut-name">X</span>
-            </a>
-
-            <!-- YouTube -->
-            <a href="https://www.youtube.com" class="shortcut-item">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/>
-                    </svg>
-                </div>
-                <span class="shortcut-name">YouTube</span>
-            </a>
-        </div>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand" aria-label="Hoooooot">
+      <div class="brand-mark">H</div>
+      <div class="brand-name">Hoooooot</div>
     </div>
+    <div class="top-actions">
+      <button class="icon-button" id="editButton" aria-label="编辑快捷方式" title="编辑快捷方式">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+      </button>
+      <button class="icon-button" id="settingsButton" aria-label="设置" title="设置">
+        <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.9 1.9-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.68v-.09a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.9-1.9.06-.06A1.7 1.7 0 0 0 7.8 15a1.7 1.7 0 0 0-1.56-1.03H6V11.3h.24A1.7 1.7 0 0 0 7.8 10a1.7 1.7 0 0 0-.34-1.88L7.4 8.06l1.9-1.9.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.27 5V4h2.68v1a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.9 1.9-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.68h-.04A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+      </button>
+    </div>
+  </header>
 
-    <script>
-        function performSearch() {
-            const query = document.getElementById('search-input').value;
-            const engine = document.getElementById('search-engine-select').value;
-            if (query) {
-                let url;
-                switch(engine) {
-                    case 'bing': url = `https://bing.com/search?q=${encodeURIComponent(query)}`; break;
-                    case 'google': url = `https://www.google.com/search?q=${encodeURIComponent(query)}`; break;
-                    case 'baidu': url = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`; break;
-                    case 'youtube': url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`; break;
-                    default: url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                }
-                window.location.href = url;
-            }
-        }
+  <main class="hero">
+    <div class="date"><span id="dateDisplay">—</span></div>
+    <h1 class="time" id="timeDisplay">00:00</h1>
+    <p class="greeting" id="greeting">你好。</p>
 
-        document.getElementById('search-button').addEventListener('click', performSearch);
-        document.getElementById('search-input').addEventListener('keypress', (e) => e.key === 'Enter' && performSearch());
+    <form class="search-shell" id="searchForm" autocomplete="off">
+      <div class="search">
+        <div class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.8"/><path d="m16.2 16.2 4.3 4.3"/></svg>
+        </div>
+        <input id="searchInput" type="search" placeholder="搜索或输入网址" aria-label="搜索或输入网址" spellcheck="false">
+        <div class="engine" id="engine">
+          <button class="engine-button" type="button" id="engineButton" aria-haspopup="menu" aria-expanded="false">
+            <span class="engine-logo" id="engineLogo"></span>
+            <span class="engine-name" id="engineName">Bing</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="engine-menu" id="engineMenu" role="menu"></div>
+        </div>
+        <button class="search-submit" type="submit" aria-label="搜索">
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m13 6 6 6-6 6"/></svg>
+        </button>
+      </div>
+    </form>
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('time-display').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
-            document.getElementById('date-display').textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
-            
-            const hour = now.getHours();
-            let g = '你好。';
-            if(hour < 5) g = '夜深了，早点睡。';
-            else if(hour < 12) g = '早上好。';
-            else if(hour < 18) g = '下午好。';
-            else g = '晚上好。';
-            document.getElementById('greeting').textContent = g;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
+    <nav class="shortcuts" id="shortcuts" aria-label="快捷网站"></nav>
+  </main>
+
+  <footer class="footer">
+    <div>©Hoooooot 2026</div>
+    <div class="hint"><kbd>⌘</kbd><kbd>K</kbd><span>快速搜索</span></div>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="sheet" id="settingsSheet" aria-label="设置">
+  <div class="sheet-header">
+    <div class="sheet-title">设置</div>
+    <button class="close" id="closeSettings" aria-label="关闭">
+      <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="setting">
+    <div class="setting-label">
+      <strong>跟随系统外观</strong>
+      <span>自动适配浅色与深色模式</span>
+    </div>
+    <button class="switch on" id="appearanceSwitch" aria-label="跟随系统外观"><span></span></button>
+  </div>
+  <div class="setting">
+    <div class="setting-label">
+      <strong>搜索时打开新标签页</strong>
+      <span>保留当前起始页</span>
+    </div>
+    <button class="switch" id="newTabSwitch" aria-label="搜索时打开新标签页"><span></span></button>
+  </div>
+  <button class="edit-toggle" id="sheetEditButton">编辑快捷方式</button>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const engines = {
+  bing: {
+    name: "Bing",
+    search: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
+    logo: `<svg viewBox="0 0 24 24"><path fill="#0A78D1" d="M5 3v12.2l6.5 3.8 5.9-3.4v-3.2l-3.7 2.1-3-1.8 5.1-3L12.7 8 10 9.6V3H5Z"/></svg>`
+  },
+  google: {
+    name: "Google",
+    search: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+    logo: `<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.23c0-.72-.06-1.42-.18-2.09H12v3.96h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.23c1.89-1.74 2.99-4.31 2.99-7.4Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.89 6.61-2.42l-3.23-2.51c-.89.6-2.02.96-3.38.96-2.6 0-4.81-1.76-5.6-4.13H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 13.9a6.1 6.1 0 0 1 0-3.8V7.51H3.06a10 10 0 0 0 0 8.98L6.4 13.9Z"/><path fill="#EA4335" d="M12 5.97c1.47 0 2.79.51 3.83 1.51l2.87-2.87C16.95 2.96 14.7 2 12 2a10 10 0 0 0-8.94 5.51L6.4 10.1C7.19 7.73 9.4 5.97 12 5.97Z"/></svg>`
+  },
+  baidu: {
+    name: "百度",
+    search: q => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}`,
+    logo: `<svg viewBox="0 0 24 24"><path fill="#2932E1" d="M8.3 7.4c-.9 1.2-2.2 1.4-3 .7-.8-.6-.8-1.9-.1-3 .8-1.2 2.1-1.5 2.9-.9.9.6 1 1.9.2 3.2Zm4.3-1.1c-1 .1-1.8-.9-1.9-2.2-.1-1.3.6-2.4 1.6-2.5 1-.1 1.8.9 1.9 2.2.1 1.3-.6 2.4-1.6 2.5Zm5.1 2c-1 .5-2.2-.2-2.7-1.4-.5-1.2-.2-2.5.8-3 1-.5 2.2.2 2.7 1.4.5 1.2.2 2.5-.8 3Zm-9.8 5.1c-.8-.5-1.7-.5-2.4.2-.7.7-.8 1.8-.2 2.6.8 1 2.4 1.1 3.4.4.9-.7 1-2.4-.8-3.2Zm8.5-1.4c-.9-.4-1.9-.1-2.3.7-.5.8-.1 1.8.7 2.4.8.6 2 .5 2.5-.3.5-.8.1-2.2-.9-2.8Zm-3.7-1.5c-1.5 0-2.7 1-2.7 2.3 0 1.3 1.2 2.2 2.7 2.2 1.5 0 2.7-.9 2.7-2.2 0-1.3-1.2-2.3-2.7-2.3Z"/></svg>`
+  },
+  youtube: {
+    name: "YouTube",
+    search: q => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
+    logo: `<svg viewBox="0 0 24 24"><rect x="1.5" y="4.5" width="21" height="15" rx="4" fill="#FF0033"/><path fill="#fff" d="m10 8 6 4-6 4V8Z"/></svg>`
+  }
+};
+
+const sites = [
+  {name:"Google", url:"https://www.google.com", icon:`<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.23c0-.72-.06-1.42-.18-2.09H12v3.96h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.23c1.89-1.74 2.99-4.31 2.99-7.4Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.89 6.61-2.42l-3.23-2.51c-.89.6-2.02.96-3.38.96-2.6 0-4.81-1.76-5.6-4.13H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 13.9a6.1 6.1 0 0 1 0-3.8V7.51H3.06a10 10 0 0 0 0 8.98L6.4 13.9Z"/><path fill="#EA4335" d="M12 5.97c1.47 0 2.79.51 3.83 1.51l2.87-2.87C16.95 2.96 14.7 2 12 2a10 10 0 0 0-8.94 5.51L6.4 10.1C7.19 7.73 9.4 5.97 12 5.97Z"/></svg>`},
+  {name:"GitHub", url:"https://github.com", icon:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.2a10.8 10.8 0 0 0-3.42 21.04c.54.1.74-.23.74-.52v-1.84c-3.01.65-3.65-1.45-3.65-1.45-.49-1.25-1.2-1.58-1.2-1.58-.98-.67.07-.66.07-.66 1.08.08 1.65 1.11 1.65 1.11.96 1.64 2.51 1.17 3.12.89.1-.7.37-1.17.68-1.44-2.4-.27-4.93-1.2-4.93-5.35 0-1.18.42-2.15 1.11-2.91-.11-.27-.48-1.38.1-2.87 0 0 .9-.29 2.97 1.11a10.2 10.2 0 0 1 5.4 0c2.07-1.4 2.97-1.11 2.97-1.11.58 1.49.22 2.6.11 2.87.69.76 1.1 1.73 1.1 2.91 0 4.16-2.53 5.07-4.94 5.34.39.34.73 1 .73 2.02v2.99c0 .29.2.63.75.52A10.8 10.8 0 0 0 12 1.2Z"/></svg>`},
+  {name:"Gemini", url:"https://gemini.google.com", icon:`<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M12 23.2C12 17 7 12 0.8 12 7 12 12 7 12 .8 12 7 17 12 23.2 12 17 12 12 17 12 23.2Z"/></svg>`},
+  {name:"X", url:"https://x.com", icon:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.88-6.38L6.5 22H3.4l7.24-8.28L2.8 2h6.4l4.41 5.83L18.9 2Zm-1.1 17.6h1.72L8.26 4.27H6.42L17.8 19.6Z"/></svg>`},
+  {name:"YouTube", url:"https://www.youtube.com", icon:`<svg viewBox="0 0 24 24"><rect x="1.5" y="4.5" width="21" height="15" rx="4" fill="#FF0033"/><path fill="#fff" d="m10 8 6 4-6 4V8Z"/></svg>`}
+];
+
+const els = {
+  time:document.getElementById("timeDisplay"),
+  date:document.getElementById("dateDisplay"),
+  greeting:document.getElementById("greeting"),
+  input:document.getElementById("searchInput"),
+  form:document.getElementById("searchForm"),
+  engine:document.getElementById("engine"),
+  engineButton:document.getElementById("engineButton"),
+  engineName:document.getElementById("engineName"),
+  engineLogo:document.getElementById("engineLogo"),
+  engineMenu:document.getElementById("engineMenu"),
+  shortcuts:document.getElementById("shortcuts"),
+  app:document.getElementById("app"),
+  edit:document.getElementById("editButton"),
+  sheetEdit:document.getElementById("sheetEditButton"),
+  settings:document.getElementById("settingsSheet"),
+  settingsButton:document.getElementById("settingsButton"),
+  closeSettings:document.getElementById("closeSettings"),
+  scrim:document.getElementById("scrim"),
+  toast:document.getElementById("toast"),
+  appearance:document.getElementById("appearanceSwitch"),
+  newTab:document.getElementById("newTabSwitch")
+};
+
+let currentEngine = localStorage.getItem("hoooooot-engine") || "bing";
+let newTab = localStorage.getItem("hoooooot-newtab") === "1";
+let editing = false;
+
+function updateClock(){
+  const now = new Date();
+  els.time.textContent = now.toLocaleTimeString("zh-CN",{hour12:false,hour:"2-digit",minute:"2-digit"});
+  els.date.textContent = now.toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"long"});
+  const h = now.getHours();
+  els.greeting.textContent =
+    h < 5 ? "夜深了，愿你今晚好梦。" :
+    h < 12 ? "早上好，去发现一点新的东西。" :
+    h < 18 ? "下午好，继续探索这个世界。" :
+    h < 22 ? "晚上好，今天也辛苦了。" :
+    "夜深了，慢一点也没关系。";
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function renderEngine(){
+  const e = engines[currentEngine];
+  els.engineName.textContent=e.name;
+  els.engineLogo.innerHTML=e.logo;
+  els.engineMenu.innerHTML=Object.entries(engines).map(([key,val])=>`
+    <button class="engine-option ${key===currentEngine?"active":""}" role="menuitem" data-engine="${key}">
+      <span class="engine-logo">${val.logo}</span><span>${val.name}</span>
+    </button>`).join("");
+}
+renderEngine();
+
+els.engineButton.addEventListener("click",()=>{
+  const open=els.engine.classList.toggle("open");
+  els.engineButton.setAttribute("aria-expanded",open);
+});
+els.engineMenu.addEventListener("click",e=>{
+  const b=e.target.closest("[data-engine]"); if(!b)return;
+  currentEngine=b.dataset.engine;
+  localStorage.setItem("hoooooot-engine",currentEngine);
+  renderEngine();
+  els.engine.classList.remove("open");
+  els.engineButton.setAttribute("aria-expanded","false");
+  els.input.focus();
+});
+
+document.addEventListener("pointerdown",e=>{
+  if(!els.engine.contains(e.target)) {
+    els.engine.classList.remove("open");
+    els.engineButton.setAttribute("aria-expanded","false");
+  }
+});
+
+function looksLikeURL(value){
+  return /^(https?:\/\/|www\.)/i.test(value) || (/^[^\s]+\.[^\s]+$/.test(value) && !/\s/.test(value));
+}
+els.form.addEventListener("submit",e=>{
+  e.preventDefault();
+  const q=els.input.value.trim();
+  if(!q)return;
+  const url=looksLikeURL(q) ? (q.match(/^https?:\/\//i)?q:"https://"+q) : engines[currentEngine].search(q);
+  if(newTab) window.open(url,"_blank","noopener");
+  else window.location.href=url;
+});
+
+function renderShortcuts(){
+  els.shortcuts.innerHTML=sites.map((s,i)=>`
+    <a class="shortcut" href="${s.url}" data-index="${i}" aria-label="${s.name}">
+      <button class="remove" type="button" aria-label="移除 ${s.name}">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div class="shortcut-icon">${s.icon}</div>
+      <span class="shortcut-name">${s.name}</span>
+    </a>`).join("");
+}
+renderShortcuts();
+
+els.shortcuts.addEventListener("click",e=>{
+  const remove=e.target.closest(".remove");
+  if(remove){
+    e.preventDefault(); e.stopPropagation();
+    const item=remove.closest(".shortcut");
+    const i=Number(item.dataset.index);
+    sites.splice(i,1);
+    renderShortcuts();
+    showToast("已移除快捷方式");
+    return;
+  }
+  if(editing){
+    e.preventDefault();
+  }
+});
+
+function setEditing(value){
+  editing=value;
+  els.app.classList.toggle("editing",editing);
+  els.edit.setAttribute("aria-label",editing?"完成编辑":"编辑快捷方式");
+  els.edit.title=editing?"完成编辑":"编辑快捷方式";
+  if(editing) showToast("按住并拖动即可整理快捷方式");
+}
+els.edit.addEventListener("click",()=>setEditing(!editing));
+els.sheetEdit.addEventListener("click",()=>{
+  setEditing(!editing);
+  closeSettings();
+});
+
+let drag={active:false,index:null,startX:0,startY:0,el:null};
+els.shortcuts.addEventListener("pointerdown",e=>{
+  if(!editing || e.target.closest(".remove")) return;
+  const item=e.target.closest(".shortcut"); if(!item)return;
+  drag={active:true,index:Number(item.dataset.index),startX:e.clientX,startY:e.clientY,el:item};
+  item.setPointerCapture?.(e.pointerId);
+  item.style.zIndex="10";
+  item.style.transition="none";
+});
+els.shortcuts.addEventListener("pointermove",e=>{
+  if(!drag.active)return;
+  const dx=e.clientX-drag.startX,dy=e.clientY-drag.startY;
+  if(Math.hypot(dx,dy)<6)return;
+  drag.el.style.transform=`translate(${dx}px,${dy}px) scale(1.03)`;
+});
+els.shortcuts.addEventListener("pointerup",e=>{
+  if(!drag.active)return;
+  const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(".shortcut");
+  const from=drag.index;
+  if(target && target!==drag.el){
+    const to=Number(target.dataset.index);
+    const moved=sites.splice(from,1)[0];
+    sites.splice(to,0,moved);
+    renderShortcuts();
+    showToast("顺序已更新");
+  }else{
+    drag.el.style.transition="";
+    drag.el.style.transform="";
+  }
+  drag.active=false;
+});
+
+function openSettings(){
+  els.settings.classList.add("open");
+  els.scrim.classList.add("visible");
+}
+function closeSettings(){
+  els.settings.classList.remove("open");
+  els.scrim.classList.remove("visible");
+}
+els.settingsButton.addEventListener("click",openSettings);
+els.closeSettings.addEventListener("click",closeSettings);
+els.scrim.addEventListener("click",closeSettings);
+
+function setSwitch(el,on){
+  el.classList.toggle("on",on);
+  el.setAttribute("aria-pressed",String(on));
+}
+setSwitch(els.newTab,newTab);
+els.newTab.addEventListener("click",()=>{
+  newTab=!newTab;
+  localStorage.setItem("hoooooot-newtab",newTab?"1":"0");
+  setSwitch(els.newTab,newTab);
+});
+els.appearance.addEventListener("click",()=>{
+  showToast("外观将跟随系统设置");
+});
+
+function showToast(text){
+  els.toast.textContent=text;
+  els.toast.classList.add("show");
+  clearTimeout(showToast.t);
+  showToast.t=setTimeout(()=>els.toast.classList.remove("show"),1500);
+}
+
+document.addEventListener("keydown",e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){
+    e.preventDefault(); els.input.focus(); els.input.select();
+  }
+  if(e.key==="Escape"){
+    if(els.settings.classList.contains("open")) closeSettings();
+    else if(els.engine.classList.contains("open")){
+      els.engine.classList.remove("open");
+      els.engineButton.setAttribute("aria-expanded","false");
+    } else if(editing) setEditing(false);
+  }
+});
+</script>
 </body>
 </html>
