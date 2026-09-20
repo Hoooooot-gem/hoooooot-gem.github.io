@@ -226,6 +226,13 @@
     <h1>Hoooooot's Global</h1>
     <p>Enlarge the World.</p>
 </main>
+<script>
+    fetch('https://ipapi.co/country/')
+        .then(response => response.text())
+        .then(country => {
+            console.log('访客国家代码:', country);
+        });
+</script>
 
 <script src="js/script.js"></script>
 
