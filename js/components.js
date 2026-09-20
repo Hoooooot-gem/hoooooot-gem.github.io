@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 2. 获取并插入底栏
         const footerResponse = await fetch('/footer.html');
         const footerHTML = await footerResponse.text();
-        const mainTag = document.querySelector('main');
+        const mainTag = document.querySelectorAll('main')[document.querySelectorAll('main').length - 1];
         if (mainTag) {
             mainTag.insertAdjacentHTML('afterend', footerHTML);
         }
