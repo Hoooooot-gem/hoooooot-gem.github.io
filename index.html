@@ -228,12 +228,9 @@
 </main>
 <script>
     fetch('https://ipapi.co/country/')
-<script>
-    fetch('https://ipapi.co/country/')
         .then(response => response.text())
         .then(country => {
             console.log('访客国家代码：', country);
-
             if (country === 'CN') {
                 document.getElementById('china-home').style.display = 'block';
                 document.getElementById('global-home').style.display = 'none';
