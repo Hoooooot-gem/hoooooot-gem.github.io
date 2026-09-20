@@ -58,7 +58,8 @@
 </div>
 
 <!-- ==================== 页面主内容区 ==================== -->
-<main id="china-home">
+<main id="china-home" style="visibility: hidden;">
+    <!-- 中国用户专属内容  -->
     
     <!-- 1. Hero 首页区域 -->
     <section id="hero" class="section hero" aria-label="首页">
@@ -222,23 +223,28 @@
 
 </main>
 
-<main id="global-home" style="display: none;">
+<main id="global-home" style="display: none; visibility: hidden;">
+    <!-- Global 首页 -->
     <h1>Hoooooot's Global</h1>
     <p>Enlarge the World.</p>
 </main>
 
 <script>
-    fetch('https://ipapi.co/this-is-a-test/')
+    fetch('https://ipapi.co/country/')
         .then(response => response.text())
         .then(country => {
             console.log('访客国家代码：', country);
 
             if (country === 'CN') {
                 document.getElementById('china-home').style.display = 'block';
+                document.getElementById('china-home').style.visibility = 'visible';
+
                 document.getElementById('global-home').style.display = 'none';
             } else {
                 document.getElementById('china-home').style.display = 'none';
+
                 document.getElementById('global-home').style.display = 'block';
+                document.getElementById('global-home').style.visibility = 'visible';
             }
         })
         .catch(error => {
