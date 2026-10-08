@@ -23,8 +23,14 @@
     <!-- ==================== 引用 CSS 文件 ==================== -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="/manifest.json">
+    <style>
+        body.region-pending #china-home,
+        body.region-pending #global-home {
+            visibility: hidden;
+        }
+    </style>
 </head>
-<body>
+<body class="region-pending">
 
 <!-- ==================== 右下角胶囊播放栏 ==================== -->
 <div id="player-wrapper" class="player-wrapper">
@@ -78,38 +84,6 @@
         
         <div class="hero-content">
             <h1 class="hero-title">Hoooooot</h1>
-        </div>
-    </section>
-
-    <!-- 2.1 黑客帝国区域 -->
-    <section id="hacker-empire" class="section hacker-empire" aria-label="黑客帝国">
-        <div class="container">
-            <h2 class="section-title">黑客帝国</h2>
-            <div class="hacker-content">
-                <div class="hacker-text">
-                    <p>跟我来，三天成为黑客。</p>
-                    <p class="hacker-sub">关注 bilibili 账号，我们在直播间见。</p>
-                </div>
-                <a href="https://live.bilibili.com/1700657549" target="_blank" rel="noopener noreferrer" class="hacker-button" aria-label="进入直播间">
-                    进入直播间 <span class="arrow">→</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. Summer Camp 夏令营区域 -->
-    <section id="summer-camp" class="section summer-camp" aria-label="夏令营课程">
-        <div class="container">
-            <h2 class="section-title">Hoooooot's Summer Camp</h2>
-            <div class="camp-content">
-                <div class="camp-text">
-                    <p>从拍摄参数、剪辑节奏到电影感调色，手把手带你掌握影像创作的完整流程。</p>
-                    <p>包含实战演示、独家 LUT 分享。</p>
-                </div>
-                <a href="/proj/2026/HSC/" class="camp-button" aria-label="进入课程页面">
-                    进入课程 <span class="arrow">→</span>
-                </a>
-            </div>
         </div>
     </section>
 
@@ -196,7 +170,7 @@
                         <span class="social-label">
                             <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
                         </span>
-                        <div class="qr-popup" id="wechat-qr">
+                        <div class="qr-popup">
                             <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
                         </div>
                     </div>
@@ -224,18 +198,145 @@
 </main>
 
 <main id="global-home" style="display: none; visibility: hidden;">
-    <!-- Global 首页 -->
-    <h1>Hoooooot's Global</h1>
-    <p>Enlarge the World.</p>
+    <!-- 国际首页  -->
+    
+    <!-- 1. Hero 首页区域 -->
+    <section id="hero" class="section hero" aria-label="Home">
+        <div class="hero-bg-image">
+            <video 
+                src="/images/hero-bg.mp4" 
+                poster="/images/hero-bg.webp" 
+                preload="metadata" 
+                autoplay 
+                muted 
+                loop 
+                playsinline>
+                <img src="/images/hero-bg.webp" alt="Hoooooot background" loading="lazy">
+            </video>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Hoooooot</h1>
+        </div>
+    </section>
+
+    <!-- 2.2 实用工具区域（新增） -->
+    <section id="tools" class="section tools" aria-label="Tools">
+        <div class="container">
+            <h2 class="section-title">Tools</h2>
+            <div class="tools-grid">
+                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <span class="tool-icon">⌨️</span>
+                    <span class="tool-name">Typing Practice</span>
+                </a>
+                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <span class="tool-icon">📶</span>
+                    <span class="tool-name">Connection Test</span>
+                </a>
+                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <span class="tool-icon">🎨</span>
+                    <span class="tool-name">Color Palette</span>
+                </a>
+                <a href="https://hoooooot-gem.wikioasis.org/wiki/%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <span class="tool-icon">🧰</span>
+                    <span class="tool-name">More Tools</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. About 关于区域 -->
+    <section id="about" class="section about" aria-label="关于">
+        <div class="container">
+            <h2 class="section-title">关于</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
+                </div>
+                <div class="about-tags">
+                    <span class="tag">剪辑</span>
+                    <span class="tag">调色</span>
+                    <span class="tag">设计</span>
+                    <span class="tag">创意</span>
+                    <span class="tag">故事</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Portfolio 画廊区域 -->
+    <section id="portfolio" class="section portfolio" aria-label="作品集">
+        <div class="container">
+            <h2 class="section-title">画廊</h2>
+            <div class="gallery-wrapper">
+                <div class="carousel-track" id="gallery-track"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Timeline 历程区域 -->
+    <section id="timeline" class="section timeline" aria-label="历程">
+        <div class="container">
+            <h2 class="section-title">历程</h2>
+            <div class="timeline-list">
+                <div class="timeline-item">
+                    <span class="year">2026</span>
+                    <div class="desc">独立创作阶段，搭建个人数字空间。</div>
+                </div>
+                <div class="timeline-item">
+                    <span class="year">2025</span>
+                    <div class="desc">深入探索影像制作与设计美学的边界。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Contact 联系区域 -->
+    <section id="contact" class="section contact" aria-label="联系">
+        <div class="container">
+            <h2 class="section-title">联系</h2>
+            <div class="contact-info">
+                <span class="contact-email">shurinkycn@gmail.com</span>
+                
+                <div class="social-links">
+                    <div class="social-item wechat-item">
+                        <span class="social-label">
+                            <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
+                        </span>
+                        <div class="qr-popup">
+                            <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
+                        </div>
+                    </div>
+
+                    <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/youtubesvg.svg" alt="YouTube" class="social-img" loading="lazy">
+                    </a>
+
+                    <a href="https://space.bilibili.com/3707026240702873" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/bilibilisvg.svg" alt="Bilibili" class="social-img" loading="lazy">
+                    </a>
+                    
+                    <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/douyinsvg.svg" alt="抖音" class="social-img" loading="lazy">
+                    </a>
+
+                    <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </main>
 
 <script>
-    fetch('https://ipapi.co/country/')
-        .then(response => response.text())
+    fetch('https://countries.dev/ip')
+        .then(response => response.json())
         .then(country => {
-            console.log('访客国家代码：', country);
+            console.log('访客国家代码：', country.countryCode);
 
-            if (country === 'CN') {
+            if (country.countryCode === 'CN') {
                 document.getElementById('china-home').style.display = 'block';
                 document.getElementById('china-home').style.visibility = 'visible';
 
@@ -251,7 +352,10 @@
             console.error('IP 地区检测失败：', error);
 
             document.getElementById('china-home').style.display = 'block';
+            document.getElementById('china-home').style.visibility = 'visible';
             document.getElementById('global-home').style.display = 'none';
+
+            document.body.classList.remove('region-pending');
         });
 </script>
 

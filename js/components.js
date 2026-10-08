@@ -21,10 +21,57 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // 点击菜单内的链接后，自动收起菜单（和之前逻辑保持一致）
             navLinks.forEach(link => {
-                link.addEventListener('click', () => {
+
+                link.addEventListener('click', (e) => {
+
                     hamburger.classList.remove('active');
                     navMenu.classList.remove('active');
+
+                    const href = link.getAttribute('href');
+
+                    // 只处理首页内部的锚点链接
+                    if (href && href.startsWith('/#')) {
+
+                        e.preventDefault();
+
+                        const targetId = href.substring(2);
+
+                        const homeVersions = document.querySelectorAll('#china-home, #global-home');
+
+                        let activeHome = null;
+
+                        homeVersions.forEach(home => {
+
+                            const style = getComputedStyle(home);
+
+                            if (
+                                style.display !== 'none' &&
+                                style.visibility !== 'hidden'
+                            ) {
+                                activeHome = home;
+                            }
+
+                        });
+
+                        if (activeHome) {
+
+                            const target = activeHome.querySelector(`#${targetId}`);
+
+                            if (target) {
+
+                                target.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+
+                            }
+
+                        }
+
+                    }
+
                 });
+
             });
         }
 

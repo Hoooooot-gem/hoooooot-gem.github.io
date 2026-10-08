@@ -44,11 +44,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ==================== 4. 视频号二维码交互逻辑 ====================
-    const wechatItem = document.querySelector('.wechat-item');
-    const qrPopup = document.getElementById('wechat-qr');
-    if (wechatItem && qrPopup) {
-        wechatItem.addEventListener('mouseenter', () => { qrPopup.classList.add('active'); });
-        wechatItem.addEventListener('mouseleave', () => { qrPopup.classList.remove('active'); });
+    const wechatItems = document.querySelectorAll('.wechat-item');
+    wechatItems.forEach(wechatItem => {
+        const qrPopup = wechatItem.querySelector('.qr-popup');
+        if (!qrPopup) return;
+        wechatItem.addEventListener('mouseenter', () => {
+            qrPopup.classList.add('active');
+        });
+        wechatItem.addEventListener('mouseleave', () => {
+            qrPopup.classList.remove('active');
+        });
         wechatItem.addEventListener('click', (e) => {
             e.stopPropagation();
             qrPopup.classList.toggle('active');
@@ -58,14 +63,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 qrPopup.classList.remove('active');
             }
         });
-    }
+    });
 
-    // ==================== 5. 画廊无限跑马灯 ====================
-    (function() {
-        const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
-        if (galleryImages.length === 0) return;
-        const track = document.getElementById('gallery-track');
-        if (!track) return;
+// ==================== 5. 画廊无限跑马灯 ====================
+(function() {
+    const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
+    if (galleryImages.length === 0) return;
+    const tracks = document.querySelectorAll('#gallery-track');
+    if (tracks.length === 0) return;
+    tracks.forEach(track => {
         galleryImages.forEach(url => {
             const div = document.createElement('div');
             div.className = 'carousel-item';
@@ -77,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
             track.appendChild(item.cloneNode(true));
         });
         track.style.animationDuration = (galleryImages.length * 4) + 's';
-    })();
+    });
+})();
 
     // ==================== 6. 滚动控制顶栏与播放栏同步浮现 ====================
     window.addEventListener('scroll', () => {
