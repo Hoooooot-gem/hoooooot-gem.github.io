@@ -60,14 +60,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // UI 交互邏輯
-        const uiPanel = document.getElementById('uiPanel');
-        const toggleBtn = document.getElementById('toggleBtn');
-        
-        toggleBtn.addEventListener('click', () => {
-            uiPanel.classList.toggle('collapsed');
-        });
-
         // 三維核心邏輯
         let camera, scene, renderer, sphere;
         let isUserInteracting = false;
