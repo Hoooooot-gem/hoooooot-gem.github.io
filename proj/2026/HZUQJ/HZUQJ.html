@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoooooot's · 惠院全景</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #050505; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #eee;
+        }
+        #canvas-container { 
+            width: 100vw; 
+            height: 100vh; 
+            cursor: grab; 
+        }
+        #canvas-container:active {
+            cursor: grabbing;
+        }
+        #footer-note {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            padding: 14px 16px;
+            box-sizing: border-box;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 12px;
+            line-height: 1.4;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: none;
+            z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading">正在初始化...</div>
+
+
+    <div id="canvas-container"></div>
+    <div id="footer-note">拖动画面以观察周围｜© Hoooooot 2026</div>
+
+    <!-- 離線使用時，可下載並替換此 script 標籤內容 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // UI 交互邏輯
+        const uiPanel = document.getElementById('uiPanel');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        toggleBtn.addEventListener('click', () => {
+            uiPanel.classList.toggle('collapsed');
+        });
+
+        // 三維核心邏輯
+        let camera, scene, renderer, sphere;
+        let isUserInteracting = false;
+        let lon = 0, lat = 0;
+        let phi = 0, theta = 0;
+        let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
+        let onPointerDownLon = 0, onPointerDownLat = 0;
+
+        const container = document.getElementById('canvas-container');
+        const loading = document.getElementById('loading');
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+            
+            const geometry = new THREE.SphereGeometry(500, 64, 32);
+            geometry.scale(-1, 1, 1);
+
+            const material = new THREE.MeshBasicMaterial({ color: 0x111111 });
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            container.addEventListener('pointerdown', onPointerDown);
+            container.addEventListener('wheel', onDocumentMouseWheel);
+            window.addEventListener('resize', onWindowResize);
+
+            loading.style.display = 'block';
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(
+                '/images/HZUQJ.jpg',
+                function(texture) {
+                    texture.minFilter = THREE.LinearFilter;
+                    texture.magFilter = THREE.LinearFilter;
+                    sphere.material.map = texture;
+                    sphere.material.color.set(0xffffff);
+                    sphere.material.needsUpdate = true;
+                    loading.style.display = 'none';
+                },
+                undefined,
+                function() {
+                    loading.style.display = 'none';
+                }
+            );
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onPointerDown(event) {
+            isUserInteracting = true;
+            onPointerDownPointerX = event.clientX;
+            onPointerDownPointerY = event.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointerup', onPointerUp);
+        }
+
+        function onPointerMove(event) {
+            if (isUserInteracting) {
+                lon = (onPointerDownPointerX - event.clientX) * 0.15 + onPointerDownLon;
+                lat = (event.clientY - onPointerDownPointerY) * 0.15 + onPointerDownLat;
+            }
+        }
+
+        function onPointerUp() {
+            isUserInteracting = false;
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onPointerUp);
+        }
+
+        function onDocumentMouseWheel(event) {
+            const fov = camera.fov + event.deltaY * 0.05;
+            camera.fov = Math.max(10, Math.min(100, fov));
+            camera.updateProjectionMatrix();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+        }
+
+        function update() {
+            lat = Math.max(-85, Math.min(85, lat));
+            phi = THREE.MathUtils.degToRad(90 - lat);
+            theta = THREE.MathUtils.degToRad(lon);
+
+            const x = 500 * Math.sin(phi) * Math.cos(theta);
+            const y = 500 * Math.cos(phi);
+            const z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(x, y, z);
+            renderer.render(scene, camera);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
