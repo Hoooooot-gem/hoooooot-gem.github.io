@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高三5班 · 滚动祝福壁纸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fffef7;
+            background-image: radial-gradient(circle at 30% 40%, rgba(255, 235, 200, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(220, 240, 255, 0.3) 0%, transparent 50%);
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Serif SC", "楷体", "KaiTi", serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* 全屏提示 */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #b4946e;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            background: rgba(255, 252, 240, 0.9);
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 8px 24px rgba(120, 80, 40, 0.15);
+            z-index: 10;
+            transition: opacity 1s;
+            pointer-events: none;
+        }
+
+        /* 主滚动容器 */
+        .scroll-wrapper {
+            width: 85%;
+            max-width: 850px;
+            height: 100vh;
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+            opacity: 0;
+            transition: opacity 1.5s;
+        }
+
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            animation: scrollUp 100s linear infinite;
+        }
+
+        .scroll-track:hover {
+            animation-play-state: paused;
+        }
+
+        .card {
+            background: rgba(255, 252, 245, 0.88);
+            backdrop-filter: blur(4px);
+            border: 1px solid #e6d7bd;
+            border-radius: 18px;
+            padding: 18px 22px;
+            margin: 14px 0;
+            box-shadow: 0 6px 16px rgba(140, 100, 50, 0.07);
+        }
+
+        .parent-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #5e3e1c;
+            margin-bottom: 6px;
+            border-bottom: 1px dotted #ddccaa;
+            padding-bottom: 6px;
+        }
+
+        .parent-name::before {
+            content: "🌸 ";
+        }
+
+        .blessing-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #3d3226;
+            white-space: pre-wrap;
+        }
+
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hint" id="hint">🌸 点击任意位置，开始全屏祝福 🌸</div>
+
+    <div class="scroll-wrapper" id="scrollWrapper">
+        <div class="scroll-track" id="scrollTrack"></div>
+    </div>
+
+    <script>
+        // 全部47位家长祝福
+        const parents = [
+            { name: "曾俊鹏妈妈", text: "愿孩子们高考顺利！金榜题名！一举夺魁！" },
+            { name: "任殊啸妈妈", text: "愿孩子们提笔从容自信，合笔如愿以偿，高考加油，旗开得胜！" },
+            { name: "毛近文妈妈", text: "祝孩子们金榜题名！一举夺魁！蟾宫折桂！" },
+            { name: "潘俊哲妈妈(虎门)", text: "细佬，明天就是你18岁的生日了，爸爸妈妈祝你心想事成，一举高中🎉我们文字水平不高，一切尽在不言中哈😄最后也祝愿高三5班的同学们高考顺利，一举夺魁💪💪💪" },
+            { name: "郑睿妈妈", text: "祝孩子们高考顺利，金榜题名！" },
+            { name: "刘瑞宇妈妈", text: "祝孩子们高考顺顺利利，胸有成竹，下笔有神，考的都会，蒙的全对，一举夺魁！！" },
+            { name: "吴婉滢妈妈", text: "孩子，愿你沉心静气，自信挥毫，无论结果如何，你在我们心中都是最棒的！祝高三5班的孩子们高考顺利，旗开得胜！" },
+            { name: "靳源妈妈", text: "高考在即，愿孩子心莫慌，沉着冷静步步强，高考顺利，金榜题名🎉🎉🎉" },
+            { name: "杨晨雅妈妈", text: "这些日子里的晨光与夜灯都记得你的努力，请相信付出的每一分钟都会开花结果。放松心态，稳稳发挥！加油💪💪💪" },
+            { name: "郑晗爸爸", text: "以梦为马，不负韶华！祝同学们高考胜利！" },
+            { name: "汪志杰妈妈", text: "祝愿孩子们✍️提笔从容 ，收笔自信，高考大捷   金榜题名" },
+            { name: "黄筱雅妈妈", text: "“世称荷花有五德：清、净、真、直、和。愿你入考场时——心神清，杂念净，下笔真，气节直，心境和。如此，便是最好的发挥，不负一池盛夏。”" },
+            { name: "刘怀桧爸爸", text: "祝孩子们：高考顺利，金榜题名，考的都会，做的全对，胸有成竹，挥毫自如，一举夺魁" },
+            { name: "郑睿铭妈妈", text: "祝孩子们金榜题名！一举夺魁！蟾宫折桂！" },
+            { name: "岳长春妈妈", text: "放平心态，从容作答，正常发挥就好。愿日夜付出皆有收获，愿每一位追梦少年，前程似锦，得偿所愿" },
+            { name: "曾丽婷妈妈", text: "祝愿孩子们高考，从容应考，考的都会，蒙的全对。金榜题名！💪💪💪" },
+            { name: "何浩天爸爸", text: "祝孩子们：高考顺利，金榜题名，考的都会，做的全对，胸有成竹，挥毫自如，一举夺魁" },
+            { name: "詹耿至妈妈", text: "寒窗苦读终有报，金榜题名正当时。" },
+            { name: "王译妈妈", text: "以笔为刃，逐梦前行，愿我们全班旗开得胜，金榜题名！" },
+            { name: "刘佳熙妈妈", text: "十二载磨剑，一朝试锋芒。愿你心有丘壑，笔底生光，旗开得胜，如愿前往你向往的远方。" },
+            { name: "麦梓俊妈妈", text: "旗开得胜、超常发挥，圆梦考场、得偿所愿，金榜题名💪💪" },
+            { name: "李明慧妈妈", text: "低头是题海，抬头是未来。提笔战四方，合笔心无恙。努力过后都是晴天。祝孩子们高考顺利，旗开得胜，金榜题名！" },
+            { name: "黄文蔚妈妈", text: "超常发挥！圆梦大学！旗开得胜，好运常绕。" },
+            { name: "郑梓雯爸爸", text: "栀子花开季，金榜题名时，祝愿孩子们一切从容，出色发挥。" },
+            { name: "邓思凡妈妈", text: "孩子，星光不负赶路人，你尽管向前，爸妈一直都在，祝三(5)班高考顺利，金榜题名" },
+            { name: "肖泽希妈妈", text: "祝孩子们高考顺利，超常发挥，金榜题名！" },
+            { name: "莫萧蔓妈妈", text: "所有努力都有所收获，所有坚持皆得圆满，笔下生花，金榜题名！加油，熠熠生辉的崭新未来在等着你！" },
+            { name: "栗宇祥爸爸", text: "祝愿高三（5）的孩子们高考顺利，金榜题名  迈向人生的新起点  加油！" },
+            { name: "蒋哲妈妈", text: "孩子们，那些被汗水浸湿的校服，那些在错题本上反复标注的红笔痕迹，都将汇聚成最闪亮的勋章！褪去紧张，沉着应考！以最好状态迎接挑战！繁花盛放，奔赴盛夏佳期！少年意气，直指高考战场！把积攒的所有努力与勇气，化作从容落笔的力量！愿你们，高考顺利，金榜题名，顶峰相见" },
+            { name: "詹子硕妈妈", text: "硕儿：加油！5班的孩子们加油！愿高考顺利！金榜题名！" },
+            { name: "罗湘盈妈妈", text: "祝班里所有孩子高考顺利，提笔从容，金榜题名，未来闪闪发光！" },
+            { name: "梁庆林妈妈", text: "祝班里所有孩子们高考胜出，金榜题名。" },
+            { name: "钟奥成爸爸", text: "孩子们，应对高考咱们的老师是最有经验的，按照老师交待的注意细节落实并坚持下去。相信相信的力量！祝五班的每位同学都能超常发挥，高考旗开得胜，加油！" },
+            { name: "刘冠东妈妈", text: "孩子，高考只是人生其中一站，尽力就无遗憾，不管结果如何，我们都为你骄傲。" },
+            { name: "向伟琪妈妈", text: "㊗️孩子们，沉稳冷静，顺顺利利，金榜题名" },
+            { name: "田瑞霖妈妈", text: "高考只是一站 ，人生长路漫漫，尽力便是圆满 祝你们高考顺遂  加油⛽" },
+            { name: "文涛爸爸", text: "祝孩子们：提笔全会，落笔全对" },
+            { name: "陈心妍妈妈", text: "祝孩子们：金榜题名，前程似锦，高考顺利，加油" },
+            { name: "吴文涛妈妈", text: "愿孩子们提笔从容，落笔生花，超常发挥，金榜题名，前程似锦未来可期！" },
+            { name: "陈航烨爸爸", text: "祝孩子们：金榜题名，旗开得胜" },
+            { name: "陈航烨爸爸妈妈", text: "祝孩子们：以梦为马，不负韶华，提笔征战，一举夺魁！" },
+            { name: "韦成镝妈妈", text: "祝孩子们文思泉涌，下笔有神，一举高中，金榜题名！" },
+            { name: "黄晓漩妈咪", text: "祝孩子们超常发挥，金榜题名。" },
+            { name: "唐露敏妈妈", text: "愿孩子们高考顺利，金榜题名，考上自己心仪的学校。" },
+            { name: "李思悦妈妈", text: "祝愿孩子们从容应考，落笔生花！一切顺利！" },
+            { name: "赖怡萱妈妈", text: "高考是你们18岁的见证，也是12年努力学习的一个阶段性成果验收，希望你们在这人生的第一个转折点交一副从容且漂亮的作业，愿你们提笔如有神，落笔如生花；金蟾折桂，雁塔提名。" }
+        ];
+
+        const track = document.getElementById('scrollTrack');
+        const cardHTML = parents.map(p => `
+            <div class="card">
+                <div class="parent-name">${p.name}</div>
+                <div class="blessing-text">${p.text}</div>
+            </div>
+        `).join('');
+        // 复制两份实现无缝循环
+        track.innerHTML = cardHTML + cardHTML;
+
+        const wrapper = document.getElementById('scrollWrapper');
+        const hint = document.getElementById('hint');
+
+        // 点击任意位置进入全屏并开始滚动
+        document.body.addEventListener('click', () => {
+            if (document.fullscreenElement) return;
+            document.documentElement.requestFullscreen().then(() => {
+                hint.style.opacity = '0';
+                wrapper.style.opacity = '1';
+                setTimeout(() => {
+                    hint.style.display = 'none';
+                }, 1500);
+            }).catch(() => {
+                // 如果浏览器阻止自动全屏（需用户手势），此时点击已经触发，再次请求
+                alert('请按 F11 进入全屏模式，效果更佳');
+                hint.style.opacity = '0';
+                wrapper.style.opacity = '1';
+            });
+        });
+
+        // 如果用户手动按了F11，也自动隐藏提示
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                hint.style.opacity = '0';
+                wrapper.style.opacity = '1';
+            } else {
+                wrapper.style.opacity = '1'; // 退出全屏也保持可见
+                hint.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
