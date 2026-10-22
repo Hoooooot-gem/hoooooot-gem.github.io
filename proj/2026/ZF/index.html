@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高三5班 · 滚动祝福壁纸</title>
+    <title>高三5班 · 滚动祝福</title>
     <style>
         * {
             margin: 0;
@@ -21,26 +21,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
             user-select: none;
-        }
-
-        /* 全屏提示 */
-        .hint {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #b4946e;
-            font-size: 1.8rem;
-            letter-spacing: 4px;
-            background: rgba(255, 252, 240, 0.9);
-            padding: 20px 40px;
-            border-radius: 50px;
-            box-shadow: 0 8px 24px rgba(120, 80, 40, 0.15);
-            z-index: 10;
-            transition: opacity 1s;
-            pointer-events: none;
         }
 
         /* 主滚动容器 */
@@ -51,18 +32,12 @@
             overflow: hidden;
             mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-            opacity: 0;
-            transition: opacity 1.5s;
         }
 
         .scroll-track {
             display: flex;
             flex-direction: column;
             animation: scrollUp 100s linear infinite;
-        }
-
-        .scroll-track:hover {
-            animation-play-state: paused;
         }
 
         .card {
@@ -106,8 +81,6 @@
     </style>
 </head>
 <body>
-    <div class="hint" id="hint">🌸 点击任意位置，开始全屏祝福 🌸</div>
-
     <div class="scroll-wrapper" id="scrollWrapper">
         <div class="scroll-track" id="scrollTrack"></div>
     </div>
@@ -172,37 +145,6 @@
         `).join('');
         // 复制两份实现无缝循环
         track.innerHTML = cardHTML + cardHTML;
-
-        const wrapper = document.getElementById('scrollWrapper');
-        const hint = document.getElementById('hint');
-
-        // 点击任意位置进入全屏并开始滚动
-        document.body.addEventListener('click', () => {
-            if (document.fullscreenElement) return;
-            document.documentElement.requestFullscreen().then(() => {
-                hint.style.opacity = '0';
-                wrapper.style.opacity = '1';
-                setTimeout(() => {
-                    hint.style.display = 'none';
-                }, 1500);
-            }).catch(() => {
-                // 如果浏览器阻止自动全屏（需用户手势），此时点击已经触发，再次请求
-                alert('请按 F11 进入全屏模式，效果更佳');
-                hint.style.opacity = '0';
-                wrapper.style.opacity = '1';
-            });
-        });
-
-        // 如果用户手动按了F11，也自动隐藏提示
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                hint.style.opacity = '0';
-                wrapper.style.opacity = '1';
-            } else {
-                wrapper.style.opacity = '1'; // 退出全屏也保持可见
-                hint.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
