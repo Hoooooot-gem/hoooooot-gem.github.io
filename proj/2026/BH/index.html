@@ -3,38 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <title>Hoooooot Search</title>
 <style>
+/* 固定使用深色配色，不再读取或切换系统外观。 */
 :root{
-  --bg:#f5f5f7;
-  --bg-rgb:245,245,247;
-  --text:#1d1d1f;
-  --secondary:rgba(29,29,31,.62);
-  --tertiary:rgba(29,29,31,.42);
-  --glass:rgba(255,255,255,.62);
-  --glass-strong:rgba(255,255,255,.78);
-  --glass-border:rgba(255,255,255,.68);
-  --shadow:0 24px 70px rgba(0,0,0,.10),0 2px 10px rgba(0,0,0,.06);
-  --hairline:rgba(29,29,31,.10);
-  --accent:#0071e3;
-  --accent-soft:rgba(0,113,227,.11);
-  --input:rgba(255,255,255,.72);
-  --key:rgba(29,29,31,.07);
-  --icon-bg:rgba(29,29,31,.055);
+  color-scheme:dark;
+  --bg:#050506;
+  --bg-rgb:5,5,6;
+  --text:#f5f5f7;
+  --secondary:rgba(245,245,247,.64);
+  --tertiary:rgba(245,245,247,.40);
+  --glass:rgba(28,28,30,.60);
+  --glass-strong:rgba(30,30,32,.78);
+  --glass-border:rgba(255,255,255,.12);
+  --shadow:0 28px 80px rgba(0,0,0,.40),0 2px 14px rgba(0,0,0,.22);
+  --accent:#2997ff;
+  --accent-soft:rgba(41,151,255,.16);
+  --input:rgba(28,28,30,.74);
+  --key:rgba(255,255,255,.08);
+  --icon-bg:rgba(255,255,255,.07);
   --spring:cubic-bezier(.22,1,.36,1);
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#050506; --bg-rgb:5,5,6; --text:#f5f5f7;
-    --secondary:rgba(245,245,247,.64); --tertiary:rgba(245,245,247,.40);
-    --glass:rgba(28,28,30,.60); --glass-strong:rgba(30,30,32,.78);
-    --glass-border:rgba(255,255,255,.12);
-    --shadow:0 28px 80px rgba(0,0,0,.40),0 2px 14px rgba(0,0,0,.22);
-    --hairline:rgba(255,255,255,.10); --accent:#2997ff;
-    --accent-soft:rgba(41,151,255,.16); --input:rgba(28,28,30,.74);
-    --key:rgba(255,255,255,.08); --icon-bg:rgba(255,255,255,.07);
-  }
 }
 *{box-sizing:border-box}
 html,body{width:100%;height:100%;margin:0}
@@ -51,16 +40,10 @@ button{color:inherit}
 .ambient{
   position:fixed; inset:-18%; pointer-events:none; z-index:-2;
   background:
-    radial-gradient(42% 45% at 18% 18%, rgba(120,180,255,.20), transparent 72%),
-    radial-gradient(40% 46% at 84% 80%, rgba(205,160,255,.15), transparent 70%),
-    radial-gradient(35% 38% at 54% 48%, rgba(255,255,255,.30), transparent 75%);
-  filter:blur(38px); opacity:.9;
-}
-@media(prefers-color-scheme:dark){
-  .ambient{opacity:.48; background:
     radial-gradient(42% 45% at 15% 18%,rgba(25,95,180,.34),transparent 72%),
     radial-gradient(40% 46% at 85% 82%,rgba(100,55,170,.28),transparent 70%),
-    radial-gradient(35% 38% at 52% 50%,rgba(255,255,255,.05),transparent 75%)}
+    radial-gradient(35% 38% at 52% 50%,rgba(255,255,255,.05),transparent 75%);
+  filter:blur(38px); opacity:.48;
 }
 
 .app{
@@ -68,31 +51,6 @@ button{color:inherit}
   margin:auto; padding:clamp(28px,6vh,72px) clamp(22px,5vw,72px) 30px;
   display:flex; flex-direction:column;
 }
-.topbar{
-  display:flex; justify-content:space-between; align-items:center;
-  min-height:36px;
-}
-.brand{
-  display:flex; align-items:center; gap:10px; user-select:none;
-}
-.brand-mark{
-  width:28px;height:28px;border-radius:9px;
-  display:grid;place-items:center;
-  background:var(--text); color:var(--bg);
-  font-weight:800; font-size:13px; letter-spacing:-.06em;
-  box-shadow:0 2px 8px rgba(0,0,0,.12);
-}
-.brand-name{font-size:15px;font-weight:650;letter-spacing:-.015em}
-.top-actions{display:flex;gap:7px}
-.icon-button{
-  width:36px;height:36px;border:0;border-radius:50%;
-  background:transparent; display:grid;place-items:center;
-  cursor:pointer; transition:transform 280ms var(--spring),background 180ms ease;
-}
-.icon-button:hover{background:var(--key)}
-.icon-button:active{transform:scale(.91)}
-.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
 .hero{
   width:min(100%,790px); margin:auto;
   display:flex; flex-direction:column; align-items:center;
@@ -145,8 +103,12 @@ button{color:inherit}
 }
 .engine-button:hover{background:var(--key)}
 .engine-button:active{transform:scale(.96)}
-.engine-logo{width:20px;height:20px;display:grid;place-items:center}
-.engine-logo svg{width:100%;height:100%}
+.engine-logo{width:20px;height:20px;display:grid;place-items:center;flex:none}
+.engine-logo svg{display:block;width:100%;height:100%}
+/* Bing 的官方图形纵向比例较长，稍向右作视觉居中。 */
+.engine-logo--bing{width:20px;height:24px;transform:translateX(1px)}
+.engine-logo--bing svg{width:16px;height:24px}
+.engine-logo--baidu svg{width:20px;height:20px}
 .engine-name{font-size:13px;font-weight:600}
 .chevron{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;opacity:.55}
 .search-submit{
@@ -178,103 +140,40 @@ button{color:inherit}
 .engine-option span{font-size:14px;font-weight:550}
 
 .shortcuts{
-  width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;
-  margin-top:28px;
+  display:flex; align-items:center; justify-content:center; gap:clamp(10px,1.5vw,20px);
+  width:auto; margin:0; min-width:0;
 }
 .shortcut{
-  position:relative;min-width:0;min-height:102px;padding:18px 12px;
-  border-radius:21px;text-decoration:none;color:var(--text);
-  background:var(--glass);border:1px solid var(--glass-border);
-  box-shadow:0 8px 28px rgba(0,0,0,.055);
-  backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  cursor:pointer;user-select:none;
-  transition:transform 360ms var(--spring),box-shadow 360ms var(--spring),background 220ms ease;
+  min-width:0; min-height:28px; padding:3px 5px; border-radius:9px;
+  display:flex; flex-direction:row; align-items:center; justify-content:center; gap:6px;
+  color:var(--secondary); text-decoration:none; background:transparent; border:0;
+  box-shadow:none; cursor:pointer; user-select:none;
+  transition:color 180ms ease,background 180ms ease,transform 220ms var(--spring);
 }
-.shortcut:hover{transform:translateY(-4px) scale(1.012);box-shadow:0 16px 38px rgba(0,0,0,.11)}
-.shortcut:active{transform:scale(.95);transition-duration:90ms}
-.shortcut:focus-visible,.icon-button:focus-visible,.engine-button:focus-visible,.search-submit:focus-visible{
-  outline:3px solid var(--accent-soft);outline-offset:2px;
-}
+.shortcut:hover{color:var(--text);background:var(--key);transform:translateY(-1px)}
+.shortcut:active{transform:scale(.96)}
 .shortcut-icon{
-  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
-  background:var(--icon-bg);overflow:hidden;
+  width:18px;height:18px;flex:none;border-radius:5px;display:grid;place-items:center;
+  background:transparent;overflow:hidden;
 }
-.shortcut-icon svg{width:27px;height:27px}
-.shortcut-name{font-size:12px;font-weight:550;color:var(--secondary);letter-spacing:.005em}
-.shortcut .remove{
-  position:absolute;right:8px;top:8px;width:24px;height:24px;border:0;border-radius:50%;
-  background:var(--key);display:none;place-items:center;cursor:pointer;
-}
-.editing .shortcut .remove{display:grid}
-.remove svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
-.editing .shortcut{cursor:grab}
-.editing .shortcut:active{cursor:grabbing}
-
+.shortcut-icon svg{width:18px;height:18px}
+.shortcut-name{font-size:11px;font-weight:550;color:inherit;letter-spacing:0}
+/* 三列布局让快捷网站始终位于整个页脚（也就是页面）的水平中心。 */
 .footer{
-  display:flex;align-items:center;justify-content:space-between;
-  color:var(--tertiary);font-size:11px;min-height:28px;
+  display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center; gap:12px; color:var(--tertiary);font-size:11px;min-height:34px;
 }
-.footer kbd{
-  padding:2px 6px;border-radius:6px;background:var(--key);font-size:10px;
-  font-family:inherit;color:var(--secondary);
-}
-.hint{display:flex;align-items:center;gap:6px}
+.footer-copyright{grid-column:1;justify-self:start;white-space:nowrap}
+.footer .shortcuts{grid-column:2;justify-self:center}
+.hint{grid-column:3;justify-self:end;display:flex;align-items:center;gap:6px;white-space:nowrap}
 
-.scrim{
-  position:fixed;inset:0;background:rgba(0,0,0,.20);backdrop-filter:blur(3px);
-  opacity:0;pointer-events:none;transition:opacity 260ms ease;z-index:20;
-}
-.scrim.visible{opacity:1;pointer-events:auto}
-.sheet{
-  position:fixed;right:18px;top:18px;width:min(360px,calc(100vw - 36px));
-  padding:22px;border-radius:26px;background:var(--glass-strong);
-  border:1px solid var(--glass-border);box-shadow:var(--shadow);
-  backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);
-  z-index:30;transform:translateY(-12px) scale(.97);opacity:0;pointer-events:none;
-  transform-origin:top right;transition:transform 400ms var(--spring),opacity 220ms ease;
-}
-.sheet.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
-.sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.sheet-title{font-size:20px;font-weight:650;letter-spacing:-.025em}
-.close{width:32px;height:32px;border:0;border-radius:50%;background:var(--key);display:grid;place-items:center;cursor:pointer}
-.close:active{transform:scale(.9)}
-.close svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-.setting{
-  display:flex;align-items:center;justify-content:space-between;gap:18px;
-  padding:14px 0;border-top:1px solid var(--hairline);
-}
-.setting-label strong{display:block;font-size:14px;font-weight:600}
-.setting-label span{display:block;margin-top:3px;font-size:12px;color:var(--tertiary)}
-.switch{
-  width:46px;height:28px;border:0;border-radius:20px;background:rgba(120,120,128,.22);
-  padding:3px;cursor:pointer;transition:background 180ms ease;
-}
-.switch span{display:block;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform 350ms var(--spring)}
-.switch.on{background:var(--accent)}
-.switch.on span{transform:translateX(18px)}
-.edit-toggle{
-  width:100%;height:42px;border:0;border-radius:13px;background:var(--key);
-  cursor:pointer;font-size:14px;font-weight:600;margin-top:9px;
-  transition:transform 280ms var(--spring),background 180ms ease;
-}
-.edit-toggle:active{transform:scale(.97)}
 
-.toast{
-  position:fixed;left:50%;bottom:30px;z-index:50;
-  padding:10px 15px;border-radius:14px;background:rgba(30,30,32,.88);color:#fff;
-  font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.18);
-  opacity:0;transform:translate(-50%,10px);pointer-events:none;
-  transition:opacity 180ms ease,transform 350ms var(--spring);
-}
-.toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media(max-width:760px){
+  .shortcut-name{display:none}
+  .shortcuts{gap:9px}
   .app{padding:24px 18px 18px}
   .hero{transform:translateY(-3vh)}
-  .shortcuts{grid-template-columns:repeat(3,1fr);gap:10px}
-  .shortcut{min-height:92px;padding:14px 8px}
-  .shortcut:nth-child(4),.shortcut:nth-child(5){display:none}
   .engine-name{display:none}
   .engine-button{padding:0 9px}
   .search{min-height:58px;border-radius:21px;padding-left:15px}
@@ -282,12 +181,15 @@ button{color:inherit}
   .search-submit{width:44px;border-radius:15px}
 }
 @media(max-width:430px){
-  .brand-name{font-size:14px}
   .time{font-size:56px}
   .date{font-size:13px}
   .greeting{font-size:16px;margin-bottom:25px}
-  .shortcuts{margin-top:20px}
-  .footer{font-size:10px}
+  .footer{font-size:9px;gap:5px;min-height:30px}
+  .shortcuts{gap:7px}
+  .shortcut{padding:3px 2px;min-height:24px}
+  .shortcut-icon,.shortcut-icon svg{width:16px;height:16px}
+  .shortcut-name{display:none}
+  .footer kbd{font-size:9px;padding:2px 4px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -300,10 +202,10 @@ button{color:inherit}
   .ambient{display:none}
 }
 @media(prefers-reduced-transparency:reduce){
-  .search,.shortcut,.sheet,.engine-menu{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--glass-strong)}
+  .search,.shortcut,.engine-menu{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--glass-strong)}
 }
 @media(prefers-contrast:more){
-  .search,.shortcut,.sheet,.engine-menu{border:1px solid currentColor}
+  .search,.shortcut,.engine-menu{border:1px solid currentColor}
 }
 </style>
 </head>
@@ -311,20 +213,6 @@ button{color:inherit}
 <div class="ambient" aria-hidden="true"></div>
 
 <div class="app" id="app">
-  <header class="topbar">
-    <div class="brand" aria-label="Hoooooot">
-      <div class="brand-mark">H</div>
-      <div class="brand-name">Hoooooot</div>
-    </div>
-    <div class="top-actions">
-      <button class="icon-button" id="editButton" aria-label="编辑快捷方式" title="编辑快捷方式">
-        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
-      </button>
-      <button class="icon-button" id="settingsButton" aria-label="设置" title="设置">
-        <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.9 1.9-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.68v-.09a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.9-1.9.06-.06A1.7 1.7 0 0 0 7.8 15a1.7 1.7 0 0 0-1.56-1.03H6V11.3h.24A1.7 1.7 0 0 0 7.8 10a1.7 1.7 0 0 0-.34-1.88L7.4 8.06l1.9-1.9.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.27 5V4h2.68v1a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.9 1.9-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.68h-.04A1.7 1.7 0 0 0 19.4 15Z"/></svg>
-      </button>
-    </div>
-  </header>
 
   <main class="hero">
     <div class="date"><span id="dateDisplay">—</span></div>
@@ -351,49 +239,30 @@ button{color:inherit}
       </div>
     </form>
 
-    <nav class="shortcuts" id="shortcuts" aria-label="快捷网站"></nav>
   </main>
 
   <footer class="footer">
-    <div>©Hoooooot 2026</div>
+    <div class="footer-copyright">©Hoooooot 2027</div>
+    <nav class="shortcuts" id="shortcuts" aria-label="快捷网站"></nav>
     <div class="hint"><kbd>⌘</kbd><kbd>K</kbd><span>快速搜索</span></div>
   </footer>
 </div>
-
-<div class="scrim" id="scrim"></div>
-
-<aside class="sheet" id="settingsSheet" aria-label="设置">
-  <div class="sheet-header">
-    <div class="sheet-title">设置</div>
-    <button class="close" id="closeSettings" aria-label="关闭">
-      <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
-    </button>
-  </div>
-  <div class="setting">
-    <div class="setting-label">
-      <strong>跟随系统外观</strong>
-      <span>自动适配浅色与深色模式</span>
-    </div>
-    <button class="switch on" id="appearanceSwitch" aria-label="跟随系统外观"><span></span></button>
-  </div>
-  <div class="setting">
-    <div class="setting-label">
-      <strong>搜索时打开新标签页</strong>
-      <span>保留当前起始页</span>
-    </div>
-    <button class="switch" id="newTabSwitch" aria-label="搜索时打开新标签页"><span></span></button>
-  </div>
-  <button class="edit-toggle" id="sheetEditButton">编辑快捷方式</button>
-</aside>
-
-<div class="toast" id="toast"></div>
 
 <script>
 const engines = {
   bing: {
     name: "Bing",
     search: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
-    logo: `<svg viewBox="0 0 24 24"><path fill="#0A78D1" d="M5 3v12.2l6.5 3.8 5.9-3.4v-3.2l-3.7 2.1-3-1.8 5.1-3L12.7 8 10 9.6V3H5Z"/></svg>`
+    logo: id => `<svg viewBox="0 0 256 388" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="${id}-a" cx="93.717%" cy="77.818%" r="143.121%" fx="93.717%" fy="77.818%" gradientTransform="matrix(-.65486 -.5438 .75575 -.4712 .963 1.654)"><stop offset="0%" stop-color="#00CACC"/><stop offset="100%" stop-color="#048FCE"/></radialGradient>
+        <radialGradient id="${id}-b" cx="13.893%" cy="71.448%" r="150.086%" fx="13.893%" fy="71.448%" gradientTransform="matrix(.55155 -.39387 .23634 .91917 -.107 .112)"><stop offset="0%" stop-color="#00BBEC"/><stop offset="100%" stop-color="#2756A9"/></radialGradient>
+        <linearGradient id="${id}-c" x1="50%" x2="50%" y1="0%" y2="100%"><stop offset="0%" stop-color="#00BBEC"/><stop offset="100%" stop-color="#2756A9"/></linearGradient>
+      </defs>
+      <path fill="url(#${id}-a)" d="M129.424 122.047c-7.133.829-12.573 6.622-13.079 13.928-.218 3.147-.15 3.36 6.986 21.722 16.233 41.774 20.166 51.828 20.827 53.243 1.603 3.427 3.856 6.65 6.672 9.544 2.16 2.22 3.585 3.414 5.994 5.024 4.236 2.829 6.337 3.61 22.818 8.49 16.053 4.754 24.824 7.913 32.381 11.664 9.791 4.86 16.623 10.387 20.944 16.946 3.1 4.706 5.846 13.145 7.04 21.64.468 3.321.47 10.661.006 13.663-1.008 6.516-3.021 11.976-6.101 16.545-1.638 2.43-1.068 2.023 1.313-.939 6.74-8.379 13.605-22.7 17.108-35.687 4.24-15.718 4.817-32.596 1.66-48.57-6.147-31.108-25.786-57.955-53.444-73.06-1.738-.95-8.357-4.42-17.331-9.085-1.362-.708-3.219-1.678-4.127-2.154-.907-.477-2.764-1.447-4.126-2.154-1.362-.708-5.282-2.75-8.711-4.539l-8.528-4.446a6021.14 6021.14 0 0 1-8.344-4.357c-8.893-4.655-12.657-6.537-13.73-6.863-1.125-.343-3.984-.782-4.701-.723-.152.012-.838.088-1.527.168Z"/>
+      <path fill="url(#${id}-b)" d="M148.81 277.994c-.493.292-1.184.714-1.537.938-.354.225-1.137.712-1.743 1.083a8315.383 8315.383 0 0 0-13.204 8.137 2847.83 2847.83 0 0 0-8.07 4.997 388.04 388.04 0 0 1-3.576 2.198c-.454.271-2.393 1.465-4.31 2.654a2651.466 2651.466 0 0 1-7.427 4.586 3958.037 3958.037 0 0 1-8.62 5.316 3011.146 3011.146 0 0 1-7.518 4.637c-1.564.959-3.008 1.885-3.21 2.058-.3.257-14.205 8.87-21.182 13.121-5.3 3.228-11.43 5.387-17.705 6.235-2.921.395-8.45.396-11.363.003-7.9-1.067-15.176-4.013-21.409-8.666-2.444-1.826-7.047-6.425-8.806-8.8-4.147-5.598-6.829-11.602-8.218-18.396-.32-1.564-.622-2.884-.672-2.935-.13-.13.105 2.231.528 5.319.44 3.211 1.377 7.856 2.387 11.829 7.814 30.743 30.05 55.749 60.15 67.646 8.668 3.424 17.415 5.582 26.932 6.64 3.576.4 13.699.56 17.43.276 17.117-1.296 32.02-6.334 47.308-15.996 1.362-.86 3.92-2.474 5.685-3.585a877.227 877.227 0 0 0 4.952-3.14c.958-.615 2.114-1.341 2.567-1.614a91.312 91.312 0 0 1 2.018-1.268c.656-.424 3.461-2.2 6.235-3.944l11.092-7.006 3.809-2.406.137-.086.42-.265.199-.126 2.804-1.771 9.69-6.121c12.348-7.759 16.03-10.483 21.766-16.102 2.392-2.342 5.997-6.34 6.176-6.848.037-.104.678-1.092 1.424-2.197 3.036-4.492 5.06-9.995 6.064-16.484.465-3.002.462-10.342-.005-13.663-.903-6.42-2.955-13.702-5.167-18.339-3.627-7.603-11.353-14.512-22.453-20.076-3.065-1.537-6.23-2.943-6.583-2.924-.168.009-10.497 6.322-22.954 14.03-12.457 7.71-23.268 14.4-24.025 14.87-.756.47-2.056 1.263-2.888 1.764l-7.128 4.42Z"/>
+      <path fill="url(#${id}-c)" d="m.053 241.013.054 53.689.695 3.118c2.172 9.747 5.937 16.775 12.482 23.302 3.078 3.07 5.432 4.922 8.768 6.896 7.06 4.177 14.657 6.238 22.978 6.235 8.716-.005 16.256-2.179 24.025-6.928 1.311-.801 6.449-3.964 11.416-7.029l9.032-5.572v-127.4l-.002-58.273c-.002-37.177-.07-59.256-.188-60.988-.74-10.885-5.293-20.892-12.948-28.461-2.349-2.323-4.356-3.875-10.336-7.99-2.976-2.048-8.423-5.799-12.104-8.336A186532.885 186532.885 0 0 0 28.617 5.835C22.838 1.85 22.386 1.574 20.639.949 18.367.136 15.959-.163 13.67.084 6.998.804 1.657 5.622.269 12.171.053 13.191.013 26.751.01 100.35l-.003 86.975H0l.053 53.688Z"/>
+    </svg>`
   },
   google: {
     name: "Google",
@@ -403,7 +272,7 @@ const engines = {
   baidu: {
     name: "百度",
     search: q => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}`,
-    logo: `<svg viewBox="0 0 24 24"><path fill="#2932E1" d="M8.3 7.4c-.9 1.2-2.2 1.4-3 .7-.8-.6-.8-1.9-.1-3 .8-1.2 2.1-1.5 2.9-.9.9.6 1 1.9.2 3.2Zm4.3-1.1c-1 .1-1.8-.9-1.9-2.2-.1-1.3.6-2.4 1.6-2.5 1-.1 1.8.9 1.9 2.2.1 1.3-.6 2.4-1.6 2.5Zm5.1 2c-1 .5-2.2-.2-2.7-1.4-.5-1.2-.2-2.5.8-3 1-.5 2.2.2 2.7 1.4.5 1.2.2 2.5-.8 3Zm-9.8 5.1c-.8-.5-1.7-.5-2.4.2-.7.7-.8 1.8-.2 2.6.8 1 2.4 1.1 3.4.4.9-.7 1-2.4-.8-3.2Zm8.5-1.4c-.9-.4-1.9-.1-2.3.7-.5.8-.1 1.8.7 2.4.8.6 2 .5 2.5-.3.5-.8.1-2.2-.9-2.8Zm-3.7-1.5c-1.5 0-2.7 1-2.7 2.3 0 1.3 1.2 2.2 2.7 2.2 1.5 0 2.7-.9 2.7-2.2 0-1.3-1.2-2.3-2.7-2.3Z"/></svg>`
+    logo: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="#2932E1" d="M4.312 12.65c2.61-.562 2.25-3.684 2.176-4.366-.128-1.05-1.366-2.888-3.044-2.74-2.11.186-2.418 3.24-2.418 3.24-.287 1.41.682 4.426 3.286 3.865m4.845-5.24c1.44 0 2.604-1.66 2.604-3.71 0-2.04-1.16-3.7-2.6-3.7S6.55 1.65 6.55 3.7c0 2.05 1.17 3.71 2.61 3.71m6.207.245c1.93.26 3.162-1.8 3.412-3.36.25-1.55-1-3.36-2.36-3.67-1.37-.316-3.06 1.874-3.23 3.3-.18 1.75.25 3.49 2.17 3.737M23 10.284c0-.746-.613-2.993-2.91-2.993-2.295 0-2.61 2.12-2.61 3.62 0 1.43.118 3.42 2.985 3.36 2.855-.07 2.543-3.24 2.543-3.99M20.1 16.82s-2.985-2.31-4.726-4.8c-2.36-3.677-5.715-2.18-6.834-.316-1.12 1.883-2.86 3.062-3.105 3.377-.25.31-3.6 2.12-2.854 5.42.75 3.3 3.36 3.24 3.36 3.24s1.92.19 4.16-.31 4.16.12 4.16.12 5.207 1.75 6.648-1.61c1.424-3.37-.81-5.11-.81-5.11"/></svg>`
   },
   youtube: {
     name: "YouTube",
@@ -431,22 +300,10 @@ const els = {
   engineName:document.getElementById("engineName"),
   engineLogo:document.getElementById("engineLogo"),
   engineMenu:document.getElementById("engineMenu"),
-  shortcuts:document.getElementById("shortcuts"),
-  app:document.getElementById("app"),
-  edit:document.getElementById("editButton"),
-  sheetEdit:document.getElementById("sheetEditButton"),
-  settings:document.getElementById("settingsSheet"),
-  settingsButton:document.getElementById("settingsButton"),
-  closeSettings:document.getElementById("closeSettings"),
-  scrim:document.getElementById("scrim"),
-  toast:document.getElementById("toast"),
-  appearance:document.getElementById("appearanceSwitch"),
-  newTab:document.getElementById("newTabSwitch")
+  shortcuts:document.getElementById("shortcuts")
 };
 
 let currentEngine = localStorage.getItem("hoooooot-engine") || "bing";
-let newTab = localStorage.getItem("hoooooot-newtab") === "1";
-let editing = false;
 
 function updateClock(){
   const now = new Date();
@@ -463,13 +320,19 @@ function updateClock(){
 updateClock();
 setInterval(updateClock,1000);
 
+function getEngineLogo(key, idPrefix){
+  const logo=engines[key].logo;
+  return typeof logo==="function" ? logo(idPrefix) : logo;
+}
+
 function renderEngine(){
   const e = engines[currentEngine];
   els.engineName.textContent=e.name;
-  els.engineLogo.innerHTML=e.logo;
+  els.engineLogo.className=`engine-logo engine-logo--${currentEngine}`;
+  els.engineLogo.innerHTML=getEngineLogo(currentEngine,"engine-selected");
   els.engineMenu.innerHTML=Object.entries(engines).map(([key,val])=>`
-    <button class="engine-option ${key===currentEngine?"active":""}" role="menuitem" data-engine="${key}">
-      <span class="engine-logo">${val.logo}</span><span>${val.name}</span>
+    <button class="engine-option ${key===currentEngine?"active":""}" type="button" role="menuitem" data-engine="${key}">
+      <span class="engine-logo engine-logo--${key}" aria-hidden="true">${getEngineLogo(key,`engine-menu-${key}`)}</span><span>${val.name}</span>
     </button>`).join("");
 }
 renderEngine();
@@ -503,126 +366,37 @@ els.form.addEventListener("submit",e=>{
   const q=els.input.value.trim();
   if(!q)return;
   const url=looksLikeURL(q) ? (q.match(/^https?:\/\//i)?q:"https://"+q) : engines[currentEngine].search(q);
-  if(newTab) window.open(url,"_blank","noopener");
-  else window.location.href=url;
+  // Search in the current tab so the start page is replaced by the result.
+  window.location.href=url;
 });
 
+// Ensure Enter always triggers the same search flow as clicking the submit button.
+els.input.addEventListener("keydown",e=>{
+  if(e.key==="Enter" && !e.isComposing && e.keyCode!==229){
+    e.preventDefault();
+    els.form.requestSubmit();
+  }
+});
+
+// Render the compact website links shown in the center of the footer.
 function renderShortcuts(){
-  els.shortcuts.innerHTML=sites.map((s,i)=>`
-    <a class="shortcut" href="${s.url}" data-index="${i}" aria-label="${s.name}">
-      <button class="remove" type="button" aria-label="移除 ${s.name}">
-        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
-      </button>
-      <div class="shortcut-icon">${s.icon}</div>
+  els.shortcuts.innerHTML=sites.map(s=>`
+    <a class="shortcut" href="${s.url}" aria-label="${s.name}" title="${s.name}">
+      <span class="shortcut-icon" aria-hidden="true">${s.icon}</span>
       <span class="shortcut-name">${s.name}</span>
     </a>`).join("");
 }
 renderShortcuts();
 
-els.shortcuts.addEventListener("click",e=>{
-  const remove=e.target.closest(".remove");
-  if(remove){
-    e.preventDefault(); e.stopPropagation();
-    const item=remove.closest(".shortcut");
-    const i=Number(item.dataset.index);
-    sites.splice(i,1);
-    renderShortcuts();
-    showToast("已移除快捷方式");
-    return;
-  }
-  if(editing){
-    e.preventDefault();
-  }
-});
 
-function setEditing(value){
-  editing=value;
-  els.app.classList.toggle("editing",editing);
-  els.edit.setAttribute("aria-label",editing?"完成编辑":"编辑快捷方式");
-  els.edit.title=editing?"完成编辑":"编辑快捷方式";
-  if(editing) showToast("按住并拖动即可整理快捷方式");
-}
-els.edit.addEventListener("click",()=>setEditing(!editing));
-els.sheetEdit.addEventListener("click",()=>{
-  setEditing(!editing);
-  closeSettings();
-});
-
-let drag={active:false,index:null,startX:0,startY:0,el:null};
-els.shortcuts.addEventListener("pointerdown",e=>{
-  if(!editing || e.target.closest(".remove")) return;
-  const item=e.target.closest(".shortcut"); if(!item)return;
-  drag={active:true,index:Number(item.dataset.index),startX:e.clientX,startY:e.clientY,el:item};
-  item.setPointerCapture?.(e.pointerId);
-  item.style.zIndex="10";
-  item.style.transition="none";
-});
-els.shortcuts.addEventListener("pointermove",e=>{
-  if(!drag.active)return;
-  const dx=e.clientX-drag.startX,dy=e.clientY-drag.startY;
-  if(Math.hypot(dx,dy)<6)return;
-  drag.el.style.transform=`translate(${dx}px,${dy}px) scale(1.03)`;
-});
-els.shortcuts.addEventListener("pointerup",e=>{
-  if(!drag.active)return;
-  const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(".shortcut");
-  const from=drag.index;
-  if(target && target!==drag.el){
-    const to=Number(target.dataset.index);
-    const moved=sites.splice(from,1)[0];
-    sites.splice(to,0,moved);
-    renderShortcuts();
-    showToast("顺序已更新");
-  }else{
-    drag.el.style.transition="";
-    drag.el.style.transform="";
-  }
-  drag.active=false;
-});
-
-function openSettings(){
-  els.settings.classList.add("open");
-  els.scrim.classList.add("visible");
-}
-function closeSettings(){
-  els.settings.classList.remove("open");
-  els.scrim.classList.remove("visible");
-}
-els.settingsButton.addEventListener("click",openSettings);
-els.closeSettings.addEventListener("click",closeSettings);
-els.scrim.addEventListener("click",closeSettings);
-
-function setSwitch(el,on){
-  el.classList.toggle("on",on);
-  el.setAttribute("aria-pressed",String(on));
-}
-setSwitch(els.newTab,newTab);
-els.newTab.addEventListener("click",()=>{
-  newTab=!newTab;
-  localStorage.setItem("hoooooot-newtab",newTab?"1":"0");
-  setSwitch(els.newTab,newTab);
-});
-els.appearance.addEventListener("click",()=>{
-  showToast("外观将跟随系统设置");
-});
-
-function showToast(text){
-  els.toast.textContent=text;
-  els.toast.classList.add("show");
-  clearTimeout(showToast.t);
-  showToast.t=setTimeout(()=>els.toast.classList.remove("show"),1500);
-}
 
 document.addEventListener("keydown",e=>{
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){
     e.preventDefault(); els.input.focus(); els.input.select();
   }
-  if(e.key==="Escape"){
-    if(els.settings.classList.contains("open")) closeSettings();
-    else if(els.engine.classList.contains("open")){
-      els.engine.classList.remove("open");
-      els.engineButton.setAttribute("aria-expanded","false");
-    } else if(editing) setEditing(false);
+  if(e.key==="Escape" && els.engine.classList.contains("open")){
+    els.engine.classList.remove("open");
+    els.engineButton.setAttribute("aria-expanded","false");
   }
 });
 </script>
