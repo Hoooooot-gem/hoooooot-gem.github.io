@@ -22,6 +22,8 @@
     
     <!-- ==================== 引用 CSS 文件 ==================== -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- 主页改版：Apple 极简版式层，仅此页加载，通过 body.home 作用域隔离 -->
+    <link rel="stylesheet" href="css/home.css">
     <link rel="manifest" href="/manifest.json">
     <style>
         body.region-pending #china-home,
@@ -30,40 +32,21 @@
         }
     </style>
 </head>
-<body class="region-pending">
+<body class="home region-pending">
 
-<!-- ==================== 右下角胶囊播放栏 ==================== -->
-<div id="player-wrapper" class="player-wrapper">
-    <div class="album-art">
-        <img src="/images/albumpic/homepage.webp" alt="专辑封面">
-    </div>
+<!--
+    主页改版说明（Apple 风格极简）
+    ------------------------------------------------------------------
+    · Hero 区块保持原样，未做任何结构与样式改动。
+    · 原先右下角的胶囊音乐播放器已按需求整体移除：HTML、CSS、JS
+      三段逻辑及音频/封面资源均已删除，页面不再自动播放声音。
+    · 各区块统一为「眉标 + 大标题 + 一句说明 + 内容」的结构，
+      仅使用黑白灰三色，靠留白与字阶建立层次，去掉卡片投影与
+      emoji 图标等装饰元素。
+    · 页面级样式集中在 css/home.css，避免影响复用 style.css 的子页面。
+-->
 
-    <div class="meta-wrapper">
-        <div class="meta-row">
-            <div class="song-title">DOUDOU - 最终观测</div>
-            <span class="progress-time" id="progressTime">0:00 / 0:00</span>
-        </div>
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-track"></div>
-            <div class="progress-fill" id="progressFill"></div>
-            <div class="progress-thumb" id="progressThumb"></div>
-        </div>
-    </div>
-
-    <button class="play-btn" id="playBtn">
-        <svg viewBox="0 0 24 24" class="play-icon" id="playIcon">
-            <polygon points="6 3 20 12 6 21 6 3" />
-        </svg>
-        <svg viewBox="0 0 24 24" class="pause-icon" id="pauseIcon" style="display:none;">
-            <rect x="6" y="4" width="4" height="16" />
-            <rect x="14" y="4" width="4" height="16" />
-        </svg>
-    </button>
-
-    <audio id="bgMusic" src="/images/homepagesong/homepagesong.mp3" preload="metadata"></audio>
-</div>
-
-<!-- ==================== 页面主内容区 ==================== -->
+<!-- ==================== 页面主内容区（中国版） ==================== -->
 <main id="china-home" style="visibility: hidden;">
     <!-- 中国用户专属内容  -->
     
@@ -87,84 +70,119 @@
         </div>
     </section>
 
-    <!-- 2.2 实用工具区域（新增） -->
-    <section id="tools" class="section tools" aria-label="实用工具">
-        <div class="container">
-            <h2 class="section-title">实用</h2>
-            <div class="tools-grid">
-                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">⌨️</span>
-                    <span class="tool-name">打字练习</span>
-                </a>
-                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">📶</span>
-                    <span class="tool-name">连接测速</span>
-                </a>
-                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">🎨</span>
-                    <span class="tool-name">调色板</span>
-                </a>
-                <a href="https://hooooootdev.wikioasis.org/wiki/%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">🧰</span>
-                    <span class="tool-name">更多工具</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. About 关于区域 -->
+    <!-- 2. 关于 -->
     <section id="about" class="section about" aria-label="关于">
         <div class="container">
-            <h2 class="section-title">关于</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
-                </div>
-                <div class="about-tags">
-                    <span class="tag">剪辑</span>
-                    <span class="tag">调色</span>
-                    <span class="tag">设计</span>
-                    <span class="tag">创意</span>
-                    <span class="tag">故事</span>
-                </div>
+            <header class="sec-head">
+                <p class="sec-eyebrow">关于</p>
+            </header>
+            <div class="about-wrap">
+                <h2 class="about-statement">用镜头捕捉真实，<br>用设计传递情绪。</h2>
+                <p class="about-note">持续探索视觉语言与叙事逻辑的结合。</p>
+                <ul class="about-meta">
+                    <li>剪辑</li>
+                    <li>调色</li>
+                    <li>设计</li>
+                    <li>创意</li>
+                    <li>故事</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- 4. Portfolio 画廊区域 -->
-    <section id="portfolio" class="section portfolio" aria-label="作品集">
+    <!-- 3. 画廊 -->
+    <section id="portfolio" class="section portfolio is-alt" aria-label="作品集">
         <div class="container">
-            <h2 class="section-title">画廊</h2>
-            <div class="gallery-wrapper">
-                <div class="carousel-track" id="gallery-track"></div>
-            </div>
+            <header class="sec-head">
+                <p class="sec-eyebrow">画廊</p>
+                <h2 class="sec-title">一些看过的画面。</h2>
+                <p class="sec-lead">日常拍摄的片段，持续更新。</p>
+            </header>
+        </div>
+        <!-- 通栏跑马灯：脱离 container 以获得整屏宽度 -->
+        <div class="gallery-marquee" aria-label="作品画廊滚动展示">
+            <div class="carousel-track" id="gallery-track"></div>
         </div>
     </section>
 
-    <!-- 5. Timeline 历程区域 -->
+    <!-- 4. 历程 -->
     <section id="timeline" class="section timeline" aria-label="历程">
         <div class="container">
-            <h2 class="section-title">历程</h2>
-            <div class="timeline-list">
-                <div class="timeline-item">
-                    <span class="year">2026</span>
-                    <div class="desc">独立创作阶段，搭建个人数字空间。</div>
-                </div>
-                <div class="timeline-item">
-                    <span class="year">2025</span>
-                    <div class="desc">深入探索影像制作与设计美学的边界。</div>
-                </div>
+            <header class="sec-head">
+                <p class="sec-eyebrow">历程</p>
+                <h2 class="sec-title">一步一步走到这里。</h2>
+            </header>
+
+            <ul class="tl-list">
+                <li class="tl-row">
+                    <span class="tl-year">2026</span>
+                    <p class="tl-desc">独立创作阶段，搭建个人数字空间。</p>
+                </li>
+                <li class="tl-row">
+                    <span class="tl-year">2025</span>
+                    <p class="tl-desc">深入探索影像制作与设计美学的边界。</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 5. 实用工具 -->
+    <section id="tools" class="section tools is-alt" aria-label="实用工具">
+        <div class="container">
+            <header class="sec-head">
+                <p class="sec-eyebrow">实用</p>
+                <h2 class="sec-title">顺手的小工具。</h2>
+                <p class="sec-lead">都在浏览器里完成，不登录，也不上传任何数据。</p>
+            </header>
+
+            <div class="tool-list">
+                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">打字练习</span>
+                        <span class="tool-desc">短句、段落与长篇三种文本，实时统计速度与准确率。</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
+                </a>
+
+                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">连接测速</span>
+                        <span class="tool-desc">用 50MB 样本测量你与本站之间的实际带宽和延迟。</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
+                </a>
+
+                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">调色板</span>
+                        <span class="tool-desc">HEX、RGB、HSL、CMYK 互转，支持屏幕取色与一键复制。</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
+                </a>
+
+                <a href="https://hooooootdev.wikioasis.org/wiki/%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">更多工具</span>
+                        <span class="tool-desc">在工具清单里查看全部仍在实验中的项目。</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- 6. Contact 联系区域 -->
+    <!-- 6. 联系 -->
     <section id="contact" class="section contact" aria-label="联系">
         <div class="container">
-            <h2 class="section-title">联系</h2>
-            <div class="contact-info">
-                <span class="contact-email">shurinkycn@gmail.com</span>
-                
+            <header class="sec-head">
+                <p class="sec-eyebrow">联系</p>
+                <h2 class="sec-title">聊聊你的想法。</h2>
+                <p class="sec-lead">合作、约拍，或只是打个招呼，都欢迎。</p>
+            </header>
+
+            <div class="contact-block">
+                <a class="contact-mail" href="mailto:shurinkycn@gmail.com">shurinkycn@gmail.com</a>
+
                 <div class="social-links">
                     <div class="social-item wechat-item">
                         <span class="social-label">
@@ -197,6 +215,7 @@
 
 </main>
 
+<!-- ==================== 页面主内容区（国际版，结构与中文版一一对应） ==================== -->
 <main id="global-home" style="display: none; visibility: hidden;">
     <!-- 国际首页  -->
     
@@ -220,91 +239,125 @@
         </div>
     </section>
 
-    <!-- 2.2 实用工具区域（新增） -->
-    <section id="tools" class="section tools" aria-label="Tools">
+    <!-- 2. About -->
+    <section id="about" class="section about" aria-label="About">
         <div class="container">
-            <h2 class="section-title">Tools</h2>
-            <div class="tools-grid">
-                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">⌨️</span>
-                    <span class="tool-name">Typing Practice</span>
+            <header class="sec-head">
+                <p class="sec-eyebrow">About</p>
+            </header>
+            <div class="about-wrap">
+                <h2 class="about-statement">Stories through images.<br>Emotion through design.</h2>
+                <p class="about-note">Exploring where visual language meets narrative.</p>
+                <ul class="about-meta">
+                    <li>Editing</li>
+                    <li>Color</li>
+                    <li>Design</li>
+                    <li>Ideas</li>
+                    <li>Story</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Gallery -->
+    <section id="portfolio" class="section portfolio is-alt" aria-label="Gallery">
+        <div class="container">
+            <header class="sec-head">
+                <p class="sec-eyebrow">Gallery</p>
+                <h2 class="sec-title">Frames from the everyday.</h2>
+                <p class="sec-lead">Shot on the move, updated often.</p>
+            </header>
+        </div>
+        <div class="gallery-marquee" aria-label="Scrolling gallery">
+            <div class="carousel-track" id="gallery-track"></div>
+        </div>
+    </section>
+
+    <!-- 4. Timeline -->
+    <section id="timeline" class="section timeline" aria-label="Timeline">
+        <div class="container">
+            <header class="sec-head">
+                <p class="sec-eyebrow">Timeline</p>
+                <h2 class="sec-title">One step at a time.</h2>
+            </header>
+
+            <ul class="tl-list">
+                <li class="tl-row">
+                    <span class="tl-year">2026</span>
+                    <p class="tl-desc">Independent practice — building a personal digital space.</p>
+                </li>
+                <li class="tl-row">
+                    <span class="tl-year">2025</span>
+                    <p class="tl-desc">Exploring the edges of filmmaking and design.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 5. Tools -->
+    <section id="tools" class="section tools is-alt" aria-label="Tools">
+        <div class="container">
+            <header class="sec-head">
+                <p class="sec-eyebrow">Tools</p>
+                <h2 class="sec-title">Small tools, close at hand.</h2>
+                <p class="sec-lead">Everything runs in your browser — no account, no uploads.</p>
+            </header>
+
+            <div class="tool-list">
+                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">Typing Practice</span>
+                        <span class="tool-desc">Three text lengths, with live speed and accuracy.</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
-                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">📶</span>
-                    <span class="tool-name">Connection Test</span>
+
+                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">Connection Test</span>
+                        <span class="tool-desc">Measures real bandwidth and latency with a 50 MB sample.</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
-                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">🎨</span>
-                    <span class="tool-name">Color Palette</span>
+
+                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">Color Palette</span>
+                        <span class="tool-desc">HEX, RGB, HSL and CMYK, with an eye dropper and copy.</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
-                <a href="https://hoooooot-gem.wikioasis.org/wiki/%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <span class="tool-icon">🧰</span>
-                    <span class="tool-name">More Tools</span>
+
+                <a href="https://hoooooot-gem.wikioasis.org/wiki/%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8" target="_blank" rel="noopener noreferrer" class="tool-row">
+                    <span>
+                        <span class="tool-name">More Tools</span>
+                        <span class="tool-desc">Browse every project still in the workshop.</span>
+                    </span>
+                    <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- 3. About 关于区域 -->
-    <section id="about" class="section about" aria-label="关于">
+    <!-- 6. Contact -->
+    <section id="contact" class="section contact" aria-label="Contact">
         <div class="container">
-            <h2 class="section-title">关于</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p>用镜头捕捉真实，用设计传递情绪。持续探索视觉语言与叙事逻辑的结合。</p>
-                </div>
-                <div class="about-tags">
-                    <span class="tag">剪辑</span>
-                    <span class="tag">调色</span>
-                    <span class="tag">设计</span>
-                    <span class="tag">创意</span>
-                    <span class="tag">故事</span>
-                </div>
-            </div>
-        </div>
-    </section>
+            <header class="sec-head">
+                <p class="sec-eyebrow">Contact</p>
+                <h2 class="sec-title">Let's talk.</h2>
+                <p class="sec-lead">Collaboration, commissions, or just a hello.</p>
+            </header>
 
-    <!-- 4. Portfolio 画廊区域 -->
-    <section id="portfolio" class="section portfolio" aria-label="作品集">
-        <div class="container">
-            <h2 class="section-title">画廊</h2>
-            <div class="gallery-wrapper">
-                <div class="carousel-track" id="gallery-track"></div>
-            </div>
-        </div>
-    </section>
+            <div class="contact-block">
+                <a class="contact-mail" href="mailto:shurinkycn@gmail.com">shurinkycn@gmail.com</a>
 
-    <!-- 5. Timeline 历程区域 -->
-    <section id="timeline" class="section timeline" aria-label="历程">
-        <div class="container">
-            <h2 class="section-title">历程</h2>
-            <div class="timeline-list">
-                <div class="timeline-item">
-                    <span class="year">2026</span>
-                    <div class="desc">独立创作阶段，搭建个人数字空间。</div>
-                </div>
-                <div class="timeline-item">
-                    <span class="year">2025</span>
-                    <div class="desc">深入探索影像制作与设计美学的边界。</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. Contact 联系区域 -->
-    <section id="contact" class="section contact" aria-label="联系">
-        <div class="container">
-            <h2 class="section-title">联系</h2>
-            <div class="contact-info">
-                <span class="contact-email">shurinkycn@gmail.com</span>
-                
                 <div class="social-links">
                     <div class="social-item wechat-item">
                         <span class="social-label">
-                            <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
+                            <img src="/images/shipinhaosvg.svg" alt="WeChat Channel" class="social-img" loading="lazy">
                         </span>
                         <div class="qr-popup">
-                            <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
+                            <img src="/images/WeChatChannelQRCode.png" alt="WeChat Channel QR code" loading="lazy">
                         </div>
                     </div>
 
@@ -317,11 +370,11 @@
                     </a>
                     
                     <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/douyinsvg.svg" alt="抖音" class="social-img" loading="lazy">
+                        <img src="/images/douyinsvg.svg" alt="Douyin" class="social-img" loading="lazy">
                     </a>
 
                     <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/xiaohongshusvg.svg" alt="小红书" class="social-img" loading="lazy">
+                        <img src="/images/xiaohongshusvg.svg" alt="Xiaohongshu" class="social-img" loading="lazy">
                     </a>
                 </div>
             </div>

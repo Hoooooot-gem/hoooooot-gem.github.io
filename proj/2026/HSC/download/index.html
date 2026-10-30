@@ -3,126 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSC 会员专属资源下载</title>
+    <title>HSC 会员专属资源 · Hoooooot's</title>
+
+    <!-- 独立页：只要底栏，不要顶栏 -->
+    <script src="/js/components.js" data-chrome="footer"></script>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages.css">
+
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+
     <style>
-        /* 继承主站深色模式的极简克制风格 */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #000000; /* 纯黑背景 */
-            color: #FFFFFF;
-            font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+        /* 与首页一致的极简留白：白底黑字，靠字阶和一条细线建立仪式感 */
+        .unlock-main {
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
+            padding: clamp(72px, 12vw, 140px) clamp(20px, 5vw, 40px);
+        }
+
+        .unlock {
+            width: min(560px, 100%);
             text-align: center;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .secret-container {
-            max-width: 600px;
-            padding: 0 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
+        .unlock-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 28px;
+            color: #86868b;
         }
 
-        /* 钥匙图标 - 仪式感的象征 */
-        .key-icon {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 8px;
-            opacity: 0.6;
-        }
-
-        .key-icon svg {
+        .unlock-icon svg {
             width: 100%;
             height: 100%;
-            stroke: #FFFFFF;
-            stroke-width: 2;
             fill: none;
+            stroke: currentColor;
+            stroke-width: 1.4;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
-        .access-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        .unlock-title {
             margin: 0;
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: #1d1d1f;
         }
 
-        .access-subtitle {
-            font-size: 1.1rem;
-            color: #888888;
-            margin-top: -8px;
-            letter-spacing: 1px;
-        }
-
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 16px 40px;
-            margin-top: 16px;
-            border: 1px solid #FFFFFF;
-            border-radius: 999px;
-            background: transparent;
+        .unlock-sub {
+            margin: 16px 0 0;
             font-size: 1rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            letter-spacing: 0.02em;
+            color: #86868b;
         }
 
-        /* 悬停反色动画（克制又高级） */
-        .download-btn:hover {
-            background: #FFFFFF;
-            color: #000000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 24px rgba(255, 255, 255, 0.12);
+        .unlock-note {
+            margin: 0 auto;
+            max-width: 30em;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            color: #6e6e73;
         }
 
-        .footnote {
-            margin-top: 24px;
+        /* 资源说明用细线列表，保持与首页工具清单同一语汇 */
+        .unlock-list {
+            margin: 40px 0 0;
+            padding: 0;
+            list-style: none;
+            border-top: 1px solid #d2d2d7;
+            text-align: left;
+        }
+
+        .unlock-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 14px 2px;
+            border-bottom: 1px solid #d2d2d7;
+            font-size: 0.9375rem;
+            color: #6e6e73;
+        }
+
+        .unlock-list strong {
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+
+        .unlock-action {
+            margin-top: 40px;
+        }
+
+        .unlock-foot {
+            margin: 28px 0 0;
             font-size: 0.75rem;
-            color: #555555;
-            letter-spacing: 0.5px;
-            line-height: 1.5;
-            max-width: 400px;
-        }
-
-        @media (max-width: 767px) {
-            .access-title { font-size: 2.2rem; }
-            .download-btn { width: 100%; justify-content: center; }
+            color: #86868b;
         }
     </style>
 </head>
-<body>
+<body class="page">
 
-    <main class="secret-container">
-        <!-- 仪式感钥匙 SVG -->
-        <div class="key-icon">
-            <svg viewBox="0 0 24 24">
-                <circle cx="7.5" cy="15.5" r="5.5"/>
-                <path d="M12 11.5L17 6.5M17 6.5L19 8.5M17 6.5L15 4.5"/>
-                <path d="M17 6.5L18.5 8"/>
-            </svg>
-        </div>
+    <main class="unlock-main">
+        <div class="unlock">
+            <div class="unlock-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="7.5" cy="15.5" r="5.5"/>
+                    <path d="M12 11.5L17 6.5M17 6.5L19 8.5M17 6.5L15 4.5"/>
+                    <path d="M17 6.5L18.5 8"/>
+                </svg>
+            </div>
 
-        <h1 class="access-title">已解锁。</h1>
-        <p class="access-subtitle">Exclusive for HSC members.</p>
+            <p class="page-eyebrow">HSC · 会员资源</p>
+            <h1 class="unlock-title">已解锁。</h1>
+            <p class="unlock-sub">Exclusive for HSC members.</p>
 
-        <!-- 下载链接：指向 /resources/ 文件夹下的 ZIP 包 -->
-        <a href="/proj/2026/HSC/resources/【FREE】Hoooooot Original LUT Pack.7z" download class="download-btn">
-            下载独家 LUT 包
-        </a>
+            <ul class="unlock-list">
+                <li><strong>Hoooooot Original LUT Pack</strong><span>免费版 · .7z</span></li>
+                <li><strong>使用说明</strong><span>解压后导入剪辑软件</span></li>
+            </ul>
 
-        <div class="footnote">
-            独家资源，请勿外传。
+            <div class="unlock-action">
+                <a href="/proj/2026/HSC/resources/【FREE】Hoooooot Original LUT Pack.7z" download class="pill pill--solid">
+                    下载独家 LUT 包
+                </a>
+            </div>
+
+            <p class="unlock-foot">独家资源，请勿外传。</p>
         </div>
     </main>
 

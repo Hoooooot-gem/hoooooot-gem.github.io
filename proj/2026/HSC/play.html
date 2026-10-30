@@ -9,6 +9,8 @@
     <script src="../../../js/components.js"></script>
 
     <link rel="stylesheet" href="../../../css/style.css">
+    <!-- 子页面 Apple 风格层（与首页同一套间距与字阶） -->
+    <link rel="stylesheet" href="../../../css/pages.css">
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
@@ -16,42 +18,45 @@
     <style>
         /* 移除 .sub-navbar 样式 */
         .player-container {
-            max-width: 1200px;
+            max-width: 1120px;
             margin: 0 auto;
-            padding: 40px 80px 80px 80px;
+            /* 顶部让给 pages.css 的 has-chrome 规则 */
+            padding: 0 clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
         }
 
         .video-wrapper {
             width: 100%;
             aspect-ratio: 16 / 9;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .video-wrapper iframe {
             width: 100%;
             height: 100%;
             border: none;
-            border-radius: 8px;
+            border-radius: 14px;
         }
 
         .course-title {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
+            font-size: clamp(1.6rem, 3vw, 2.25rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
         }
 
         .course-desc {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
+            color: #6e6e73;
+            font-size: 1.0625rem;
             line-height: 1.6;
         }
 
         @media (max-width: 767px) {
-            .player-container { padding: 20px 24px 40px 24px; }
-            .course-title { font-size: 1.4rem; }
+            .player-container { padding: 0 24px 56px; }
+            .video-wrapper { margin-bottom: 20px; }
         }
     </style>
 </head>
-<body>
+<body class="page has-chrome">
 
     <!-- 【已删除】独立顶栏 -->
 

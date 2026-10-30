@@ -1,0 +1,172 @@
+/* ============================================================
+   css/pages.css — 子页面通用视觉层（与主页同一套 Apple 语汇）
+   ------------------------------------------------------------
+   改动意图：
+   1. 只用一份文件统一子页面的排版基线，避免每个页面各写一套
+      颜色与间距，视觉上向首页看齐（#1d1d1f / #6e6e73 / #d2d2d7）。
+   2. 提供三种页面外壳：
+      · body.page       普通内容页（白底、可滚动、页脚贴底）
+      · body.immersive  沉浸页（内容占满剩余高度，页脚仍在文末）
+      · body.on-dark    深色页（仅页脚配色反转）
+   3. 需要顶栏的页面由 js/components.js 注入 header，并在 body 上
+      加 has-chrome；不需要顶栏的沉浸页只注入 footer。
+   ============================================================ */
+
+/* ---------- 1. 页面外壳 ---------- */
+
+body.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* 不在这里写 background / color：沉浸页（BH / ZF / HZUQJ）需要保留自己的底色，
+       而 body.page 的类选择器优先级高于页面内的 body 规则。 */
+}
+
+body.page > main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+body.page > .footer {
+    flex-shrink: 0;
+}
+
+/* 有顶栏时给内容区留出固定导航的高度，避免首行被遮住 */
+body.page.has-chrome > main {
+    padding-top: calc(var(--nav-height, 42px) + clamp(48px, 7vw, 88px));
+}
+
+/* 子页面没有首屏视频衬托，顶栏文字直接使用深色，避免白字落在白底上 */
+body.page.has-chrome .navbar .nav-list a {
+    color: #1d1d1f;
+}
+
+body.page.has-chrome .hamburger .bar {
+    background-color: #1d1d1f;
+}
+
+/* ---------- 2. 页头（与首页 .sec-head 同构） ---------- */
+
+.page-head {
+    max-width: 720px;
+    margin: 0 auto clamp(36px, 4.6vw, 56px);
+    text-align: center;
+}
+
+.page-eyebrow {
+    margin: 0 0 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: #86868b;
+}
+
+.page-title {
+    margin: 0;
+    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.07;
+    letter-spacing: -0.028em;
+    color: #1d1d1f;
+}
+
+.page-lead {
+    margin: 18px auto 0;
+    max-width: 34em;
+    font-size: clamp(1rem, 1.3vw, 1.1875rem);
+    line-height: 1.55;
+    color: #6e6e73;
+}
+
+/* ---------- 3. 通用组件 ---------- */
+
+/* 胶囊按钮：默认描边，悬停反色（与首页 404 / 课程按钮一致） */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: 1px solid #1d1d1f;
+    border-radius: 999px;
+    background: transparent;
+    color: #1d1d1f;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.pill:hover {
+    background: #1d1d1f;
+    color: #ffffff;
+    opacity: 1;
+}
+
+.pill:active {
+    transform: scale(0.97);
+}
+
+.pill--solid {
+    background: #1d1d1f;
+    color: #ffffff;
+}
+
+.pill--solid:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* 细分隔线容器，替代阴影卡片 */
+.surface {
+    border: 1px solid #d2d2d7;
+    border-radius: 24px;
+    background: #ffffff;
+}
+
+/* ---------- 4. 沉浸页外壳 ---------- */
+
+body.immersive {
+    overflow: hidden;
+}
+
+body.immersive > main,
+body.immersive > .app,
+body.immersive > #canvas-container {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* ---------- 5. 深色页的页脚配色 ---------- */
+
+body.on-dark .footer {
+    color: rgba(255, 255, 255, 0.48);
+    border-top-color: rgba(255, 255, 255, 0.14);
+}
+
+body.on-dark .footer a {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+body.on-dark .footer a:hover {
+    color: #ffffff;
+    opacity: 1;
+}
+
+/* ---------- 6. 响应式 ---------- */
+
+@media (max-width: 767px) {
+    body.page.has-chrome > main {
+        padding-top: calc(var(--nav-height, 42px) + 40px);
+    }
+}
+
+/* ---------- 7. 尊重减弱动态效果 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .pill {
+        transition: none;
+    }
+}

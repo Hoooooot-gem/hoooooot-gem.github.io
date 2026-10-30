@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高三5班 · 滚动祝福</title>
+
+    <!-- 改动说明（2026-10）：祝福墙保持无顶栏的全屏滚动，只补全站底栏；
+         引入全局与子页面样式表，页脚与首页一致。 -->
+    <script src="/js/components.js" data-chrome="footer"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages.css">
+
     <style>
         * {
             margin: 0;
@@ -16,11 +23,6 @@
             background-image: radial-gradient(circle at 30% 40%, rgba(255, 235, 200, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 70% 80%, rgba(220, 240, 255, 0.3) 0%, transparent 50%);
             font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Serif SC", "楷体", "KaiTi", serif;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             user-select: none;
         }
 
@@ -28,7 +30,9 @@
         .scroll-wrapper {
             width: 85%;
             max-width: 850px;
-            height: 100vh;
+            flex: 1 1 auto;
+            min-height: 0;
+            margin: 0 auto;
             overflow: hidden;
             mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
@@ -80,7 +84,7 @@
         }
     </style>
 </head>
-<body>
+<body class="page immersive">
     <div class="scroll-wrapper" id="scrollWrapper">
         <div class="scroll-track" id="scrollTrack"></div>
     </div>

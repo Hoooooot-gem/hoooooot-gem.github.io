@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能调色板</title>
+    <title>智能调色板 · Hoooooot's</title>
+
+    <!-- 改动说明（2026-10）：工具页接入全站导航与页脚，并套用与首页一致的排版 -->
+    <script src="/js/components.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages.css">
+
     <style>
         /* ============================================================
            采用主站 Hoooooot's 的 Apple 极简主义设计语言
@@ -46,14 +52,10 @@
 
         body {
             margin: 0;
-            min-height: 100vh;
             font-family: var(--font-family);
             background-color: var(--bg-color);
             color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 24px;
+            padding: 0;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             user-select: none;
@@ -61,19 +63,21 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* 内容区占满剩余高度并居中，页脚自然落在文末 */
+        .palette-main {
+            display: grid;
+            place-items: center;
+            padding: 0 clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
+        }
+
         /* --- 3. 主容器 (与主页 Speed Card 同款设计) --- */
+        /* 去掉投影，改用细线与留白，和首页工具区块同一语汇 */
         .container {
             width: min(1020px, 100%);
             background: var(--bg-color);
-            border-radius: 32px;
+            border-radius: 28px;
             padding: 40px 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
-            transition: box-shadow var(--transition-smooth);
-        }
-
-        .container:hover {
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
         }
 
         /* --- 4. 标题排版 --- */
@@ -348,11 +352,11 @@
         }
     </style>
 </head>
-<body>
+<body class="page has-chrome">
 
+    <main class="palette-main">
     <div class="container">
         <h1>
-            <span class="icon">🎨</span>
             智能调色板
         </h1>
 
@@ -410,6 +414,7 @@
             </div>
         </div>
     </div>
+    </main>
 
     <!-- 提示 Toast -->
     <div class="toast" id="toast"></div>

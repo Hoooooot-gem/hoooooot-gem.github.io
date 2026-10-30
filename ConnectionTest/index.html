@@ -3,113 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection Test</title>
+    <title>连接测速 · Hoooooot's</title>
 
-    <!-- 【全局样式】 -->
+    <!-- 共享顶栏 / 底栏（默认 both） -->
+    <script src="/js/components.js"></script>
+
+    <!-- 全局样式 + 子页面 Apple 风格层 -->
     <link rel="stylesheet" href="/css/style.css">
-    
+    <link rel="stylesheet" href="/css/pages.css">
+
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
 
-    <!-- 【测速页专属微调样式】 -->
+    <!-- 测速页专属：只保留与测速仪表盘相关的排版 -->
     <style>
-        main.speed-main {
+        .speed-main {
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - var(--nav-height, 42px) - 40px);
-            padding: 40px 24px;
-            background-color: var(--bg-color);
-            transition: background var(--transition-theme);
+            padding-bottom: clamp(80px, 10vw, 120px);
         }
 
-        .speed-card {
-            width: 100%;
-            max-width: 480px;
-            padding: 50px 45px;
-            background: #FFFFFF;
-            border-radius: 32px;
+        .speed-inner {
+            width: min(640px, 100%);
+            padding: 0 clamp(20px, 5vw, 40px);
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border-color);
-            transition: background var(--transition-theme), border var(--transition-theme);
-        }
-        [data-theme="dark"] .speed-card {
-            background: var(--bg-color);
-            border-color: var(--border-color);
         }
 
-        .speed-header {
-            margin-bottom: 32px;
-        }
-
-        .speed-header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
-            letter-spacing: -0.03em;
-            color: var(--text-primary);
-        }
-
-        .speed-header .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
+        /* 数字作为页面主体，字号与字距按首页大标题的比例放大 */
         .speed-number {
-            margin-top: 32px;
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            color: var(--text-primary);
+            font-size: clamp(3.5rem, 9vw, 5.5rem);
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: -0.045em;
+            font-variant-numeric: tabular-nums;
+            color: #1d1d1f;
         }
+
         .speed-number .unit {
-            font-size: 1.5rem;
+            margin-left: 10px;
+            font-size: 1.25rem;
             font-weight: 400;
-            color: var(--text-secondary);
             letter-spacing: 0;
+            color: #86868b;
         }
 
         .speed-status {
-            margin-top: 12px;
-            font-size: 0.95rem;
-            color: var(--text-secondary);
+            margin-top: 16px;
+            font-size: 0.9375rem;
+            color: #6e6e73;
         }
 
-        .speed-info {
-            margin-top: 32px;
-            text-align: left;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 2.2;
-            border-top: 1px solid var(--border-color);
-            padding-top: 24px;
+        /* 三项指标改为细线表格，去掉卡片投影 */
+        .speed-meta {
+            margin: clamp(32px, 5vw, 48px) 0 0;
+            padding: 0;
+            border-top: 1px solid #d2d2d7;
         }
-        .speed-info .value {
-            float: right;
-            color: var(--text-primary);
-            font-weight: 600;
+
+        .speed-meta > div {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 16px 2px;
+            border-bottom: 1px solid #d2d2d7;
+        }
+
+        .speed-meta dt {
+            margin: 0;
+            font-size: 0.9375rem;
+            color: #86868b;
+        }
+
+        .speed-meta dd {
+            margin: 0;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #1d1d1f;
+            font-variant-numeric: tabular-nums;
         }
 
         .speed-btn {
-            display: inline-block;
-            margin-top: 28px;
-            padding: 14px 36px;
-            border: 1px solid var(--text-primary);
-            border-radius: 999px;
-            background: transparent;
-            font-size: 1rem;
-            font-weight: var(--font-weight-bold);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-        }
-
-        .speed-btn:hover:not(:disabled) {
-            background: var(--text-primary);
-            color: var(--bg-color);
-            transform: translateY(-2px);
+            margin-top: clamp(28px, 4vw, 40px);
+            min-width: 180px;
         }
 
         .speed-btn:disabled {
@@ -117,55 +95,39 @@
             cursor: not-allowed;
         }
 
-        .speed-btn:active:not(:disabled) {
-            transform: scale(0.97) translateY(-1px);
-            transition: transform 80ms ease-out;
-        }
-
         @media (max-width: 480px) {
-            .speed-card { padding: 30px 20px; }
-            .speed-number { font-size: 3rem; }
-            .speed-btn { width: 100%; justify-content: center; }
+            .speed-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body>
-    <!-- 【新增】用 JS 只注入顶栏，不要 Footer -->
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // 只请求顶栏
-                const headerResponse = await fetch('/header.html');
-                const headerHTML = await headerResponse.text();
-                // 插入到 body 最前面
-                document.body.insertAdjacentHTML('afterbegin', headerHTML);
-            } catch (error) {
-                console.error('顶栏加载失败', error);
-            }
-        });
-    </script>
+<body class="page has-chrome">
+
+    <!-- 顶栏由 js/components.js 注入到 body 首部 -->
 
     <main class="speed-main">
-        <div class="speed-card">
-            <div class="speed-header">
-                <h1>Connection Test</h1>
-                <p class="subtitle">检测你与本站服务器之间的连接质量</p>
-            </div>
+        <div class="speed-inner">
+            <header class="page-head">
+                <p class="page-eyebrow">工具</p>
+                <h1 class="page-title">连接测速</h1>
+                <p class="page-lead">测量你与本站之间的实际带宽与延迟，全程在你的浏览器内完成。</p>
+            </header>
 
             <div class="speed-number">
                 <span id="speed">0</span>
                 <span class="unit">Mbps</span>
             </div>
 
-            <div class="speed-status" id="status">等待测试</div>
+            <p class="speed-status" id="status">等待测试</p>
 
-            <div class="speed-info">
-                <div>延迟 RTT <span class="value" id="ping">--</span></div>
-                <div>服务器 <span class="value">日本</span></div>
-                <div>状态 <span class="value" id="quality">--</span></div>
-            </div>
+            <dl class="speed-meta">
+                <div><dt>延迟 RTT</dt><dd id="ping">--</dd></div>
+                <div><dt>服务器</dt><dd>日本</dd></div>
+                <div><dt>状态</dt><dd id="quality">--</dd></div>
+            </dl>
 
-            <button class="speed-btn" id="start">开始检测</button>
+            <button class="pill pill--solid speed-btn" id="start">开始检测</button>
         </div>
     </main>
 

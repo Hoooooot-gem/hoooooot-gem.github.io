@@ -10,6 +10,8 @@
     
     <!-- 复用全局 CSS -->
     <link rel="stylesheet" href="../../../css/style.css">
+    <!-- 子页面 Apple 风格层（与首页同一套间距与字阶） -->
+    <link rel="stylesheet" href="../../../css/pages.css">
     
     <!-- 继承主站 Logo -->
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
@@ -22,10 +24,11 @@
         .course-container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 60px 80px 120px 80px;
+            /* 顶部让给 pages.css 的 has-chrome 规则，避免把固定导航压住 */
+            padding: 0 clamp(20px, 5vw, 40px) clamp(80px, 10vw, 120px);
         }
 
-        .course-header { margin-bottom: 48px; }
+        .course-header { margin-bottom: clamp(32px, 4vw, 48px); }
                 /* 【新增】让背景图等比例铺满左右 */
         .course-bg-img {
             width: 100%;           /* 宽度占满容器 */
@@ -51,17 +54,17 @@
         .course-item {
             display: flex;
             align-items: center;
-            gap: 32px;
-            padding: 24px 0;
+            gap: clamp(20px, 3vw, 32px);
+            padding: clamp(20px, 2.4vw, 28px) 0;
             border-bottom: 1px solid var(--border-color);
         }
         .course-item:last-child { border-bottom: none; }
 
         .course-thumb {
-            width: 240px;
+            width: 220px;
             aspect-ratio: 16 / 9;
             flex-shrink: 0;
-            border-radius: 6px;
+            border-radius: 12px;
             overflow: hidden;
             background-color: var(--border-color);
             display: flex;
@@ -76,22 +79,34 @@
             display: block;
         }
 
-        .course-info h3 { font-size: 1.3rem; margin-bottom: 6px; }
-        .course-info p { color: var(--text-secondary); font-size: 0.95rem; }
+        .course-info h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-bottom: 6px;
+        }
+        .course-info p { color: #6e6e73; font-size: 0.9375rem; line-height: 1.55; }
 
         @media (max-width: 767px) {
-            .course-container { padding: 40px 24px 80px 24px; }
+            .course-container { padding: 0 24px 72px; }
             .course-item { flex-direction: column; align-items: flex-start; gap: 16px; }
             .course-thumb { width: 100%; }
             .course-item-link:hover { transform: none; }
         }
     </style>
 </head>
-<body>
+<body class="page has-chrome">
 
     <!-- 【已删除】独立顶栏：现在由 components.js 自动从 /header.html 注入 -->
 
     <main class="course-container">
+        <!-- 补一层与首页一致的页头，课程页也有明确的一级标题 -->
+        <header class="page-head">
+            <p class="page-eyebrow">课程</p>
+            <h1 class="page-title">Hoooooot's Summer Camp</h1>
+            <p class="page-lead">从拍摄参数、剪辑节奏到电影感调色，一套完整的影像创作流程。</p>
+        </header>
+
         <div class="course-header">
             <!-- 替换为等比例铺满的背景图 -->
             <img src="/proj/2026/HSC/images/bg.png" alt="Summer Camp Background" class="course-bg-img">

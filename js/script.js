@@ -1,6 +1,9 @@
 /* ============================================================
    js/script.js
-   功能模块：导航高亮、滚动入场动画、播放器、滚动毛玻璃控制
+   功能模块：导航高亮、滚动入场动画、二维码弹层、画廊跑马灯、
+             滚动毛玻璃控制、Hero 视频兜底播放
+   说明：音乐播放器模块已移除（2026-10），不再创建 Audio 实例，
+         也不再尝试自动播放音频。
    ============================================================ */
 
 'use strict';
@@ -86,118 +89,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
 
-    // ==================== 6. 滚动控制顶栏与播放栏同步浮现 ====================
+    // ==================== 6. 滚动控制顶栏浮现 ====================
+    // 改动说明：原「播放栏同步浮现」逻辑随音乐播放器一并删除，
+    // 顶栏毛玻璃的触发阈值与行为保持不变。
     window.addEventListener('scroll', () => {
         const navbarDynamic = document.querySelector('.navbar');
-        const playerWrapperDynamic = document.getElementById('player-wrapper');
 
         if (window.scrollY > 10) {
             if (navbarDynamic) navbarDynamic.classList.add('scrolled');
-            if (playerWrapperDynamic) playerWrapperDynamic.classList.add('visible');
         } else {
             if (navbarDynamic) navbarDynamic.classList.remove('scrolled');
-            if (playerWrapperDynamic) playerWrapperDynamic.classList.remove('visible');
         }
     });
 
-    // ==================== 7. 右下角胶囊播放栏 ====================
-    (function() {
-        'use strict';
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const progressFill = document.getElementById('progressFill');
-        const progressThumb = document.getElementById('progressThumb');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressTime = document.getElementById('progressTime');
-        const audio = document.getElementById('bgMusic');
-
-        if (!playBtn || !audio) return;
-
-        audio.volume = 0.5;
-        audio.play().catch(() => console.log('等待用户点击播放'));
-
-        let isDragging = false;
-
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
+    // ==================== 7. 强制唤醒 Hero 视频 ====================
+    // 改动说明：此逻辑原先嵌在播放器模块内部，播放器删除后单独拆出，
+    // 以免移动端因自动播放策略而停在封面帧。
+    const heroVideo = document.querySelector('.hero-bg-image video');
+    if (heroVideo) {
+        heroVideo.play().catch(() => {
+            const wakeVideo = () => {
+                heroVideo.play().catch(() => {});
+                document.removeEventListener('click', wakeVideo);
+            };
+            document.addEventListener('click', wakeVideo);
         });
-
-        audio.addEventListener('play', () => {
-            playIcon.style.display = 'none';
-            pauseIcon.style.display = 'block';
-        });
-
-        audio.addEventListener('pause', () => {
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            if (!isDragging) {
-                updateProgressUI();
-            }
-        });
-
-        audio.addEventListener('ended', () => {
-            progressFill.style.width = '0%';
-            progressThumb.style.left = '0%';
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-        });
-
-        function updateProgressFromEvent(e) {
-            const rect = progressContainer.getBoundingClientRect();
-            let x = (e.clientX - rect.left) / rect.width;
-            x = Math.min(1, Math.max(0, x));
-            audio.currentTime = x * audio.duration;
-            updateProgressUI();
-        }
-
-        progressContainer.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            updateProgressFromEvent(e);
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                updateProgressFromEvent(e);
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-            }
-        });
-
-        function updateProgressUI() {
-            if (!audio.duration || !isFinite(audio.duration) || !progressTime) return;
-            const percent = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = percent + '%';
-            progressThumb.style.left = percent + '%';
-            const currentMin = Math.floor(audio.currentTime / 60);
-            const currentSec = Math.floor(audio.currentTime % 60);
-            const totalMin = Math.floor(audio.duration / 60);
-            const totalSec = Math.floor(audio.duration % 60);
-            progressTime.textContent = 
-                `${currentMin}:${currentSec.toString().padStart(2, '0')} / ${totalMin}:${totalSec.toString().padStart(2, '0')}`;
-        }
-
-        /* ==================== 额外：强制唤醒 Hero 视频 ==================== */
-        const heroVideo = document.querySelector('.hero-bg-image video');
-        if (heroVideo) {
-            heroVideo.play().catch(() => {
-                const wakeVideo = () => {
-                    heroVideo.play().catch(() => {});
-                    document.removeEventListener('click', wakeVideo);
-                };
-                document.addEventListener('click', wakeVideo);
-            });
-        }
-    })();
+    }
 });

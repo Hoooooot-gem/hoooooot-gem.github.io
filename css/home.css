@@ -1,0 +1,352 @@
+/* ============================================================
+   css/home.css — 主页专属视觉层（Apple 极简）
+   ------------------------------------------------------------
+   改动意图：
+   1. 只服务 index.html。全部规则挂在 body.home 下，与 style.css
+      共存但不外溢，HSC / ConnectionTest / TP 等复用 style.css
+      的子页面视觉不受影响。
+   2. Hero 保持原样。本文件没有任何选择器命中
+      #hero / .hero-bg-image / .hero-content / .hero-title，
+      因此首屏视频与大标题完全沿用原有实现。
+   3. 版式规则：统一区块头部（.sec-head）+ 大留白 + 黑白灰三色，
+      移除卡片投影、emoji 图标、渐变等装饰，仅靠字阶、间距与
+      细分隔线建立层次。
+   ============================================================ */
+
+/* ---------- 1. 全局节奏：区块留白与内容宽度 ---------- */
+
+.home main .section {
+    /* 原为固定 120px，改为随视口收缩的呼吸区，桌面端更有空气感 */
+    padding: clamp(96px, 11vw, 160px) 0;
+}
+
+/* 交替底色：仅用 Apple 灰 (#f5f5f7) 做区块分区，不引入第三种颜色 */
+.home main .section.is-alt {
+    background: #f5f5f7;
+}
+
+.home main .container {
+    max-width: 1080px;
+    padding-left: clamp(20px, 5vw, 40px);
+    padding-right: clamp(20px, 5vw, 40px);
+}
+
+/* 覆盖 style.css 中全局的链接悬停降透明度，避免文字发灰 */
+.home a:hover {
+    opacity: 1;
+}
+
+/* ---------- 2. 统一区块头部 ---------- */
+
+.home .sec-head {
+    max-width: 760px;
+    margin: 0 auto clamp(44px, 5vw, 64px);
+    text-align: center;
+}
+
+.home .sec-eyebrow {
+    margin: 0 0 18px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: #86868b;
+}
+
+.home .sec-title {
+    margin: 0;
+    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.07;
+    letter-spacing: -0.028em;
+    color: #1d1d1f;
+}
+
+.home .sec-lead {
+    margin: 20px auto 0;
+    max-width: 34em;
+    font-size: clamp(1rem, 1.3vw, 1.1875rem);
+    line-height: 1.55;
+    color: #6e6e73;
+}
+
+/* ---------- 3. 实用工具：两列清单，用细线代替卡片 ---------- */
+
+.home .tool-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* 列间距交给单元格内边距处理，让横向细线在两列之间保持连续 */
+    column-gap: 0;
+    border-top: 1px solid #d2d2d7;
+}
+
+.home .tool-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid #d2d2d7;
+    color: inherit;
+    text-decoration: none;
+}
+
+.home .tool-row:nth-child(odd) {
+    padding-right: clamp(24px, 4vw, 48px);
+}
+
+.home .tool-row:nth-child(even) {
+    padding-left: clamp(24px, 4vw, 48px);
+}
+
+.home .tool-name {
+    display: block;
+    font-size: 1.3125rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+}
+
+.home .tool-desc {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #6e6e73;
+}
+
+.home .tool-arrow {
+    font-size: 1.25rem;
+    line-height: 1.1;
+    color: #86868b;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
+}
+
+.home .tool-row:hover .tool-arrow {
+    transform: translateX(5px);
+    color: #1d1d1f;
+}
+
+/* ---------- 4. 关于：整段陈述式排版 ---------- */
+
+/* 「关于」的头部只有眉标，收紧与陈述之间的间距 */
+.home .about .sec-head {
+    margin-bottom: 28px;
+}
+
+.home .about-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.home .about-statement {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.8vw, 2.875rem);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    color: #1d1d1f;
+}
+
+.home .about-note {
+    margin: 24px 0 0;
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+    line-height: 1.6;
+    color: #6e6e73;
+}
+
+/* 标签降级为纯文字元信息，用竖线分隔，不再描边成胶囊 */
+.home .about-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 44px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    color: #86868b;
+}
+
+.home .about-meta li {
+    padding: 0 18px;
+    border-left: 1px solid #d2d2d7;
+}
+
+.home .about-meta li:first-child {
+    padding-left: 0;
+    border-left: 0;
+}
+
+.home .about-meta li:last-child {
+    padding-right: 0;
+}
+
+/* ---------- 5. 画廊：通栏跑马灯 + 两端淡出 ---------- */
+
+.home .gallery-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+/* 悬停暂停，方便看清单张画面 */
+.home .gallery-marquee:hover .carousel-track {
+    animation-play-state: paused;
+}
+
+.home .carousel-item {
+    width: 420px;
+    height: 262px;
+    margin-right: 20px;
+    border-radius: 18px;
+    background-color: #e8e8ed;
+}
+
+/* ---------- 6. 历程：年份与描述的两栏对齐 ---------- */
+
+.home .tl-list {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid #d2d2d7;
+}
+
+.home .tl-row {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 32px;
+    padding: 30px 0;
+    border-bottom: 1px solid #d2d2d7;
+}
+
+.home .tl-year {
+    font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: #1d1d1f;
+}
+
+.home .tl-desc {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: #6e6e73;
+}
+
+/* ---------- 7. 联系 ---------- */
+
+.home .contact-block {
+    text-align: center;
+}
+
+.home .contact-mail {
+    display: inline-block;
+    padding-bottom: 6px;
+    border-bottom: 1px solid transparent;
+    font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    color: #1d1d1f;
+    transition: border-color 0.2s ease;
+}
+
+.home .contact-mail:hover {
+    border-bottom-color: #1d1d1f;
+}
+
+.home .contact-block .social-links {
+    justify-content: center;
+    gap: 32px;
+    margin-top: 44px;
+}
+
+/* 图标只承担识别功能，去掉描边下划线，默认降低存在感 */
+.home .contact-block .social-link,
+.home .contact-block .social-label {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.home .contact-block .social-img {
+    opacity: 0.72;
+}
+
+.home .contact-block .social-link:hover .social-img,
+.home .contact-block .social-label:hover .social-img {
+    opacity: 1;
+}
+
+.home .qr-popup {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- 8. 响应式 ---------- */
+
+@media (max-width: 767px) {
+    .home main .section {
+        padding: 88px 0;
+    }
+
+    .home .sec-head {
+        margin-bottom: 40px;
+    }
+
+    .home .tool-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home .tool-row {
+        padding: 24px 0;
+    }
+
+    /* 单列时取消两列布局留下的内边距 */
+    .home .tool-row:nth-child(odd),
+    .home .tool-row:nth-child(even) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .home .about-meta {
+        margin-top: 36px;
+    }
+
+    .home .carousel-item {
+        width: 260px;
+        height: 168px;
+        margin-right: 14px;
+        border-radius: 14px;
+    }
+
+    .home .tl-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        padding: 24px 0;
+    }
+
+    .home .contact-block .social-links {
+        gap: 24px;
+        margin-top: 36px;
+    }
+}
+
+/* ---------- 9. 无障碍：尊重系统减弱动态效果 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .home .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .home .carousel-track {
+        animation: none;
+    }
+
+    .home .tool-arrow {
+        transition: none;
+    }
+}

@@ -5,23 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoooooot's Typing Practice</title>
 
-    <!-- 【新增】只加载顶栏，不要底栏 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // 从根目录请求顶栏
-                const headerResponse = await fetch('/header.html');
-                const headerHTML = await headerResponse.text();
-                // 插入到 body 最前面
-                document.body.insertAdjacentHTML('afterbegin', headerHTML);
-            } catch (error) {
-                console.error('顶栏加载失败', error);
-            }
-        });
-    </script>
+    <!-- 改动说明（2026-10）：原先只注入顶栏，现改为共享 both 模式，补齐与首页一致的底栏 -->
+    <script src="/js/components.js"></script>
 
     <!-- 【全局样式】：复用你网站的全局 CSS，确保顶栏样式完全一致 -->
     <link rel="stylesheet" href="/css/style.css">
+    <!-- 子页面 Apple 风格层：统一页脚与排版基线 -->
+    <link rel="stylesheet" href="/css/pages.css">
     
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
@@ -533,8 +523,8 @@
         }
     </style>
 </head>
-<body>
-    <!-- 【此时将自动插入顶栏】 -->
+<body class="page has-chrome">
+    <!-- 顶栏由 /js/components.js 注入 -->
 
     <!-- 【新增】用 main.main-content 包裹你的核心内容 -->
     <main class="main-content">
