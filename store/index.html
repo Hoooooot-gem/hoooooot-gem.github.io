@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 共享顶栏 / 底栏注入（必须在最前） -->
+    <script src="/js/components.js"></script>
+
+    <!-- ==================== 基础 Meta ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ==================== SEO 与社交分享 ==================== -->
+    <title>商店 · Hoooooot</title>
+    <meta name="description" content="Hoooooot 的自制商品：2027 明信片典藏套装、LUT Premium 调色预设，以及按月支持的方式。仅在爱发电发售，仅限中国大陆地区。">
+    <meta property="og:title" content="商店 · Hoooooot">
+    <meta property="og:description" content="明信片与调色预设，把看过的光留成可以寄出、可以调用的样子。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hoooooot-gem.github.io/store">
+
+    <!-- ==================== 网站图标（Favicon） ==================== -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+    <!-- ==================== 样式 ==================== -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <link rel="stylesheet" href="/css/store.css">
+</head>
+<body class="page store">
+
+<!--
+    商店页说明
+    ------------------------------------------------------------------
+    · 商品信息取自爱发电主页 https://afdian.com/a/hoooooot，
+      价格与文案变化时改这里即可，全部购买按钮统一指向该主页。
+    · 首屏为静态 Hero：沿用首页 hero 的铺满 + 居中白字做法，
+      视频换成 /images/store-hero.webp，另加一层深色罩保证白字可读。
+    · 仅在中国大陆地区发售，这一信息在 Hero 正下方与页尾各标注一次。
+-->
+
+<main>
+
+    <!-- 1. 静态 Hero：设计稿原样铺满，不叠任何遮罩 -->
+    <section class="store-hero" aria-label="商店首屏">
+        <div class="store-hero-media">
+            <img src="/images/store-hero.webp" alt="" width="3840" height="1280" fetchpriority="high">
+        </div>
+        <div class="store-hero-content">
+            <h1 class="store-hero-title">触手可及</h1>
+        </div>
+    </section>
+
+    <!-- 2. 发售地区提示 -->
+    <div class="store-notice" role="note">
+        <strong>仅在中国大陆地区发售</strong>
+        <span class="sep" aria-hidden="true">·</span>
+        中国大陆以外地区暂不支持购买与配送
+    </div>
+
+    <!-- 3. 商品列表 -->
+    <section class="store-section" aria-labelledby="products-title">
+        <div class="store-wrap">
+            <header class="page-head">
+                <p class="page-eyebrow">出售中</p>
+                <h2 class="page-title" id="products-title">自己做的四件东西。</h2>
+                <p class="page-lead">下单、付款与售后都在爱发电完成，点任意按钮都会跳到我的爱发电主页。</p>
+            </header>
+
+            <div class="product-grid">
+
+                <!-- 商品 1：套装（推荐位） -->
+                <article class="product surface">
+                    <span class="product-flag">九五折</span>
+                    <p class="product-kicker">捆绑包 · 明信片 + LUT</p>
+                    <h3 class="product-name">【套装九五折】2027 明信片 + LUT Premium 豪华套装</h3>
+                    <p class="product-desc">十五款不重复明信片，加上二十三款原创 LUT。手机与电脑、照片与视频都能用，两件一起带走按九五折。</p>
+                    <div class="product-foot">
+                        <p class="product-price">
+                            <span class="product-amount">¥67.73</span>
+                            <span class="product-unit">/ 份</span>
+                        </p>
+                        <a class="product-buy" href="https://afdian.com/a/hoooooot" target="_blank" rel="noopener noreferrer">去爱发电购买</a>
+                    </div>
+                </article>
+
+                <!-- 商品 2：LUT Premium -->
+                <article class="product surface">
+                    <p class="product-kicker">数字商品 · 常驻</p>
+                    <h3 class="product-name">Hoooooot LUT Premium</h3>
+                    <p class="product-desc">共 23 款基于 Rec.709（Rec.2020 同样适用）的风格化 LUT，省下反复调色的时间，直接把画面推到想要的方向。</p>
+                    <div class="product-foot">
+                        <p class="product-price">
+                            <span class="product-amount">¥46.99</span>
+                            <span class="product-unit">/ 份</span>
+                        </p>
+                        <a class="product-buy" href="https://afdian.com/a/hoooooot" target="_blank" rel="noopener noreferrer">去爱发电购买</a>
+                    </div>
+                </article>
+
+                <!-- 商品 3：2027 明信片 -->
+                <article class="product surface">
+                    <p class="product-kicker">实体商品 · 15 款</p>
+                    <h3 class="product-name">Hoooooot 2027 明信片 15 款典藏套装</h3>
+                    <p class="product-desc">从东莞到惠州，从惠州到首都，从首都到中国香港，从中国香港到深圳——我们一起放大世界。每份含 15 款不重复明信片。</p>
+                    <div class="product-foot">
+                        <p class="product-price">
+                            <span class="product-amount">¥24.30</span>
+                            <span class="product-unit">/ 份</span>
+                        </p>
+                        <a class="product-buy" href="https://afdian.com/a/hoooooot" target="_blank" rel="noopener noreferrer">去爱发电购买</a>
+                    </div>
+                </article>
+
+                <!-- 商品 4：按月支持 -->
+                <article class="product surface">
+                    <p class="product-kicker">订阅 · 每月</p>
+                    <h3 class="product-name">请我喝杯咖啡</h3>
+                    <p class="product-desc">按月发电，支持影像与设计的持续创作。没有固定回报，只是让这件事继续做下去。</p>
+                    <div class="product-foot">
+                        <p class="product-price">
+                            <span class="product-amount">¥20.00</span>
+                            <span class="product-unit">/ 月</span>
+                        </p>
+                        <a class="product-buy" href="https://afdian.com/a/hoooooot" target="_blank" rel="noopener noreferrer">去爱发电支持</a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 下单须知 -->
+    <section class="store-section is-alt" aria-labelledby="notes-title">
+        <div class="store-wrap">
+            <header class="page-head">
+                <p class="page-eyebrow">下单前</p>
+                <h2 class="page-title" id="notes-title">几件小事。</h2>
+            </header>
+
+            <ul class="notes-list">
+                <li><span class="notes-num">01</span><span>所有商品均为原创，请尊重原创，禁止二次传播或转售。</span></li>
+                <li><span class="notes-num">02</span><span>数字商品具有可复制性，一经售出恕不退货退款，请确认后再下单。</span></li>
+                <li><span class="notes-num">03</span><span>明信片为实体商品，因收货信息填写有误导致无法发货的情况恕不退款。</span></li>
+                <li><span class="notes-num">04</span><span>需要 LUT 使用教程，可在爱发电私信我。</span></li>
+                <li><span class="notes-num">05</span><span>仅在中国大陆地区发售，境外地址暂不支持购买与配送。</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 5. 收尾 CTA -->
+    <section class="store-cta" aria-labelledby="cta-title">
+        <div class="store-wrap">
+            <h2 class="store-cta-title" id="cta-title">所有订单都在爱发电完成。</h2>
+            <p class="store-cta-note">仅在中国大陆地区发售 · 中国大陆以外地区暂不支持</p>
+            <a class="pill pill--solid" href="https://afdian.com/a/hoooooot" target="_blank" rel="noopener noreferrer">
+                前往爱发电主页<span class="arrow" aria-hidden="true">›</span>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    // 顶栏毛玻璃：与首页阈值一致（滚动超过 10px 触发）。
+    // 首页由 js/script.js 处理，子页面没有该文件，这里单独补上。
+    (function () {
+        function bind() {
+            var navbar = document.querySelector('.navbar');
+            if (!navbar) return false;
+
+            var onScroll = function () {
+                navbar.classList.toggle('scrolled', window.scrollY > 10);
+            };
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+            return true;
+        }
+
+        // 顶栏由 js/components.js 异步注入，未就绪时等它出现再绑定
+        if (!bind()) {
+            var observer = new MutationObserver(function () {
+                if (bind()) observer.disconnect();
+            });
+            observer.observe(document.body, { childList: true });
+        }
+    })();
+</script>
+
+</body>
+</html>

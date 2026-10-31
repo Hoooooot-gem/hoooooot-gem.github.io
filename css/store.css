@@ -1,0 +1,366 @@
+/* ============================================================
+   css/store.css — 商店页视觉层
+   ------------------------------------------------------------
+   设计意图：
+   1. 与首页同一套 Apple 语汇：#1d1d1f 正文 / #6e6e73 辅助文字 /
+      #d2d2d7 细线 / #f5f5f7 交替底色，不引入新的品牌色。
+   2. 首屏静态 Hero 复刻首页 hero 的做法（背景铺满 + 居中白色
+      标题），把视频换成 store-hero.webp，设计稿原样呈现、不叠遮罩。
+   3. 只服务 /store/index.html，全部规则挂在 body.store 下，
+      pages.css / style.css 的公共规则不受影响。
+   ============================================================ */
+
+/* ---------- 1. 页面外壳：Hero 顶到视口顶端 ---------- */
+
+/* pages.css 会为有顶栏的页面留出导航高度；本页 Hero 需要顶格铺满，
+   因此清零，改由 Hero 自身的高度吸收导航遮挡。 */
+body.store.has-chrome > main {
+    padding-top: 0;
+}
+
+/* Hero 是浅色设计稿，顶栏沿用 pages.css 的深色文字即可，
+   不需要像首页那样反白（原白色覆盖已随遮罩一并删除）。 */
+
+/* 当前页导航项加粗，作为位置提示（顶栏由 js/components.js 注入，
+   用属性选择器即可命中，无需额外脚本） */
+body.store.has-chrome .nav-list a[href="/store"] {
+    font-weight: 700;
+}
+
+/* 全局 a:hover 会降透明度，按钮类需要保持不变 */
+body.store a:hover {
+    opacity: 1;
+}
+
+/* ---------- 2. Hero：静态设计稿 + 居中白色标题 ---------- */
+
+.store-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 桌面端接近满屏，小屏按视口高度收缩，两端都不出现裁切黑洞 */
+    height: 88vh;
+    height: min(88svh, 820px);
+    min-height: 460px;
+    overflow: hidden;
+    /* 兜底色与设计稿留白一致，加载瞬间不闪深色 */
+    background: #ffffff;
+    isolation: isolate;
+}
+
+.store-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.store-hero-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* 设计稿原样呈现，不叠遮罩：标题落点在设计稿中央的蓝色块面上，
+   白色字直接压在实色块上即可读，不需要任何渐变或压暗层。 */
+
+.store-hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 clamp(20px, 5vw, 40px);
+    text-align: center;
+}
+
+.store-hero-title {
+    /* 末字后的字距空隙用负外边距抵消，保证视觉上真正居中 */
+    display: inline-block;
+    margin: 0 -0.14em 0 0;
+    font-size: clamp(2.5rem, 6.6vw, 5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: 0.14em;
+    color: #ffffff;
+    /* 不做遮罩，只用一道很紧的投影让字口在实色块上站得住 */
+    text-shadow: 0 1px 2px rgba(0, 46, 92, 0.22);
+    animation: store-hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes store-hero-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- 3. 发售地区提示条 ---------- */
+
+.store-notice {
+    padding: 15px clamp(20px, 5vw, 40px);
+    background: #1d1d1f;
+    text-align: center;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.store-notice strong {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+}
+
+.store-notice .sep {
+    margin: 0 10px;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- 4. 内容容器 ---------- */
+
+.store-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 40px);
+}
+
+.store-section {
+    padding: clamp(64px, 9vw, 112px) 0;
+}
+
+.store-section.is-alt {
+    background: #f5f5f7;
+}
+
+/* ---------- 5. 商品网格 ---------- */
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 2.2vw, 24px);
+}
+
+.product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(24px, 3vw, 34px);
+    border-radius: 24px;
+    transition: border-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product:hover {
+    transform: translateY(-2px);
+    border-color: #b9b9bf;
+}
+
+.product-kicker {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: #86868b;
+}
+
+.product-name {
+    margin: 14px 0 0;
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+    color: #1d1d1f;
+}
+
+.product-desc {
+    flex: 1 0 auto;
+    margin: 12px 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #6e6e73;
+}
+
+.product-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: clamp(24px, 3vw, 32px);
+    padding-top: 20px;
+    border-top: 1px solid #e8e8ed;
+}
+
+.product-price {
+    margin: 0;
+    color: #1d1d1f;
+}
+
+.product-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.product-unit {
+    margin-left: 5px;
+    font-size: 0.8125rem;
+    color: #86868b;
+}
+
+.product-buy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: #1d1d1f;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #ffffff;
+    transition: background 0.24s ease, transform 0.18s ease;
+}
+
+.product-buy:hover {
+    background: #000000;
+}
+
+.product-buy:active {
+    transform: scale(0.97);
+}
+
+/* 套装角标：只描边，不加底色，保持页面安静 */
+.product-flag {
+    position: absolute;
+    top: clamp(18px, 2vw, 24px);
+    right: clamp(18px, 2vw, 24px);
+    padding: 5px 12px;
+    border: 1px solid #d2d2d7;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: #6e6e73;
+}
+
+/* ---------- 6. 下单须知 ---------- */
+
+.notes-list {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid #d2d2d7;
+}
+
+.notes-list li {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid #d2d2d7;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #6e6e73;
+}
+
+.notes-num {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    color: #b0b0b6;
+}
+
+/* ---------- 7. 收尾：回到爱发电主页 ---------- */
+
+.store-cta {
+    padding: clamp(64px, 9vw, 104px) 0;
+    text-align: center;
+}
+
+.store-cta-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: #1d1d1f;
+}
+
+.store-cta-note {
+    margin: 16px 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #6e6e73;
+}
+
+.store-cta .pill {
+    margin-top: clamp(28px, 3.4vw, 36px);
+}
+
+.store-cta .pill .arrow {
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.store-cta .pill:hover .arrow {
+    transform: translateX(4px);
+}
+
+/* ---------- 8. 响应式 ---------- */
+
+@media (max-width: 899px) {
+    .product-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .store-hero {
+        height: 76vh;
+        height: min(76svh, 620px);
+        min-height: 420px;
+    }
+
+    .store-notice {
+        font-size: 0.75rem;
+        padding: 14px clamp(20px, 5vw, 40px);
+    }
+
+    /* 窄屏一行放不下两段话，让分隔符换行后不顶在行首 */
+    .store-notice .sep {
+        display: block;
+        height: 0;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    .product-foot {
+        flex-wrap: wrap;
+    }
+
+    .product-buy {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+
+/* ---------- 9. 尊重减弱动态效果 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .store-hero-title {
+        animation: none;
+    }
+
+    .product,
+    .product-buy,
+    .store-cta .pill .arrow {
+        transition: none;
+    }
+
+    .product:hover {
+        transform: none;
+    }
+}

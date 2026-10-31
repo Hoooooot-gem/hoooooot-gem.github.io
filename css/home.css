@@ -182,7 +182,99 @@
     padding-right: 0;
 }
 
-/* ---------- 5. 画廊：通栏跑马灯 + 两端淡出 ---------- */
+/* ---------- 5. 商店：三栏产品清单 + 胶囊按钮 ---------- */
+
+/* 与 .tool-list 同一套语汇：细线分区，不用卡片与投影 */
+.home .store-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid #d2d2d7;
+    border-bottom: 1px solid #d2d2d7;
+}
+
+.home .store-item {
+    padding: 32px clamp(20px, 3vw, 34px) 36px;
+    border-left: 1px solid #d2d2d7;
+}
+
+/* 首尾两栏贴齐容器边缘，保持与其他区块左对齐 */
+.home .store-item:first-child {
+    padding-left: 0;
+    border-left: 0;
+}
+
+.home .store-item:last-child {
+    padding-right: 0;
+}
+
+.home .store-item-name {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+}
+
+.home .store-item-desc {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #6e6e73;
+}
+
+.home .store-actions {
+    margin-top: clamp(36px, 4.4vw, 52px);
+    text-align: center;
+}
+
+.home .store-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 34px;
+    border: 1px solid #1d1d1f;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: #1d1d1f;
+    transition: background 0.28s ease, color 0.28s ease, transform 0.18s ease;
+}
+
+.home .store-btn:hover {
+    background: #1d1d1f;
+    color: #ffffff;
+}
+
+/* 按下即时反馈：轻微收缩，比 hover 更快 */
+.home .store-btn:active {
+    transform: scale(0.975);
+}
+
+.home .store-btn-arrow {
+    font-size: 1.125rem;
+    line-height: 1;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home .store-btn:hover .store-btn-arrow {
+    transform: translateX(4px);
+}
+
+.home .store-note {
+    margin: 16px 0 0;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: #86868b;
+}
+
+/* ---------- 6. 画廊：通栏跑马灯 + 两端淡出 ---------- */
 
 .home .gallery-marquee {
     overflow: hidden;
@@ -203,7 +295,7 @@
     background-color: #e8e8ed;
 }
 
-/* ---------- 6. 历程：年份与描述的两栏对齐 ---------- */
+/* ---------- 7. 历程：年份与描述的两栏对齐 ---------- */
 
 .home .tl-list {
     max-width: 880px;
@@ -237,7 +329,7 @@
     color: #6e6e73;
 }
 
-/* ---------- 7. 联系 ---------- */
+/* ---------- 8. 联系 ---------- */
 
 .home .contact-block {
     text-align: center;
@@ -285,7 +377,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* ---------- 8. 响应式 ---------- */
+/* ---------- 9. 响应式 ---------- */
 
 @media (max-width: 767px) {
     .home main .section {
@@ -315,6 +407,30 @@
         margin-top: 36px;
     }
 
+    /* 商店：单列堆叠，分隔线由每栏底边承担，末栏交给列表自身下边框 */
+    .home .store-items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home .store-item {
+        padding: 24px 0;
+        border-left: 0;
+        border-bottom: 1px solid #d2d2d7;
+    }
+
+    .home .store-item:last-child {
+        border-bottom: 0;
+    }
+
+    .home .store-actions {
+        margin-top: 36px;
+    }
+
+    .home .store-btn {
+        width: 100%;
+        padding: 15px 24px;
+    }
+
     .home .carousel-item {
         width: 260px;
         height: 168px;
@@ -334,7 +450,7 @@
     }
 }
 
-/* ---------- 9. 无障碍：尊重系统减弱动态效果 ---------- */
+/* ---------- 10. 无障碍：尊重系统减弱动态效果 ---------- */
 @media (prefers-reduced-motion: reduce) {
     .home .reveal {
         opacity: 1;
@@ -347,6 +463,11 @@
     }
 
     .home .tool-arrow {
+        transition: none;
+    }
+
+    .home .store-btn,
+    .home .store-btn-arrow {
         transition: none;
     }
 }
