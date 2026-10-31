@@ -3,274 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoooooot's Typing Practice</title>
+    <title>打字练习 · Hoooooot's</title>
+    <meta name="description" content="短句、段落与长篇三种文本，实时统计速度、准确率与进度。">
 
-    <!-- 改动说明（2026-10）：原先只注入顶栏，现改为共享 both 模式，补齐与首页一致的底栏 -->
-    <script src="/js/components.js"></script>
-
-    <!-- 【全局样式】：复用你网站的全局 CSS，确保顶栏样式完全一致 -->
     <link rel="stylesheet" href="/css/style.css">
-    <!-- 子页面 Apple 风格层：统一页脚与排版基线 -->
-    <link rel="stylesheet" href="/css/pages.css">
-    
+    <link rel="stylesheet" href="/css/tool-shell.css">
+
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
 
     <style>
-        /* 此处保留你原本的打字应用专属样式 */
-        :root {
-            --bg: #ffffff;
-            --text-primary: #000000;
-            --text-secondary: #555555;
-            --text-tertiary: #999999;
-            --text-pending: #c8c8c8;
-            --border: #e0e0e0;
-            --border-light: #eeeeee;
-            --surface: #f8f8f8;
-            --correct: #000000;
-            --error-mark: #000000;
-            --current-underline: #000000;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 20px;
-            --transition-fast: 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
-            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-            --font-display: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, system-ui, sans-serif;
-            --font-mono: 'SF Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
-        }
+        /* ============================================================
+           打字练习页专属版式
+           只重排视觉层级；所有 id、class 与脚本逻辑保持原样。
+           ============================================================ */
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* 【布局修正】：避免顶栏和卡片布局错乱 */
-        body {
-            background-color: var(--bg);
-            font-family: var(--font-display);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column; /* 改为纵向列，顶栏在上，内容在下 */
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        body.typing {
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 【新增】：主内容包裹层，用来取代原来的 body 居中效果 */
-        main.main-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            width: 100%;
+        body.typing .typing-input,
+        body.typing .pagehead,
+        body.typing .shellfoot {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
-        .container {
-            width: 100%;
-            max-width: 720px;
-            padding: 40px 32px;
+        /* --- 页头 + 文本类型分段控件 --- */
+        .typing-head {
             display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: space-between;
-            gap: 16px;
+            gap: 18px 24px;
             flex-wrap: wrap;
+            margin-bottom: clamp(20px, 3vw, 28px);
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #000;
-            flex-shrink: 0;
-        }
-
-        .logo-text {
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            color: var(--text-primary);
+        .typing-head .pagehead {
+            margin: 0;
         }
 
         .text-selector {
-            display: flex;
-            gap: 4px;
-            background: var(--surface);
-            border-radius: var(--radius-lg);
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
             padding: 3px;
-            border: 1px solid var(--border-light);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.045);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .text-btn {
-            padding: 8px 16px;
+            height: 32px;
+            padding: 0 16px;
             border: none;
+            border-radius: 999px;
             background: transparent;
-            font-family: var(--font-display);
-            font-size: 13px;
+            font-family: inherit;
+            font-size: 0.8125rem;
             font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 16px;
-            transition: all var(--transition-fast);
+            letter-spacing: 0.01em;
+            color: #48484d;
             white-space: nowrap;
-            letter-spacing: 0.2px;
-            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .text-btn:hover {
-            color: var(--text-primary);
-            background: rgba(0, 0, 0, 0.04);
-        }
-        .text-btn:active {
-            background: rgba(0, 0, 0, 0.08);
-        }
-        .text-btn.active {
-            background: #000;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: var(--shadow-sm);
-        }
-        .text-btn.active:hover {
-            background: #1a1a1a;
-            color: #fff;
+            color: var(--ts-ink);
+            background: rgba(0, 0, 0, 0.05);
         }
 
-        /* Stats bar */
-        .stats-bar {
+        .text-btn.active,
+        .text-btn.active:hover {
+            background: var(--ts-ink);
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+        }
+
+        /* --- 主卡片（同时保留 .container 供脚本聚焦使用） --- */
+        .typing-card.container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: clamp(18px, 2.6vw, 28px);
             display: flex;
-            gap: 32px;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: clamp(16px, 2vw, 20px);
+        }
+
+        /* --- 统计 --- */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            align-items: stretch;
         }
 
         .stat-item {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 8px;
+            min-width: 0;
+            padding-left: clamp(12px, 2.4vw, 22px);
+            border-left: 1px solid var(--ts-line);
+        }
+
+        .stat-item:first-child {
+            padding-left: 0;
+            border-left: 0;
         }
 
         .stat-label {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-tertiary);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--ts-ink-3);
+        }
+
+        .stat-line {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-family: var(--ts-mono);
+            font-size: clamp(1.5rem, 2.6vw, 1.85rem);
             font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            font-variant-numeric: tabular-nums;
-            font-family: var(--font-mono);
             line-height: 1;
+            letter-spacing: -0.04em;
+            font-variant-numeric: tabular-nums;
+            color: var(--ts-ink);
         }
 
         .stat-value.small {
-            font-size: 22px;
+            font-size: clamp(1.1875rem, 2.1vw, 1.4375rem);
+            font-weight: 500;
         }
 
-        .stat-divider {
-            width: 1px;
-            height: 36px;
-            background: var(--border);
-            flex-shrink: 0;
-            align-self: flex-end;
-            margin-bottom: 2px;
+        .stat-unit {
+            font-size: 0.6875rem;
+            color: var(--ts-ink-3);
         }
 
-        /* Display area */
+        /* --- 待输入文本 --- */
         .display-area {
             position: relative;
-            cursor: text;
-            padding: 24px 0;
-            border-top: 1px solid var(--border-light);
-            border-bottom: 1px solid var(--border-light);
-            min-height: 120px;
             display: flex;
-            align-items: flex-start;
-            transition: border-color var(--transition-smooth);
+            align-items: center;
+            min-height: clamp(140px, 12.5vw, 164px);
+            padding: clamp(16px, 2.4vw, 24px);
+            border: 1px solid var(--ts-line);
+            border-radius: 18px;
+            background: var(--ts-surface-2);
+            cursor: text;
+            transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        body.tool .display-area:focus,
+        body.tool .display-area:focus-visible {
+            outline: none;
         }
 
         .display-area.focused {
-            border-top-color: #000;
-            border-bottom-color: #000;
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.32);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.035);
         }
 
         .display-area.completed {
-            border-top-color: #000;
-            border-bottom-color: #000;
-            background: #fafafa;
+            background: #f7f7f9;
+            border-color: rgba(0, 0, 0, 0.24);
         }
 
         .chars-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 1px 3px;
             align-items: flex-end;
-            line-height: 1.9;
+            gap: 2px 4px;
             width: 100%;
+            line-height: 1.9;
         }
 
         .char-span {
             display: inline-block;
-            font-size: 26px;
+            padding: 1px;
+            border-radius: 4px;
+            font-size: clamp(1.0625rem, 2vw, 1.4375rem);
             font-weight: 400;
-            letter-spacing: 1px;
-            color: var(--text-pending);
-            transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
-            position: relative;
-            padding: 2px 1px;
-            border-radius: 3px;
-            min-width: 0.6em;
-            text-align: center;
-            cursor: default;
-        }
-
-        .char-span.correct {
-            color: #000;
-            font-weight: 500;
-        }
-
-        .char-span.error {
-            color: #000;
-            text-decoration: underline;
-            text-decoration-color: #000;
-            text-decoration-style: wavy;
-            text-underline-offset: 5px;
-            text-decoration-thickness: 1.5px;
-        }
-
-        .char-span.current {
-            color: #000;
-            font-weight: 600;
-            border-bottom: 2.5px solid #000;
-            padding-bottom: 4px;
-            animation: cursorPulse 1.6s ease-in-out infinite;
-            border-radius: 0;
-            background: transparent;
+            letter-spacing: 0.02em;
+            color: #c8c8c8;
+            transition: color 0.12s ease, background 0.12s ease, text-decoration-color 0.12s ease;
         }
 
         .char-span.pending {
@@ -278,331 +205,373 @@
             font-weight: 400;
         }
 
-        @keyframes cursorPulse {
-            0%,
-            100% {
-                border-bottom-color: #000;
-            }
-            50% {
-                border-bottom-color: #555;
-            }
+        .char-span.correct {
+            color: var(--ts-ink);
+            font-weight: 500;
         }
 
-        /* Input area */
+        .char-span.error {
+            color: var(--ts-ink);
+            text-decoration: underline wavy rgba(215, 0, 21, 0.8);
+            text-decoration-thickness: 1.5px;
+            text-underline-offset: 4px;
+        }
+
+        .char-span.current {
+            color: var(--ts-ink);
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-decoration-color: var(--ts-ink);
+            animation: caret-blink 1.6s ease-in-out infinite;
+        }
+
+        @keyframes caret-blink {
+            0%, 100% { text-decoration-color: var(--ts-ink); }
+            50%      { text-decoration-color: rgba(29, 29, 31, 0.2); }
+        }
+
+        /* --- 输入区 --- */
         .input-wrapper {
             position: relative;
             width: 100%;
         }
 
+        .input-meta {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .input-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--ts-ink-3);
+        }
+
+        .input-hint {
+            font-size: 0.6875rem;
+            color: var(--ts-ink-4);
+            transition: opacity 0.2s ease;
+        }
+
         .typing-input {
             width: 100%;
-            border: none;
-            border-bottom: 1.5px solid var(--border);
-            background: transparent;
-            font-family: var(--font-display);
-            font-size: 20px;
-            padding: 14px 4px;
-            color: #000;
+            min-height: 86px;
+            padding: 14px 16px;
+            border: 1px solid var(--ts-line);
+            border-radius: 14px;
+            background: #ffffff;
+            font-family: inherit;
+            font-size: clamp(1rem, 1.4vw, 1.0625rem);
+            line-height: 1.65;
+            letter-spacing: 0.01em;
+            color: var(--ts-ink);
+            caret-color: var(--ts-ink);
             outline: none;
-            transition: border-color var(--transition-smooth);
-            letter-spacing: 0.5px;
             resize: none;
-            rows: 2;
-            line-height: 1.6;
-            caret-color: #000;
-            border-radius: 0;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, opacity 0.25s ease;
             -webkit-appearance: none;
             -moz-appearance: none;
         }
 
         .typing-input:focus {
-            border-bottom-color: #000;
-            border-bottom-width: 2px;
+            border-color: rgba(0, 0, 0, 0.38);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
         }
 
         .typing-input::placeholder {
-            color: #b0b0b0;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-        .typing-input:focus::placeholder {
-            color: #d0d0d0;
+            color: var(--ts-ink-4);
         }
 
         .typing-input.completed-input {
-            border-bottom-color: #000;
-            opacity: 0.7;
+            background: var(--ts-surface);
+            opacity: 0.6;
             pointer-events: none;
         }
 
-        /* Hint */
-        .input-hint {
-            position: absolute;
-            right: 4px;
-            bottom: -22px;
-            font-size: 11px;
-            color: var(--text-tertiary);
-            letter-spacing: 0.3px;
-            pointer-events: none;
-            transition: opacity var(--transition-fast);
-        }
-
-        /* Actions */
+        /* --- 操作 --- */
         .actions {
             display: flex;
-            gap: 12px;
             align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 10px 20px;
-            border: 1.5px solid #000;
-            background: #fff;
-            color: #000;
-            font-family: var(--font-display);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: var(--radius-lg);
-            transition: all var(--transition-fast);
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
+        .actions .btn-primary,
+        .actions .btn-ghost {
+            min-height: 46px;
+            padding: 0 24px;
+            font-size: 0.875rem;
         }
 
-        .btn:hover {
-            background: #000;
-            color: #fff;
-        }
-        .btn:active {
-            transform: scale(0.97);
-            transition: transform 0.1s ease;
+        .actions-note {
+            margin-left: auto;
+            font-size: 0.6875rem;
+            color: var(--ts-ink-4);
+            letter-spacing: 0.01em;
         }
 
-        .btn.primary {
-            background: #000;
-            color: #fff;
-            font-weight: 600;
-            border: 1.5px solid #000;
-        }
-        .btn.primary:hover {
-            background: #1a1a1a;
-            border-color: #1a1a1a;
-            color: #fff;
-        }
-        .btn.primary:active {
-            background: #333;
-            border-color: #333;
-            transform: scale(0.97);
-        }
-
-        .btn.ghost {
-            border: 1.5px solid transparent;
-            background: transparent;
-            color: var(--text-secondary);
-        }
-        .btn.ghost:hover {
-            background: var(--surface);
-            border-color: var(--border);
-            color: #000;
-        }
-
-        /* Completion overlay */
+        /* --- 完成提示 --- */
         .completion-badge {
             display: none;
             align-items: center;
-            gap: 16px;
-            padding: 16px 20px;
-            background: #000;
-            color: #fff;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            animation: fadeInUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: var(--ts-ink);
+            color: #ffffff;
         }
+
         .completion-badge.visible {
             display: flex;
+            animation: badge-rise 0.45s var(--ts-ease);
         }
+
         .completion-badge .badge-icon {
-            font-size: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
             flex-shrink: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 1rem;
         }
+
         .completion-badge .badge-text {
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 0.8125rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.72);
         }
+
         .completion-badge .badge-text strong {
-            font-weight: 700;
-            font-size: 16px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #ffffff;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
+        @keyframes badge-rise {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 700px) {
+            .typing-head {
+                align-items: flex-start;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .text-selector {
+                align-self: flex-start;
             }
         }
 
-        /* Responsive */
-        @media (max-width: 640px) {
-            .container {
-                padding: 24px 16px;
-                gap: 28px;
-            }
-            .char-span {
-                font-size: 21px;
-                letter-spacing: 0.5px;
-            }
-            .typing-input {
-                font-size: 17px;
-                padding: 12px 2px;
-            }
-            .stat-value {
-                font-size: 22px;
-            }
-            .stat-value.small {
-                font-size: 18px;
-            }
+        @media (max-width: 560px) {
             .stats-bar {
-                gap: 20px;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
-            .text-btn {
-                padding: 6px 12px;
-                font-size: 12px;
+
+            .stat-item {
+                padding-left: 14px;
             }
-            .btn {
-                padding: 8px 16px;
-                font-size: 13px;
+
+            .stat-item:nth-child(odd) {
+                padding-left: 0;
+                border-left: 0;
             }
-            .header {
-                gap: 12px;
+
+            .stat-item:nth-child(n + 3) {
+                padding-top: 18px;
+                border-top: 1px solid var(--ts-line);
             }
+
             .display-area {
-                padding: 16px 0;
-                min-height: 90px;
+                min-height: 132px;
+                padding: 14px;
             }
+
+            .chars-container {
+                gap: 1px 3px;
+            }
+
+            .char-span {
+                font-size: 1.0625rem;
+            }
+
+            .typing-input {
+                min-height: 84px;
+            }
+
             .completion-badge {
-                flex-direction: column;
-                text-align: center;
-                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .actions-note {
+                display: none;
+            }
+
+            .text-btn {
+                height: 30px;
+                padding: 0 13px;
+                font-size: 0.75rem;
             }
         }
 
         @media (max-width: 380px) {
             .char-span {
-                font-size: 18px;
-                letter-spacing: 0px;
-                gap: 0px 1px;
+                font-size: 1rem;
             }
-            .typing-input {
-                font-size: 15px;
-            }
-            .stats-bar {
-                gap: 14px;
-            }
-            .stat-value {
-                font-size: 19px;
-            }
-            .stat-value.small {
-                font-size: 16px;
-            }
-            .text-selector {
-                gap: 2px;
-            }
+
             .text-btn {
-                padding: 5px 10px;
-                font-size: 11px;
-                border-radius: 12px;
+                padding: 0 10px;
+                font-size: 0.6875rem;
             }
         }
     </style>
 </head>
-<body class="page has-chrome">
-    <!-- 顶栏由 /js/components.js 注入 -->
+<body class="page tool typing">
 
-    <!-- 【新增】用 main.main-content 包裹你的核心内容 -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Header -->
-            <div class="header">
-                <div class="logo-area">
-                    <div class="logo-dot"></div>
-                    <span class="logo-text">打字练习</span>
+    <!-- ==================== 统一顶栏 ==================== -->
+    <header class="appbar">
+        <div class="appbar-in">
+            <div class="brand-cluster">
+                <a class="brand" href="https://hoooooot-gem.github.io/" aria-label="返回 Hoooooot's 首页">
+                    <img src="/images/favicon.svg" alt="" width="20" height="20">
+                    <span class="brand-name">Hoooooot's</span>
+                </a>
+                <span class="brand-sep" aria-hidden="true">/</span>
+                <span class="brand-page">打字练习</span>
+            </div>
+
+            <nav class="tabs" aria-label="工具导航">
+                <a class="tab" href="/ConnectionTest/">测速</a>
+                <a class="tab" href="/tools/2026/Palette/">调色板</a>
+                <a class="tab is-active" href="/proj/2026/TP/" aria-current="page">打字</a>
+            </nav>
+
+            <a class="home-link" href="https://hoooooot-gem.github.io/#tools" aria-label="返回首页工具列表">
+                <span>全部工具</span>
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== 主内容 ==================== -->
+    <main>
+        <div class="wrap wrap--narrow">
+            <div class="typing-head">
+                <div class="pagehead">
+                    <p class="pagehead-eyebrow">工具 · 练习</p>
+                    <h1 class="pagehead-title">打字练习</h1>
+                    <p class="pagehead-sub">短句、段落与长篇三种文本，实时统计速度、准确率与进度。</p>
                 </div>
-                <div class="text-selector" id="textSelector">
+
+                <div class="text-selector" id="textSelector" role="group" aria-label="文本类型">
                     <button class="text-btn active" data-index="0">短句</button>
                     <button class="text-btn" data-index="1">段落</button>
                     <button class="text-btn" data-index="2">长篇</button>
                 </div>
             </div>
 
-            <!-- Stats -->
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-label">速度</span>
-                    <span class="stat-value" id="speedDisplay">0</span>
-                    <span style="font-size:12px;color:#999;">字/分</span>
+            <div class="typing-card card container">
+                <!-- 统计 -->
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-label">速度</span>
+                        <span class="stat-line">
+                            <span class="stat-value" id="speedDisplay">0</span>
+                            <span class="stat-unit">字/分</span>
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">准确率</span>
+                        <span class="stat-line">
+                            <span class="stat-value small" id="accuracyDisplay">—</span>
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">用时</span>
+                        <span class="stat-line">
+                            <span class="stat-value small" id="timeDisplay">0s</span>
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">进度</span>
+                        <span class="stat-line">
+                            <span class="stat-value small" id="progressDisplay">0%</span>
+                        </span>
+                    </div>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-label">准确率</span>
-                    <span class="stat-value small" id="accuracyDisplay">—</span>
+
+                <!-- 待输入文本 -->
+                <div class="display-area" id="displayArea" tabindex="0">
+                    <div class="chars-container" id="charsContainer">
+                        <!-- Character spans will be rendered here -->
+                    </div>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-label">用时</span>
-                    <span class="stat-value small" id="timeDisplay">0s</span>
+
+                <!-- 输入 -->
+                <div class="input-wrapper">
+                    <div class="input-meta">
+                        <span class="input-label">输入</span>
+                        <span class="input-hint" id="inputHint">⌨ 使用输入法键入中文</span>
+                    </div>
+                    <textarea
+                        class="typing-input"
+                        id="typingInput"
+                        placeholder="点击此处开始打字..."
+                        rows="2"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                    ></textarea>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-label">进度</span>
-                    <span class="stat-value small" id="progressDisplay">0%</span>
+
+                <!-- 操作 -->
+                <div class="actions">
+                    <button class="btn-primary" id="btnRestart">重新开始</button>
+                    <button class="btn-ghost" id="btnNextText">换一段文字</button>
+                    <span class="actions-note">Esc / ⌘R 快速重开</span>
+                </div>
+
+                <!-- 完成提示 -->
+                <div class="completion-badge" id="completionBadge">
+                    <span class="badge-icon">✓</span>
+                    <span class="badge-text" id="completionText"></span>
                 </div>
             </div>
+        </div>
+    </main>
 
-            <!-- Display Area -->
-            <div class="display-area" id="displayArea" tabindex="0">
-                <div class="chars-container" id="charsContainer">
-                    <!-- Character spans will be rendered here -->
-                </div>
+    <!-- ==================== 统一底栏 ==================== -->
+    <footer class="shellfoot">
+        <div class="shellfoot-in">
+            <span class="foot-brand">Hoooooot's</span>
+            <nav class="foot-links" aria-label="页脚导航">
+                <a href="/ConnectionTest/">连接测速</a>
+                <a href="/tools/2026/Palette/">智能调色板</a>
+                <a href="/proj/2026/TP/">打字练习</a>
+                <a href="https://hoooooot-gem.github.io/">首页</a>
+            </nav>
+            <div class="foot-meta">
+                <span>© 2026 Hoooooot</span>
+                <a href="https://icp.gov.moe/?keyword=20266985" target="_blank" rel="noopener">萌ICP备20266985号</a>
+                <a href="https://icp.felicity.land/id.php?keyword=20266985" target="_blank" rel="noopener">幸ICP备20266985号</a>
             </div>
-
-            <!-- Input -->
-            <div class="input-wrapper">
-                <textarea
-                class="typing-input"
-                id="typingInput"
-                placeholder="点击此处开始打字..."
-                rows="2"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-                spellcheck="false"
-            ></textarea>
-            <span class="input-hint" id="inputHint">⌨ 使用输入法键入中文</span>
         </div>
+        <p class="foot-note">Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</p>
+    </footer>
 
-        <!-- Actions -->
-        <div class="actions">
-            <button class="btn primary" id="btnRestart">重新开始</button>
-            <button class="btn ghost" id="btnNextText">换一段文字</button>
-        </div>
-
-        <!-- Completion Badge -->
-        <div class="completion-badge" id="completionBadge">
-            <span class="badge-icon">✓</span>
-            <span class="badge-text" id="completionText"></span>
-        </div>
-    </div>
-</main>
-
-<!-- 【保留】原有打字练习 JS 逻辑 -->
+    <!-- ==================== 原打字练习逻辑（未改动） ==================== -->
 <script>
     (function() {
         // ============ 文本库 ============

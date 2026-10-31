@@ -4,132 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智能调色板 · Hoooooot's</title>
+    <meta name="description" content="在色域中取色，实时换算 HEX、RGB、HSL 与 CMYK，支持屏幕取色与一键复制。">
 
-    <!-- 改动说明（2026-10）：工具页接入全站导航与页脚，并套用与首页一致的排版 -->
-    <script src="/js/components.js"></script>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/pages.css">
+    <link rel="stylesheet" href="/css/tool-shell.css">
+
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
 
     <style>
         /* ============================================================
-           采用主站 Hoooooot's 的 Apple 极简主义设计语言
-           字体、变量、卡片、按钮、输入框完全同步
+           调色板页专属版式
+           画布 id、输入框 id、复制按钮与取色按钮的结构全部保留，
+           下方脚本未做任何改动。
            ============================================================ */
 
-        /* --- 0. 引入自定义字体 --- */
-        @font-face {
-            font-family: 'CustomFont';
-            src: url('/fonts/Inter-Regular.woff2') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'CustomFont';
-            src: url('/fonts/Inter-Bold.woff2') format('woff2');
-            font-weight: 700;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        /* --- 1. CSS 变量 (兼容主站极简浅色主题) --- */
-        :root {
-            --bg-color: #FFFFFF;
-            --text-primary: #000000;
-            --text-secondary: #666666;
-            --border-color: #EAEAEA;
-            --surface: #F8F8F8;
-            --font-family: 'CustomFont', -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-            --font-weight-bold: 700;
-            --font-weight-regular: 400;
-            --transition-smooth: 0.3s ease;
-        }
-
-        /* --- 2. 全局重置与基础样式 --- */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* 内容区占满剩余高度并居中，页脚自然落在文末 */
-        .palette-main {
+        .palette-card {
             display: grid;
-            place-items: center;
-            padding: 0 clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: clamp(20px, 3vw, 26px);
+            padding: clamp(16px, 2.4vw, 22px);
         }
 
-        /* --- 3. 主容器 (与主页 Speed Card 同款设计) --- */
-        /* 去掉投影，改用细线与留白，和首页工具区块同一语汇 */
-        .container {
-            width: min(1020px, 100%);
-            background: var(--bg-color);
-            border-radius: 28px;
-            padding: 40px 32px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* --- 4. 标题排版 --- */
-        h1 {
-            margin: 0 0 28px 0;
-            font-size: 28px;
-            font-weight: var(--font-weight-bold);
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-primary);
-        }
-
-        h1 .icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            font-size: 24px;
-            /* 去掉原本的彩色渐变，保持黑白灰克制 */
-            background: transparent; 
-        }
-
-        /* --- 5. 主内容网格布局 --- */
-        .main {
-            display: grid;
-            grid-template-columns: 1fr 310px;
-            gap: 28px;
-            align-items: start;
-        }
-
-        /* --- 6. 调色板与色相条画布 (保留原样，外层做黑白灰处理) --- */
+        /* --- 画布区 --- */
         .canvas-area {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
+            min-width: 0;
         }
 
-        .canvas-wrapper, .hue-wrapper {
-            border-radius: 18px;
+        .canvas-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 2px;
+        }
+
+        .canvas-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--ts-ink-3);
+        }
+
+        .canvas-hint {
+            font-size: 0.6875rem;
+            color: var(--ts-ink-4);
+        }
+
+        .canvas-wrapper,
+        .hue-wrapper {
+            position: relative;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: var(--ts-surface);
             cursor: crosshair;
-            transition: box-shadow 0.2s;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .canvas-wrapper:active, .hue-wrapper:active {
-            transform: scale(0.99);
-            transition: transform 0.1s;
+        .canvas-wrapper:hover,
+        .hue-wrapper:hover {
+            border-color: rgba(0, 0, 0, 0.18);
+            box-shadow: 0 8px 24px -18px rgba(0, 0, 0, 0.5);
         }
 
         canvas {
@@ -137,289 +78,411 @@
             width: 100%;
         }
 
-        #palette { aspect-ratio: 1.6; }
-        #hue { height: 38px; }
+        #palette {
+            aspect-ratio: 1.65;
+        }
 
-        /* --- 7. 侧边信息面板 (取色、输入) --- */
+        #hue {
+            height: 34px;
+        }
+
+        .hue-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        /* --- 侧栏 --- */
         .panel {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 14px;
+            min-width: 0;
         }
 
         .preview-wrap {
             display: flex;
-            gap: 12px;
-            align-items: stretch;
+            gap: 10px;
+            height: clamp(116px, 13vw, 132px);
         }
 
         .preview {
             flex: 1;
-            min-height: 130px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+            min-width: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
             transition: background 0.15s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .preview-shade {
-            width: 50px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
+            position: relative;
+            width: 44px;
             flex-shrink: 0;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            overflow: hidden;
             transition: background 0.15s ease;
         }
 
-        /* --- 8. 颜色值输入框 (深灰色底 + 黑色边框) --- */
+        /* 叠加明暗阶：同一颜色的浅 → 深，作为取色参考 */
+        .preview-shade::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.72) 0%,
+                rgba(255, 255, 255, 0) 46%,
+                rgba(255, 255, 255, 0) 54%,
+                rgba(0, 0, 0, 0.62) 100%);
+        }
+
         .values {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .field {
-            background: var(--surface);
-            border-radius: 14px;
-            padding: 11px 15px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .field:focus-within {
-            background: var(--bg-color);
-            border-color: var(--text-primary);
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
-        }
-
-        .field .color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            flex-shrink: 0;
-            min-width: 36px;
-        }
-
-        input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 14px;
-            font-family: 'SF Mono', 'CustomFont', 'Consolas', monospace;
-            color: var(--text-primary);
-            min-width: 0;
-            padding: 2px 0;
-        }
-
-        /* --- 9. 复制与屏幕取色按钮 (主页胶囊按钮设计) --- */
-        .copy-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 999px;
-            border: 1px solid var(--text-primary);
-            background: transparent;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 15px;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            flex-shrink: 0;
-            padding: 0;
-            margin: 0;
-        }
-
-        .copy-btn:hover {
-            background: var(--text-primary);
-            color: var(--bg-color);
-            transform: translateY(-2px);
-        }
-
-        .copy-btn:active {
-            transform: scale(0.97) translateY(-1px);
-            transition: transform 80ms ease-out;
-        }
-
-        .copy-btn.copied {
-            background: var(--text-primary) !important;
-            color: var(--bg-color) !important;
-            border-color: var(--text-primary) !important;
-        }
-
-        button#eye {
-            width: 100%;
-            margin-top: 6px;
-            padding: 14px 20px;
-            border: 1px solid var(--text-primary);
-            border-radius: 999px;
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 15px;
-            font-weight: var(--font-weight-bold);
-            cursor: pointer;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 8px;
         }
 
-        button#eye:hover {
-            background: var(--text-primary);
-            color: var(--bg-color);
-            transform: translateY(-2px);
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 8px 8px 12px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: var(--ts-surface);
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        button#eye:active {
-            transform: scale(0.97) translateY(-1px);
-            transition: transform 80ms ease-out;
+        .field:focus-within {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
         }
 
-        /* --- 10. Toast 提示 (深色毛玻璃) --- */
+        .field label {
+            min-width: 34px;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--ts-ink-3);
+            flex-shrink: 0;
+        }
+
+        .field .color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .field input {
+            flex: 1;
+            min-width: 0;
+            padding: 2px 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: var(--ts-mono);
+            font-size: 0.8125rem;
+            letter-spacing: 0.01em;
+            color: var(--ts-ink);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--ts-ink-2);
+            font-size: 0.875rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 0, 0, 0.07);
+            color: var(--ts-ink);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.92);
+        }
+
+        .copy-btn.copied {
+            background: var(--ts-ink);
+            color: #ffffff;
+            border-color: var(--ts-ink);
+        }
+
+        #eye {
+            min-height: 46px;
+            margin-top: 2px;
+            font-size: 0.875rem;
+        }
+
+        #eye .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 2px;
+        }
+
+        .panel-note {
+            margin: 0;
+            font-size: 0.6875rem;
+            line-height: 1.6;
+            text-align: center;
+            color: var(--ts-ink-4);
+        }
+
+        .panel-note kbd {
+            padding: 1px 5px;
+            border: 1px solid var(--ts-line-strong);
+            border-bottom-width: 2px;
+            border-radius: 5px;
+            font-family: var(--ts-mono);
+            font-size: 0.625rem;
+            color: var(--ts-ink-2);
+            background: #ffffff;
+        }
+
+        /* --- Toast --- */
         .toast {
             position: fixed;
-            bottom: 30px;
             left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: #FFFFFF;
-            padding: 12px 28px;
+            bottom: 28px;
+            z-index: 1000;
+            padding: 11px 24px;
             border-radius: 999px;
-            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(20, 20, 22, 0.9);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            font-size: 0.8125rem;
             font-weight: 500;
             pointer-events: none;
             opacity: 0;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 100;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateX(-50%) translateY(16px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.4s var(--ts-ease);
         }
 
         .toast.show {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            transform: translateX(-50%) translateY(0) scale(1);
         }
 
-        /* --- 11. 响应式设计 (与主页适配) --- */
-        @media (max-width: 750px) {
-            .main {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        /* --- 响应式 --- */
+        @media (max-width: 980px) {
+            .palette-card {
+                grid-template-columns: minmax(0, 1fr);
             }
-            .container {
-                padding: 20px 16px;
-                border-radius: 24px;
+
+            .panel {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                gap: 12px;
+                align-items: start;
             }
-            h1 {
-                font-size: 22px;
-                margin-bottom: 20px;
+
+            .preview-wrap {
+                grid-column: 1 / -1;
+                height: 132px;
             }
-            .panel { gap: 14px; }
-            .preview { min-height: 100px; }
-            .preview-shade { width: 40px; }
-            .field { padding: 10px 13px; }
-            input { font-size: 13px; }
-            #hue { height: 32px; }
-            .copy-btn { width: 28px; height: 28px; font-size: 14px; }
+
+            .values {
+                grid-column: 1 / -1;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            #eye,
+            .panel-note {
+                grid-column: 1 / -1;
+            }
         }
 
-        @media (max-width: 400px) {
-            .container { padding: 16px 12px; border-radius: 18px; }
-            h1 { font-size: 18px; }
-            .preview { min-height: 80px; }
-            .field { padding: 8px 10px; }
-            input { font-size: 12px; }
-            .copy-btn { width: 26px; height: 26px; font-size: 13px; }
+        @media (max-width: 620px) {
+            .palette-card {
+                padding: 14px;
+            }
+
+            .preview-wrap {
+                height: 108px;
+            }
+
+            .preview-shade {
+                width: 36px;
+            }
+
+            .values {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            #palette {
+                aspect-ratio: 1.35;
+            }
+
+            #hue {
+                height: 32px;
+            }
+
+            .canvas-hint {
+                display: none;
+            }
+        }
+
+        @media (hover: none) {
+            .canvas-wrapper:hover,
+            .hue-wrapper:hover {
+                border-color: rgba(0, 0, 0, 0.08);
+                box-shadow: none;
+            }
         }
     </style>
 </head>
-<body class="page has-chrome">
+<body class="page tool palette">
 
-    <main class="palette-main">
-    <div class="container">
-        <h1>
-            智能调色板
-        </h1>
-
-        <div class="main">
-            <!-- 调色板区域 -->
-            <div class="canvas-area">
-                <div class="canvas-wrapper">
-                    <canvas id="palette"></canvas>
-                </div>
-                <div class="hue-wrapper">
-                    <canvas id="hue"></canvas>
-                </div>
+    <!-- ==================== 统一顶栏 ==================== -->
+    <header class="appbar">
+        <div class="appbar-in">
+            <div class="brand-cluster">
+                <a class="brand" href="https://hoooooot-gem.github.io/" aria-label="返回 Hoooooot's 首页">
+                    <img src="/images/favicon.svg" alt="" width="20" height="20">
+                    <span class="brand-name">Hoooooot's</span>
+                </a>
+                <span class="brand-sep" aria-hidden="true">/</span>
+                <span class="brand-page">智能调色板</span>
             </div>
 
-            <!-- 侧边栏 -->
-            <div class="panel">
-                <!-- 颜色预览 -->
-                <div class="preview-wrap">
-                    <div id="preview" class="preview"></div>
-                    <div id="previewShade" class="preview-shade"></div>
+            <nav class="tabs" aria-label="工具导航">
+                <a class="tab" href="/ConnectionTest/">测速</a>
+                <a class="tab is-active" href="/tools/2026/Palette/" aria-current="page">调色板</a>
+                <a class="tab" href="/proj/2026/TP/">打字</a>
+            </nav>
+
+            <a class="home-link" href="https://hoooooot-gem.github.io/#tools" aria-label="返回首页工具列表">
+                <span>全部工具</span>
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== 主内容 ==================== -->
+    <main>
+        <div class="wrap">
+            <div class="pagehead">
+                <p class="pagehead-eyebrow">工具 · 设计</p>
+                <h1 class="pagehead-title">智能调色板</h1>
+                <p class="pagehead-sub">在色域中取色，实时换算 HEX、RGB、HSL 与 CMYK。</p>
+            </div>
+
+            <section class="card palette-card" aria-label="调色板">
+                <!-- 调色板与色相条 -->
+                <div class="canvas-area">
+                    <div class="canvas-head">
+                        <span class="canvas-label">饱和度 / 明度</span>
+                        <span class="canvas-hint">点击或拖动取色</span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="palette"></canvas>
+                    </div>
+
+                    <div class="hue-block">
+                        <div class="canvas-head">
+                            <span class="canvas-label">色相</span>
+                        </div>
+                        <div class="hue-wrapper">
+                            <canvas id="hue"></canvas>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 颜色值 -->
-                <div class="values">
-                    <div class="field">
-                        <label>HEX</label>
-                        <span class="color-dot" style="background:#000000;"></span>
-                        <input id="hex" placeholder="#000000">
-                        <button class="copy-btn" data-target="hex" title="复制 HEX">📋</button>
+                <!-- 侧栏：预览 + 颜色值 + 取色 -->
+                <aside class="panel">
+                    <div class="preview-wrap">
+                        <div id="preview" class="preview"></div>
+                        <div id="previewShade" class="preview-shade"></div>
                     </div>
-                    <div class="field">
-                        <label>RGB</label>
-                        <span class="color-dot" style="background:#000000;"></span>
-                        <input id="rgb" placeholder="rgb(0, 0, 0)">
-                        <button class="copy-btn" data-target="rgb" title="复制 RGB">📋</button>
-                    </div>
-                    <div class="field">
-                        <label>HSL</label>
-                        <span class="color-dot" style="background:#000000;"></span>
-                        <input id="hsl" placeholder="hsl(0, 0%, 0%)">
-                        <button class="copy-btn" data-target="hsl" title="复制 HSL">📋</button>
-                    </div>
-                    <div class="field">
-                        <label>CMYK</label>
-                        <span class="color-dot" style="background:#000000;"></span>
-                        <input id="cmyk" placeholder="cmyk(0%, 0%, 0%, 100%)">
-                        <button class="copy-btn" data-target="cmyk" title="复制 CMYK">📋</button>
-                    </div>
-                </div>
 
-                <!-- 屏幕取色按钮 -->
-                <button id="eye">
-                    <span class="btn-icon">💉</span> 屏幕取色
-                </button>
+                    <div class="values">
+                        <div class="field">
+                            <label>HEX</label>
+                            <span class="color-dot" style="background:#000000;"></span>
+                            <input id="hex" placeholder="#000000">
+                            <button class="copy-btn" data-target="hex" title="复制 HEX">📋</button>
+                        </div>
+                        <div class="field">
+                            <label>RGB</label>
+                            <span class="color-dot" style="background:#000000;"></span>
+                            <input id="rgb" placeholder="rgb(0, 0, 0)">
+                            <button class="copy-btn" data-target="rgb" title="复制 RGB">📋</button>
+                        </div>
+                        <div class="field">
+                            <label>HSL</label>
+                            <span class="color-dot" style="background:#000000;"></span>
+                            <input id="hsl" placeholder="hsl(0, 0%, 0%)">
+                            <button class="copy-btn" data-target="hsl" title="复制 HSL">📋</button>
+                        </div>
+                        <div class="field">
+                            <label>CMYK</label>
+                            <span class="color-dot" style="background:#000000;"></span>
+                            <input id="cmyk" placeholder="cmyk(0%, 0%, 0%, 100%)">
+                            <button class="copy-btn" data-target="cmyk" title="复制 CMYK">📋</button>
+                        </div>
+                    </div>
+
+                    <button id="eye" class="btn-primary btn-block">
+                        <span class="btn-icon" aria-hidden="true">
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+                                <path d="M8 1.9c2.1 2.2 4.2 4.6 4.2 6.9a4.2 4.2 0 1 1-8.4 0C3.8 6.5 5.9 4.1 8 1.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                                <path d="M6.3 10.1a1.8 1.8 0 0 0 1.7 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        屏幕取色
+                    </button>
+
+                    <p class="panel-note"><kbd>⌘C</kbd> / <kbd>Ctrl C</kbd> 复制 HEX</p>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <!-- ==================== 统一底栏 ==================== -->
+    <footer class="shellfoot">
+        <div class="shellfoot-in">
+            <span class="foot-brand">Hoooooot's</span>
+            <nav class="foot-links" aria-label="页脚导航">
+                <a href="/ConnectionTest/">连接测速</a>
+                <a href="/tools/2026/Palette/">智能调色板</a>
+                <a href="/proj/2026/TP/">打字练习</a>
+                <a href="https://hoooooot-gem.github.io/">首页</a>
+            </nav>
+            <div class="foot-meta">
+                <span>© 2026 Hoooooot</span>
+                <a href="https://icp.gov.moe/?keyword=20266985" target="_blank" rel="noopener">萌ICP备20266985号</a>
+                <a href="https://icp.felicity.land/id.php?keyword=20266985" target="_blank" rel="noopener">幸ICP备20266985号</a>
             </div>
         </div>
-    </div>
-    </main>
+        <p class="foot-note">Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</p>
+    </footer>
 
     <!-- 提示 Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- 【保留】原有 Core 调色板 JavaScript 功能 --->
+    <!-- ==================== 原调色板逻辑（未改动） ==================== -->
     <script>
         (function() {
             // ============ DOM 元素 ============

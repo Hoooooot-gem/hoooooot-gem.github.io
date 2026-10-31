@@ -1,0 +1,9 @@
+# macOS 系统文件
+.DS_Store
+
+# 本地备份 / 旧版页面：不进入版本库，也不会被 Pages 发布
+*.bak
+*-backup.html
+
+# 临时文件
+*.log

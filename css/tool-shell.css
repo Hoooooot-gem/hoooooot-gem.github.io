@@ -1,0 +1,526 @@
+/* ============================================================
+   css/tool-shell.css — 工具子页统一外壳（顶栏 / 底栏 / 版式基线）
+   ------------------------------------------------------------
+   适用页面：
+     · /ConnectionTest/       连接测速
+     · /tools/2026/Palette/   智能调色板
+     · /proj/2026/TP/         打字练习
+
+   设计约定：
+   1. 与主页同一套 Apple 语汇：白底、#1d1d1f 墨色、#6e6e73 次级、
+      #d2d2d7 细线，靠字阶与留白建立层次，不使用彩色装饰。
+   2. 顶栏为毛玻璃 sticky bar，底栏为页脚 bar；两者在三个页面
+      结构完全一致，只有当前页的 tab 高亮不同。
+   3. 本文件只提供外壳与通用组件；各工具的专属版式放在页面
+      自己的 <style> 里，避免互相污染。
+   4. 不覆盖任何工具原有的 id / class，交互逻辑零改动。
+   ============================================================ */
+
+/* ---------- 1. 设计变量 ---------- */
+
+:root {
+    --ts-bg: #ffffff;
+    --ts-ink: #1d1d1f;
+    --ts-ink-2: #6e6e73;
+    --ts-ink-3: #86868b;
+    --ts-ink-4: #a1a1a6;
+    --ts-line: #e6e6ea;
+    --ts-line-strong: #d2d2d7;
+    --ts-surface: #f5f5f7;
+    --ts-surface-2: #fafafa;
+    --ts-bar: rgba(255, 255, 255, 0.72);
+    --ts-radius-xl: 26px;
+    --ts-radius-lg: 20px;
+    --ts-radius-md: 14px;
+    --ts-radius-sm: 10px;
+    --ts-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ts-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03), 0 30px 60px -44px rgba(0, 0, 0, 0.28);
+    --ts-bar-h: 58px;
+    --ts-mono: 'SF Mono', ui-monospace, 'CustomFont', 'Menlo', 'Consolas', monospace;
+}
+
+/* ---------- 2. 页面外壳 ---------- */
+
+body.tool {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--ts-bg);
+    color: var(--ts-ink);
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body.tool > main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+/* style.css 里的全局链接悬停会整体降透明度，工具页改为颜色过渡 */
+body.tool a:hover {
+    opacity: 1;
+}
+
+body.tool ::selection {
+    background: rgba(29, 29, 31, 0.14);
+}
+
+/* 键盘焦点统一为细描边，鼠标点击不出现 */
+body.tool a:focus-visible,
+body.tool button:focus-visible,
+body.tool [tabindex]:focus-visible,
+body.tool input:focus-visible,
+body.tool textarea:focus-visible {
+    outline: 2px solid rgba(29, 29, 31, 0.5);
+    outline-offset: 3px;
+}
+
+/* ---------- 3. 顶栏 ---------- */
+
+.appbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: var(--ts-bar);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .appbar {
+        background: rgba(255, 255, 255, 0.96);
+    }
+}
+
+.appbar-in {
+    max-width: 1180px;
+    height: var(--ts-bar-h);
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+}
+
+.brand-cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ts-ink);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.brand img {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.brand-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.brand-sep {
+    color: #c7c7cc;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+}
+
+.brand-page {
+    font-size: 0.8125rem;
+    color: var(--ts-ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 中部分段控件：三个工具之间快速切换 */
+.tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.045);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: #48484d;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+    color: var(--ts-ink);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.tab.is-active,
+.tab.is-active:hover {
+    background: var(--ts-ink);
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.home-link {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ts-ink-2);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.home-link svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s var(--ts-ease);
+}
+
+.home-link:hover {
+    color: var(--ts-ink);
+}
+
+.home-link:hover svg {
+    transform: translateX(3px);
+}
+
+/* ---------- 4. 内容容器与页头 ---------- */
+
+.wrap {
+    width: 100%;
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: clamp(26px, 4vw, 48px) clamp(18px, 4vw, 40px) clamp(40px, 4.4vw, 52px);
+}
+
+.wrap--narrow {
+    max-width: 880px;
+}
+
+.wrap--wide {
+    max-width: 1120px;
+}
+
+.pagehead {
+    margin: 0 0 clamp(22px, 3vw, 32px);
+}
+
+.pagehead-eyebrow {
+    margin: 0 0 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--ts-ink-3);
+}
+
+.pagehead-title {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--ts-ink);
+}
+
+.pagehead-sub {
+    margin: 12px 0 0;
+    max-width: 40em;
+    font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+    line-height: 1.6;
+    color: var(--ts-ink-2);
+}
+
+/* ---------- 5. 通用卡片与按钮 ---------- */
+
+.card {
+    background: #ffffff;
+    border: 1px solid var(--ts-line);
+    border-radius: var(--ts-radius-xl);
+    box-shadow: var(--ts-shadow-card);
+}
+
+.btn-primary,
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 30px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease, transform 0.12s var(--ts-ease), opacity 0.2s ease;
+}
+
+.btn-primary {
+    border: 1px solid var(--ts-ink);
+    background: var(--ts-ink);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #000000;
+    border-color: #000000;
+}
+
+.btn-primary:active {
+    transform: scale(0.975);
+}
+
+.btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-ghost {
+    border: 1px solid var(--ts-line-strong);
+    background: transparent;
+    color: var(--ts-ink);
+}
+
+.btn-ghost:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: #b9b9bf;
+}
+
+.btn-ghost:active {
+    transform: scale(0.975);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* 小号状态胶囊 */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 13px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: var(--ts-surface);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--ts-ink-2);
+    white-space: nowrap;
+}
+
+.chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #b9b9bf;
+    flex-shrink: 0;
+}
+
+/* ---------- 6. 底栏 ---------- */
+
+.shellfoot {
+    border-top: 1px solid var(--ts-line);
+    background: #fbfbfd;
+    font-size: 0.8125rem;
+    color: var(--ts-ink-2);
+}
+
+.shellfoot-in {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 26px clamp(18px, 4vw, 40px) 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 28px;
+}
+
+.foot-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ts-ink);
+}
+
+.foot-brand::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ts-ink);
+}
+
+.foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+}
+
+.foot-links a {
+    color: var(--ts-ink-2);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.foot-links a:hover {
+    color: var(--ts-ink);
+}
+
+.foot-meta {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    font-size: 0.75rem;
+    color: var(--ts-ink-3);
+}
+
+.foot-meta a {
+    color: var(--ts-ink-3);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.foot-meta a:hover {
+    color: var(--ts-ink);
+}
+
+.foot-note {
+    max-width: 1180px;
+    margin: 14px auto 0;
+    padding: 0 clamp(18px, 4vw, 40px) 26px;
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    color: var(--ts-ink-4);
+}
+
+/* ---------- 7. 响应式 ---------- */
+
+@media (max-width: 860px) {
+    .appbar-in {
+        gap: 12px;
+    }
+
+    .brand-page,
+    .brand-sep {
+        display: none;
+    }
+
+    .tab {
+        padding: 0 13px;
+    }
+}
+
+@media (max-width: 620px) {
+    :root {
+        --ts-bar-h: 54px;
+        --ts-radius-xl: 22px;
+    }
+
+    .appbar-in {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .brand-name {
+        display: none;
+    }
+
+    .tabs {
+        justify-self: center;
+        padding: 2px;
+    }
+
+    .tab {
+        height: 28px;
+        padding: 0 11px;
+        font-size: 0.75rem;
+    }
+
+    .home-link span {
+        display: none;
+    }
+
+    .home-link svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .wrap {
+        padding-top: 26px;
+        padding-bottom: 40px;
+    }
+
+    .foot-meta {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .shellfoot-in {
+        padding-top: 22px;
+        gap: 12px 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    .tab {
+        padding: 0 9px;
+        font-size: 0.6875rem;
+    }
+}
+
+/* ---------- 8. 动效偏好 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .tab,
+    .home-link svg,
+    .btn-primary,
+    .btn-ghost,
+    .foot-links a,
+    .foot-meta a {
+        transition: none;
+    }
+
+    body.tool * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
