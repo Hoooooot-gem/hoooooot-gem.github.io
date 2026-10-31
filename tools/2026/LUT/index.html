@@ -721,6 +721,165 @@
             }
         }
 
+        /* ---------- 4.3 非 Rec.709 确认弹窗 ---------- */
+
+        .lut-confirm {
+            position: fixed;
+            inset: 0;
+            z-index: 1300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease;
+        }
+
+        .lut-confirm[hidden] {
+            display: none;
+        }
+
+        .lut-confirm.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lut-confirm-scrim {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 15, 17, 0.45);
+        }
+
+        .lut-confirm-dialog {
+            position: relative;
+            width: min(440px, 100%);
+            padding: 26px 26px 20px;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.06);
+            transform: scale(0.98);
+            transition: transform 0.22s var(--ts-ease);
+        }
+
+        .lut-confirm.is-open .lut-confirm-dialog {
+            transform: none;
+        }
+
+        .lut-confirm-title {
+            margin: 0;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--ts-ink);
+        }
+
+        .lut-confirm-body {
+            margin: 10px 0 0;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--ts-ink-2);
+        }
+
+        .lut-confirm-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 14px 0 0;
+            padding: 12px 0 0;
+            list-style: none;
+            border-top: 1px solid var(--ts-line);
+            max-height: 120px;
+            overflow: auto;
+        }
+
+        .lut-confirm-list:empty {
+            display: none;
+        }
+
+        .lut-confirm-list li {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 14px;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--ts-ink-2);
+        }
+
+        .lut-confirm-list li span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .lut-confirm-list li em {
+            flex: none;
+            font-style: normal;
+            color: #c1121f;
+        }
+
+        .lut-confirm-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .lut-confirm-btn {
+            height: 38px;
+            min-width: 84px;
+            padding: 0 20px;
+            border: 1px solid var(--ts-line-strong);
+            border-radius: 999px;
+            background: #ffffff;
+            color: var(--ts-ink);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s var(--ts-ease);
+        }
+
+        .lut-confirm-btn:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .lut-confirm-btn:active {
+            transform: scale(0.97);
+        }
+
+        .lut-confirm-btn:focus-visible {
+            outline: 2px solid rgba(29, 29, 31, 0.5);
+            outline-offset: 3px;
+        }
+
+        .lut-confirm-btn--primary {
+            background: var(--ts-ink);
+            border-color: var(--ts-ink);
+            color: #ffffff;
+        }
+
+        .lut-confirm-btn--primary:hover {
+            background: #000000;
+            border-color: #000000;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lut-confirm {
+                transition: opacity 0.14s ease;
+            }
+
+            .lut-confirm-dialog {
+                transform: none;
+                transition: none;
+            }
+
+            .lut-confirm-btn {
+                transition: none;
+            }
+        }
+
         /* ---------- 5. 响应式 ---------- */
 
         @media (max-width: 1080px) {
@@ -1015,6 +1174,20 @@
         </div>
     </div>
 
+    <!-- ==================== 非 Rec.709 确认弹窗 ==================== -->
+    <div class="lut-confirm" id="lutConfirm" hidden>
+        <div class="lut-confirm-scrim"></div>
+        <div class="lut-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="lutConfirmTitle" aria-describedby="lutConfirmBody">
+            <h2 class="lut-confirm-title" id="lutConfirmTitle">色彩空间提示</h2>
+            <p class="lut-confirm-body" id="lutConfirmBody">非Rec.709色彩空间的lut在预览时会出现意想不到的错误，且导出也仅支持Rec.709色彩空间。是否继续？</p>
+            <ul class="lut-confirm-list" data-confirm-list></ul>
+            <div class="lut-confirm-actions">
+                <button type="button" class="lut-confirm-btn" data-confirm-no>否</button>
+                <button type="button" class="lut-confirm-btn lut-confirm-btn--primary" data-confirm-yes>是</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== 统一底栏 ==================== -->
     <footer class="shellfoot">
         <div class="shellfoot-in">
@@ -1039,5 +1212,6 @@
     <script src="./app.js"></script>
     <script src="./preview-export.js"></script>
     <script src="./lut-viewer.js"></script>
+    <script src="./lut-colorspace.js"></script>
 </body>
 </html>
