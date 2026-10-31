@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D LUT 转换器 · Hoooooot's</title>
+    <meta name="description" content="在浏览器本地载入 .cube 或 LUT PNG，实时预览并导出 Resolve、Premiere、Final Cut、Unity 等格式的 3D LUT。">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/tool-shell.css">
+
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+
+    <style>
+        /* ============================================================
+           3D LUT 工具页 · 专属版式
+           ------------------------------------------------------------
+           1. 外壳（appbar / wrap / pagehead / btn / card / shellfoot）
+              全部复用 /css/tool-shell.css，本段只补 LUT 专属布局，
+              字号、圆角、间距、缓动均取自 --ts-* 变量。
+           2. 配色与主页同一套：白底、#1d1d1f 墨色、#6e6e73 次级、
+              #d2d2d7 细线、#f5f5f7 浅面，不引入新的品牌色。
+           3. 交互零改动：<lut-converter> 内的 ref / data-action /
+              data-setting 节点与 app.js 的 querySelector 一一对应；
+              动态生成的 .lut-file 行沿用原类名，外观在此统一接管。
+           4. 唯一深色区域是预览画布：app.js 以 10% 白色网格线与
+              RGB 曲线绘制，只有落在深底上才可见，故按影像监看窗口
+              处理，四周仍是白色卡片。
+           ============================================================ */
+
+        /* ---------- 1. 组件基线 ---------- */
+
+        body.lut {
+            background: var(--ts-bg);
+        }
+
+        lut-converter {
+            display: block;
+            min-width: 0;
+        }
+
+        /* ---------- 2. 控制条 ---------- */
+
+        .lut-bar {
+            display: grid;
+            grid-template-columns: auto auto minmax(190px, 1fr) minmax(104px, auto) auto;
+            align-items: end;
+            gap: 12px 16px;
+            padding: clamp(16px, 2vw, 20px);
+        }
+
+        .lut-field {
+            min-width: 0;
+        }
+
+        .lut-label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.13em;
+            color: var(--ts-ink-3);
+            white-space: nowrap;
+        }
+
+        .lut-bar .btn-ghost {
+            min-height: 48px;
+            padding: 0 22px;
+            font-size: 0.9375rem;
+        }
+
+        /* 下拉：与胶囊按钮同高同圆角，箭头用内联 SVG，避免各家默认样式 */
+        .lut-select-wrap {
+            position: relative;
+            display: block;
+            min-width: 0;
+        }
+
+        .lut-select {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 48px;
+            padding: 0 42px 0 18px;
+            border: 1px solid var(--ts-line-strong);
+            border-radius: 999px;
+            background: #ffffff;
+            color: var(--ts-ink);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            line-height: 1;
+            cursor: pointer;
+            text-overflow: ellipsis;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .lut-select:hover:not(:disabled) {
+            border-color: #b9b9bf;
+        }
+
+        .lut-select:disabled {
+            border-color: var(--ts-line);
+            background: var(--ts-surface-2);
+            color: var(--ts-ink-4);
+            cursor: not-allowed;
+        }
+
+        .lut-select option,
+        .lut-select optgroup {
+            color: var(--ts-ink);
+            background: #ffffff;
+            font-size: 0.9375rem;
+        }
+
+        .lut-chevron {
+            position: absolute;
+            top: 50%;
+            right: 17px;
+            width: 11px;
+            height: 11px;
+            margin-top: -6px;
+            color: var(--ts-ink-3);
+            pointer-events: none;
+        }
+
+        .lut-select:disabled + .lut-chevron {
+            color: var(--ts-ink-4);
+        }
+
+        .lut-export {
+            min-height: 48px;
+            padding: 0 24px 0 26px;
+            gap: 9px;
+        }
+
+        .lut-export svg {
+            width: 14px;
+            height: 14px;
+            flex: none;
+            transition: transform 0.3s var(--ts-ease);
+        }
+
+        .lut-export:hover:not(:disabled) svg {
+            transform: translateY(2px);
+        }
+
+        /* 导出完成：按钮短暂反色，只做确认，不弹浮层 */
+        .lut-save {
+            min-width: 112px;
+            justify-content: center;
+        }
+
+        .lut-save.is-done {
+            background: var(--ts-ink);
+            border-color: var(--ts-ink);
+            color: #ffffff;
+        }
+
+        /* 载入失败：贴着控制条的一行说明，就近、非阻断 */
+        .lut-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 12px 2px 0;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            color: #c1121f;
+        }
+
+        .lut-alert::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            margin-top: 0.5em;
+            border-radius: 50%;
+            background: currentColor;
+            flex: none;
+        }
+
+        .lut-alert[hidden] {
+            display: none;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ---------- 3. 工作区：左侧列表 + 右侧画布 ---------- */
+
+        .lut-workspace {
+            display: grid;
+            grid-template-columns: 258px minmax(0, 1fr);
+            margin-top: clamp(16px, 2vw, 20px);
+            border: 1px solid var(--ts-line);
+            border-radius: var(--ts-radius-xl);
+            background: #ffffff;
+            box-shadow: var(--ts-shadow-card);
+            overflow: hidden;
+        }
+
+        .lut-side {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            border-right: 1px solid var(--ts-line);
+            background: var(--ts-surface-2);
+        }
+
+        .lut-side-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 18px 18px 12px;
+        }
+
+        .lut-section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--ts-ink-3);
+        }
+
+        .lut-side-hint {
+            font-size: 0.6875rem;
+            letter-spacing: 0.02em;
+            color: var(--ts-ink-4);
+        }
+
+        /* lut-list 是未注册的自定义标签，显式设为纵向列表 */
+        .lut-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 0 10px 14px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .lut-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .lut-list::-webkit-scrollbar-thumb {
+            border: 2px solid transparent;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.16);
+            background-clip: content-box;
+        }
+
+        /* LUT 行：外观完全由本文件接管，app.js 生成的类名保持不变 */
+        .lut-file {
+            position: relative;
+            display: flex;
+            flex: none;
+            align-items: center;
+            gap: 10px;
+            height: 44px;
+            padding: 0 12px;
+            border-radius: 11px;
+            color: var(--ts-ink-3);
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease;
+        }
+
+        .lut-file:hover {
+            background: rgba(0, 0, 0, 0.045);
+            color: var(--ts-ink);
+        }
+
+        .lut-file.selected,
+        .lut-file.selected:hover {
+            background: var(--ts-ink);
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .lut-file svg {
+            width: 18px;
+            height: 18px;
+            flex: none;
+        }
+
+        /* 内联 SVG 自带 #E2E2E9 填充与红色描边，这里改为跟随行内文字色 */
+        .lut-file .lut-icon path {
+            fill: currentColor;
+        }
+
+        .lut-file .remove-icon path {
+            stroke: currentColor;
+        }
+
+        .lut-file .remove-icon {
+            display: none;
+        }
+
+        .lut-file:not(.default-lut):hover .lut-icon {
+            display: none;
+        }
+
+        .lut-file:not(.default-lut):hover .remove-icon {
+            display: block;
+        }
+
+        .lut-file > div {
+            flex: 1 1 auto;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .lut-file > div > div {
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: -0.005em;
+            color: var(--ts-ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lut-file.selected > div > div {
+            color: #ffffff;
+        }
+
+        /* ---------- 4. 画布区 ---------- */
+
+        .lut-stage {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding: 14px 16px 16px;
+        }
+
+        .lut-stage-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 2px 2px 12px;
+        }
+
+        .lut-stage-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .lut-legend {
+            font-size: 0.6875rem;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            color: var(--ts-ink-4);
+            text-align: right;
+        }
+
+        /* 导出预览图：作用于画布本身，做成小号胶囊，与头部信息同排 */
+        .lut-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 32px;
+            padding: 0 14px;
+            border: 1px solid var(--ts-line-strong);
+            border-radius: 999px;
+            background: #ffffff;
+            color: var(--ts-ink);
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.12s var(--ts-ease);
+        }
+
+        .lut-save:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: #b9b9bf;
+        }
+
+        .lut-save:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .lut-save:disabled {
+            border-color: var(--ts-line);
+            color: var(--ts-ink-4);
+            cursor: not-allowed;
+        }
+
+        .lut-save svg {
+            width: 13px;
+            height: 13px;
+            flex: none;
+        }
+
+        /* view-port 同样是未注册标签，需显式 block 才有正确的画布尺寸 */
+        .lut-viewport {
+            position: relative;
+            display: block;
+            width: 100%;
+            aspect-ratio: 3 / 2;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #0b0b0d;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.16);
+        }
+
+        .lut-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------- 4.1 放大预览入口 ---------- */
+
+        .lut-viewport {
+            cursor: zoom-in;
+        }
+
+        .lut-viewport:focus-visible {
+            outline: none;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .lut-zoom {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .lut-viewport:hover .lut-zoom,
+        .lut-viewport:focus-visible .lut-zoom {
+            opacity: 1;
+        }
+
+        .lut-zoom svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        /* ---------- 4.2 看图浮层 ---------- */
+
+        .lut-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            display: flex;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.24s ease;
+        }
+
+        .lut-viewer[hidden] {
+            display: none;
+        }
+
+        .lut-viewer.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lut-viewer-scrim {
+            position: absolute;
+            inset: 0;
+            /* 纯中性底：页面文字在 8% 透出时仍可辨认，会让画面显得脏 */
+            background: #09090b;
+        }
+
+        .lut-viewer-dialog {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: clamp(14px, 2.2vw, 26px);
+            color: #ffffff;
+            transform: scale(0.986);
+            transform-origin: var(--ox, 50%) var(--oy, 50%);
+            transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .lut-viewer.is-open .lut-viewer-dialog {
+            transform: none;
+        }
+
+        .lut-viewer-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 2px 2px 14px;
+        }
+
+        .lut-viewer-head > div:first-child {
+            min-width: 0;
+        }
+
+        .lut-viewer-eyebrow {
+            margin: 0 0 6px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .lut-viewer-name {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            color: #ffffff;
+            overflow-wrap: anywhere;
+        }
+
+        .lut-viewer-dims {
+            margin: 6px 0 0;
+            font-size: 0.6875rem;
+            letter-spacing: 0.02em;
+            font-variant-numeric: tabular-nums;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .lut-viewer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lut-viewer-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 36px;
+            padding: 0 16px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            background: transparent;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.12s var(--ts-ease);
+        }
+
+        .lut-viewer-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.34);
+        }
+
+        .lut-viewer-btn:active {
+            transform: scale(0.97);
+        }
+
+        .lut-viewer-btn:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.7);
+            outline-offset: 2px;
+        }
+
+        .lut-viewer-btn.is-done {
+            background: #ffffff;
+            border-color: #ffffff;
+            color: #09090b;
+        }
+
+        .lut-viewer-btn svg {
+            width: 13px;
+            height: 13px;
+            flex: none;
+        }
+
+        .lut-viewer-close {
+            width: 36px;
+            padding: 0;
+        }
+
+        [data-viewer-export] {
+            min-width: 128px;
+        }
+
+        .lut-viewer-stage {
+            position: relative;
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        /* 两张画布叠在同一位置，对比时只切可见性，不等重绘 */
+        .lut-viewer-canvas {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 3px;
+            background: #000000;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            touch-action: none;
+        }
+
+        .lut-viewer-canvas--original {
+            visibility: hidden;
+        }
+
+        .lut-viewer[data-compare='on'] .lut-viewer-canvas--graded {
+            visibility: hidden;
+        }
+
+        .lut-viewer[data-compare='on'] .lut-viewer-canvas--original {
+            visibility: visible;
+        }
+
+        .lut-viewer-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: inline-flex;
+            align-items: center;
+            height: 26px;
+            padding: 0 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(9, 9, 11, 0.72);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            font-size: 0.6875rem;
+            letter-spacing: 0.04em;
+            color: #ffffff;
+            pointer-events: none;
+        }
+
+        .lut-viewer-badge[hidden] {
+            display: none;
+        }
+
+        .lut-viewer-foot {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px 22px;
+            padding: 14px 2px 2px;
+            font-size: 0.6875rem;
+            letter-spacing: 0.02em;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (pointer: coarse), (hover: none) {
+            .lut-hint-keys {
+                display: none;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .lut-viewer-btn {
+                height: 42px;
+            }
+
+            .lut-viewer-close {
+                width: 42px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lut-viewer {
+                transition: opacity 0.16s ease;
+            }
+
+            .lut-viewer-dialog {
+                transform: none;
+                transition: none;
+            }
+
+            .lut-viewer-btn,
+            .lut-zoom {
+                transition: none;
+            }
+        }
+
+        @media (prefers-reduced-transparency: reduce) {
+            .lut-viewer-badge {
+                background: #131316;
+                -webkit-backdrop-filter: none;
+                backdrop-filter: none;
+            }
+        }
+
+        /* ---------- 5. 响应式 ---------- */
+
+        @media (max-width: 1080px) {
+            .lut-bar {
+                grid-template-columns: auto auto minmax(0, 1fr) minmax(104px, auto);
+            }
+
+            .lut-export {
+                grid-column: 1 / -1;
+                justify-self: stretch;
+            }
+        }
+
+        @media (max-width: 880px) {
+            .lut-workspace {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .lut-side {
+                border-right: 0;
+                border-bottom: 1px solid var(--ts-line);
+            }
+
+            .lut-list {
+                flex: none;
+                max-height: 188px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .lut-bar {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            }
+
+            .lut-bar .lut-field:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+
+            /* 尺寸与导出并排，避免半行空白 */
+            .lut-export {
+                grid-column: 2 / 3;
+            }
+
+            .lut-legend {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lut-bar {
+                grid-template-columns: minmax(0, 1fr);
+                padding: 14px;
+            }
+
+            .lut-bar .btn-ghost,
+            .lut-select {
+                height: 46px;
+                min-height: 46px;
+            }
+
+            .lut-export {
+                grid-column: auto;
+            }
+
+            .lut-stage {
+                padding: 12px;
+            }
+
+            .lut-viewport {
+                border-radius: 14px;
+            }
+        }
+
+        /* ---------- 6. 动效偏好 ---------- */
+
+        @media (prefers-reduced-motion: reduce) {
+            .lut-file,
+            .lut-select,
+            .lut-save,
+            .lut-export svg {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body class="page tool lut">
+
+    <!-- ==================== 统一顶栏 ==================== -->
+    <header class="appbar">
+        <div class="appbar-in">
+            <div class="brand-cluster">
+                <a class="brand" href="https://hoooooot-gem.github.io/" aria-label="返回 Hoooooot's 首页">
+                    <img src="/images/favicon.svg" alt="" width="20" height="20">
+                    <span class="brand-name">Hoooooot's</span>
+                </a>
+                <span class="brand-sep" aria-hidden="true">/</span>
+                <span class="brand-page">3D LUT</span>
+            </div>
+
+            <nav class="tabs" aria-label="工具导航">
+                <a class="tab" href="/ConnectionTest/">测速</a>
+                <a class="tab" href="/tools/2026/Palette/">调色板</a>
+                <a class="tab" href="/proj/2026/TP/">打字</a>
+                <a class="tab is-active" href="/tools/2026/LUT/" aria-current="page">LUT</a>
+            </nav>
+
+            <a class="home-link" href="https://hoooooot-gem.github.io/#tools" aria-label="返回首页工具列表">
+                <span>全部工具</span>
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== 主内容 ==================== -->
+    <main>
+        <div class="wrap wrap--wide">
+            <div class="pagehead">
+                <p class="pagehead-eyebrow">工具 · 调色</p>
+                <h1 class="pagehead-title">3D LUT 转换器</h1>
+                <p class="pagehead-sub">载入 .cube 或 LUT PNG，在浏览器里预览并导出为 Resolve、Premiere、Unity 等格式。文件不会离开本机。</p>
+            </div>
+
+            <!--
+                <lut-converter> 的 ref / data-action / data-setting 结构
+                与 app.js 的查询一一对应，改动前请先对照脚本。
+            -->
+            <lut-converter>
+                <input ref="$fileLoader" type="file" accept=".cube, image/png" multiple hidden>
+                <input ref="$imgLoader" type="file" accept="image/jpeg, image/png" hidden>
+                <a ref="$downloader" rel="noopener" href="" download="" hidden></a>
+
+                <!-- 控制条 -->
+                <div class="card lut-bar">
+                    <div class="lut-field">
+                        <span class="lut-label">LUT 文件</span>
+                        <button type="button" data-action="load-luts" class="btn-ghost">选择本地 LUT</button>
+                    </div>
+
+                    <div class="lut-field">
+                        <span class="lut-label">预览图</span>
+                        <button type="button" data-action="load-image" class="btn-ghost">加载图像</button>
+                    </div>
+
+                    <div class="lut-field">
+                        <label class="lut-label" for="lutDestination">输出格式</label>
+                        <span class="lut-select-wrap">
+                            <select data-setting="lut-destination" class="lut-select" id="lutDestination">
+                                <option value="">选择格式</option>
+                                <optgroup label="应用">
+                                    <option value="0" data-sizes="32,33,64,65">Davinci Resolve</option>
+                                    <option value="0" data-sizes="16,32,64">Photoshop</option>
+                                    <option value="0" data-sizes="16,32,64">Premiere</option>
+                                    <option value="0" data-sizes="16,32,64">After Effects</option>
+                                    <option value="0" data-sizes="16,32,64">Final Cut Pro</option>
+                                    <option value="0" data-sizes="16,32,64">Affinity Photo</option>
+                                    <option value="0" data-sizes="16,32,64">Darktable</option>
+                                    <option value="0" data-sizes="16,32,64">LumaFusion</option>
+                                    <option value="1" data-sizes="17,33,65">OCIO spi3d</option>
+                                    <option value="0" data-sizes="16,17,32,33,64,65">Cube Generic</option>
+                                    <option value="8" data-sizes="16,17,32,33,64,65">CSV</option>
+                                </optgroup>
+                                <optgroup label="相机">
+                                    <option value="2" data-sizes="33">Canon CLUT</option>
+                                    <option value="0" data-sizes="17,33">Blackmagic Camera</option>
+                                    <option value="0" data-sizes="17,33">Blackmagic Video Assist</option>
+                                    <option value="0" data-sizes="33">Arri Color Tool</option>
+                                    <option value="3" data-sizes="17">Panasonic Varicam</option>
+                                </optgroup>
+                                <optgroup label="3D 引擎">
+                                    <option value="0" data-sizes="16,32,64">Unreal Engine</option>
+                                    <option value="5" data-sizes="32">Unity</option>
+                                    <option value="4" data-sizes="16,32,64">Cinema 4D Redshift</option>
+                                </optgroup>
+                                <optgroup label="LUT PNG 图像">
+                                    <option value="5" data-sizes="16,32,64">Cube Strip 2D</option>
+                                    <option value="6" data-sizes="16,32,64">Cube Grid 2D</option>
+                                    <option value="7" data-sizes="16,32,64">Hald CLUT 3D</option>
+                                </optgroup>
+                            </select>
+                            <svg class="lut-chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                                <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <div class="lut-field">
+                        <label class="lut-label" for="lutSize">大小</label>
+                        <span class="lut-select-wrap">
+                            <select data-setting="lut-size" class="lut-select" id="lutSize">
+                                <option value="16" disabled>16³</option>
+                                <option value="17" disabled>17³</option>
+                                <option value="32">32³</option>
+                                <option value="33">33³</option>
+                                <option value="64" selected>64³</option>
+                                <option value="65">65³</option>
+                            </select>
+                            <svg class="lut-chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                                <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <button type="button" data-action="convert-lut" class="btn-primary lut-export">
+                        <span>导出 LUT</span>
+                        <svg viewBox="0 0 14 18" fill="none" aria-hidden="true">
+                            <path d="M12 16H2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                            <path class="export-arrow" d="m2 6 5 5 5-5m-5 4V1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 载入失败时由 preview-export.js 写入，就近说明原因 -->
+                <p class="lut-alert" id="lutAlert" role="status" aria-live="polite" hidden></p>
+                <span class="sr-only" id="lutLive" role="status" aria-live="polite"></span>
+
+                <!-- 工作区 -->
+                <section class="lut-workspace" aria-label="LUT 列表与预览">
+                    <aside class="lut-side">
+                        <div class="lut-side-head">
+                            <span class="lut-section-label">LUT 列表</span>
+                            <span class="lut-side-hint">.cube / PNG</span>
+                        </div>
+                        <!-- 默认 LUT 由 app.js 注入并选中，此处不放占位行 -->
+                        <lut-list ref="$lutList" class="lut-list"></lut-list>
+                    </aside>
+
+                    <div class="lut-stage">
+                        <div class="lut-stage-head">
+                            <span class="lut-section-label">预览</span>
+                            <div class="lut-stage-actions">
+                                <span class="lut-legend">左上 应用 LUT · 右上 灰阶曲线 · 左下 LUT 贴图 · 右下 亮度渐变</span>
+                                <button type="button" data-action="export-preview" class="lut-save" disabled title="载入图像后可导出">
+                                    <svg viewBox="0 0 14 16" fill="none" aria-hidden="true">
+                                        <path d="M7 1.2v9.3m0 0 3.4-3.4M7 10.5 3.6 7.1M2 14.2h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>导出预览图</span>
+                                </button>
+                            </div>
+                        </div>
+                        <view-port class="lut-viewport" role="button" tabindex="0" aria-label="放大预览（按 Enter）" aria-haspopup="dialog">
+                            <canvas ref="$cvs" class="lut-canvas" aria-label="LUT 预览画布"></canvas>
+                            <span class="lut-zoom" aria-hidden="true">
+                                <svg viewBox="0 0 14 14" fill="none">
+                                    <path d="M5 1H1v4M9 13h4V9M1 9v4h4M13 5V1H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </view-port>
+                    </div>
+                </section>
+            </lut-converter>
+        </div>
+    </main>
+
+    <!-- ==================== 看图浮层（点击预览打开） ==================== -->
+    <div class="lut-viewer" id="lutViewer" hidden>
+        <div class="lut-viewer-scrim"></div>
+        <div class="lut-viewer-dialog" role="dialog" aria-modal="true" aria-labelledby="lutViewerName" aria-describedby="lutViewerHints" tabindex="-1">
+            <header class="lut-viewer-head">
+                <div>
+                    <p class="lut-viewer-eyebrow">预览</p>
+                    <h2 class="lut-viewer-name" id="lutViewerName" data-viewer-name>Default</h2>
+                    <p class="lut-viewer-dims" data-viewer-dims>—</p>
+                </div>
+                <div class="lut-viewer-actions">
+                    <button type="button" class="lut-viewer-btn" data-viewer-export>
+                        <svg viewBox="0 0 14 16" fill="none" aria-hidden="true">
+                            <path d="M7 1.2v9.3m0 0 3.4-3.4M7 10.5 3.6 7.1M2 14.2h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>导出预览图</span>
+                    </button>
+                    <button type="button" class="lut-viewer-btn lut-viewer-close" data-viewer-close aria-label="关闭预览">
+                        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                            <path d="M2.2 2.2 11.8 11.8M11.8 2.2 2.2 11.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <div class="lut-viewer-stage" data-viewer-stage>
+                <canvas class="lut-viewer-canvas lut-viewer-canvas--graded" data-viewer-graded aria-label="应用 LUT 后的预览图"></canvas>
+                <canvas class="lut-viewer-canvas lut-viewer-canvas--original" data-viewer-original aria-hidden="true"></canvas>
+                <span class="lut-viewer-badge" data-viewer-badge hidden>原图</span>
+            </div>
+
+            <footer class="lut-viewer-foot" id="lutViewerHints">
+                <span>按住画面看原图</span>
+                <span class="lut-hint-keys">↑ ↓ 切换 LUT</span>
+                <span class="lut-hint-keys">Esc 关闭</span>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ==================== 统一底栏 ==================== -->
+    <footer class="shellfoot">
+        <div class="shellfoot-in">
+            <span class="foot-brand">Hoooooot's</span>
+            <nav class="foot-links" aria-label="页脚导航">
+                <a href="/ConnectionTest/">连接测速</a>
+                <a href="/tools/2026/Palette/">智能调色板</a>
+                <a href="/proj/2026/TP/">打字练习</a>
+                <a href="/tools/2026/LUT/">3D LUT</a>
+                <a href="https://hoooooot-gem.github.io/">首页</a>
+            </nav>
+            <div class="foot-meta">
+                <span>© 2026 Hoooooot</span>
+                <a href="https://icp.gov.moe/?keyword=20266985" target="_blank" rel="noopener">萌ICP备20266985号</a>
+                <a href="https://icp.felicity.land/id.php?keyword=20266985" target="_blank" rel="noopener">幸ICP备20266985号</a>
+            </div>
+        </div>
+        <p class="foot-note">Hoooooot's 数据库可能存储在美国加利福尼亚州、德国法兰克福、日本东京等地区的服务器上，并根据当地法律提供的保护进行维护。您所在国家或司法管辖区的法律可能不保护或不允许相同类型的言论或分发。Hoooooot's 不鼓励违反任何法律，并且不对任何违反此类法律的行为负责。</p>
+    </footer>
+
+    <!-- 脚本必须放在 <lut-converter> 之后：自定义元素升级时子节点已解析 -->
+    <script src="./app.js"></script>
+    <script src="./preview-export.js"></script>
+    <script src="./lut-viewer.js"></script>
+</body>
+</html>

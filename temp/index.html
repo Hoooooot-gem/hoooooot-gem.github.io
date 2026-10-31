@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="description" content="Coooooolour by Hoooooot">
+  <meta name="viewport" content="initial-scale=1, width=device-width, user-scalable=no, viewport-fit=cover">
+  <link rel="stylesheet" href="./css/style.css">
+<style>
+    :is(lut-converter, [extends*="lut-converter"]) {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: inherit;
+      display: grid;
+      grid-template-rows: min-content 1fr;
+      grid-template-areas: "header" "main";
+    }
+    :is(lut-converter, [extends*="lut-converter"]) header {
+      grid-area: header;
+    }
+    :is(lut-converter, [extends*="lut-converter"]) header,
+    :is(lut-converter, [extends*="lut-converter"]) lut-list {
+      background-color: var(--theme-surface-050);
+    }
+    :is(lut-converter, [extends*="lut-converter"]) section {
+      grid-area: main;
+      display: grid;
+      grid-template-columns: 225px 1fr;
+    }
+    @media (orientation: portrait) {
+      :is(lut-converter, [extends*="lut-converter"]) section {
+        grid-template-columns: 1fr;
+        grid-template-rows: 100px 1fr;
+      }
+    }
+    :is(lut-converter, [extends*="lut-converter"]) .lut-file {
+      background-color: var(--theme-higher-000);
+    }
+    :is(lut-converter, [extends*="lut-converter"]) .lut-file .remove-icon,
+    :is(lut-converter, [extends*="lut-converter"]) .lut-file:not(.default-lut):hover .lut-icon {
+      display: none;
+    }
+    :is(lut-converter, [extends*="lut-converter"]) .lut-file:not(.default-lut):hover .remove-icon {
+      display: block;
+    }
+    :is(lut-converter, [extends*="lut-converter"]) .lut-file.selected {
+      background-color: var(--theme-primary-subtle);
+    }
+  </style></head>
+<body class="pos-rel w-screen h-screen mg-000 flex-col x-center bg-neutral-100 overflow-hidden">
+  <lut-converter>
+    <header class="flex-row y-bottom pd-050 gap-050 text-m wrap">
+      <input ref="$fileLoader" type="file" accept=".cube, image/png" multiple="" hidden="">
+      <input ref="$imgLoader" type="file" accept="image/jpeg, image/png" hidden="">
+      <a ref="$downloader" rel="noopener" href="blob:https://ciomedia.b-cdn.net/a0cbed0f-127a-4d22-8724-7fafa3d19d4c" download="Default - converted with Color.cube" style="display:none"></a>
+      <div class="flex-col gap-025">
+        <span class="label text-xs">3D LUTs</span>
+        <button data-action="load-luts" class="action-button text-s text-semibold rounded-100">选择本地 LUT</button>
+      </div>
+      <div class="flex-col gap-025 mg-r-auto">
+        <span class="label text-xs">预览</span>
+        <button data-action="load-image" class="action-button text-s text-semibold rounded-100">加载图像</button>
+      </div>
+      <div class="flex-col gap-025">
+        <span class="label text-xs">输出</span>
+        <select data-setting="lut-destination" class="select" id="sel1" onchange="myFunction()">
+            <option value="">选择格式</option>
+          <optgroup label="应用">
+            <option value="0" data-sizes="32,33,64,65">Davinci Resolve</option>
+            <option value="0" data-sizes="16,32,64">Photoshop</option>
+            <option value="0" data-sizes="16,32,64">Premiere</option>
+            <option value="0" data-sizes="16,32,64">After Effects</option>
+            <option value="0" data-sizes="16,32,64">Final Cut Pro</option>
+            <option value="0" data-sizes="16,32,64">Affinity Photo</option>
+            <option value="0" data-sizes="16,32,64">Darktable</option>
+            <option value="0" data-sizes="16,32,64">LumaFusion</option>
+            <option value="1" data-sizes="17,33,65">OCIO spi3d</option>
+            <option value="0" data-sizes="16,17,32,33,64,65">Cube Generic</option>
+            <option value="8" data-sizes="16,17,32,33,64,65">CSV</option>
+          </optgroup>
+          <optgroup label="相机">
+            <option value="2" data-sizes="33">Canon CLUT</option>
+            <option value="0" data-sizes="17,33">Blackmagic Camera</option>
+            <option value="0" data-sizes="17,33">Blackmagic Video Assist</option>
+            <option value="0" data-sizes="33">Arri Color Tool</option>
+            <option value="3" data-sizes="17">Panasonic Varicam</option>
+          </optgroup>
+          <optgroup label="3D 引擎">
+            <option value="0" data-sizes="16,32,64">Unreal Engine</option>
+            <option value="5" data-sizes="32">Unity</option> 
+            <option value="4" data-sizes="16,32,64">Cinema 4D Redshift</option>
+          </optgroup>
+          <optgroup label="LUT PNG 图像">
+            <option value="5" data-sizes="16,32,64">Cube Strip 2D</option>
+            <option value="6" data-sizes="16,32,64">Cube Grid 2D</option>
+            <option value="7" data-sizes="16,32,64">Hald CLUT 3D</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="flex-col gap-025">
+        <span class="label text-xs">大小</span>
+        <select data-setting="lut-size" class="select flex-grow min-w-250">
+          <option value="16" disabled="">16³</option>
+          <option value="17" disabled="">17³</option>
+          <option value="32">32³</option>
+          <option value="33">33³</option>
+          <option value="64" selected="">64³</option>
+          <option value="65">65³</option>
+        </select>
+      </div>
+      <button data-action="convert-lut" class="action-button primary text-s text-semibold rounded-100 pd-l-150 pd-r-075 pd-y-050 flex-row center gap-100">
+        <span>导出 LUT</span>
+        <svg class="w-075 h-075" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 18">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 16H2"></path>
+          <path class="export-arrow" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m2 6 5 5 5-5m-5 4V1"></path>
+        </svg>
+      </button>
+    </header>
+    <section>
+      <lut-list ref="$lutList" class="flex-col gap-050 pd-050 overflow-y-auto"><div class="lut-file flex-none pos-rel h-250 flex-row nowrap center gap-100 pd-100 rounded-100 cursor-pointer default-lut selected">
+        <svg class="w-125 h-125 flex-none lut-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 19">
+          <path fill="#E2E2E9" fill-opacity=".5" d="M16.64 4.42a.17.17 0 0 0 0-.3L10.17.37a2.72 2.72 0 0 0-2.72 0L.98 4.12a.17.17 0 0 0 0 .3l7.74 4.55a.17.17 0 0 0 .18 0l7.74-4.55Z"></path>
+          <path fill="#E2E2E9" d="M.25 5.57a.17.17 0 0 0-.25.15v7.36a2.03 2.03 0 0 0 1.01 1.75l6.87 4.12a.17.17 0 0 0 .25-.15v-8.54a.17.17 0 0 0-.08-.15L.25 5.57Z"></path>
+          <path fill="#E2E2E9" fill-opacity=".75" d="M9.49 10.3v8.5a.17.17 0 0 0 .25.15l6.87-4.12a2.03 2.03 0 0 0 1-1.75V5.72a.17.17 0 0 0-.16-.17c-.03 0-.06 0-.09.02l-7.79 4.57a.17.17 0 0 0-.08.15Z"></path>
+        </svg>
+        <svg class="w-125 h-125 flex-none remove-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+          <title>移除 LUT</title>
+          <path stroke="red" stroke-miterlimit="10" stroke-opacity=".65" stroke-width="2.2" d="M17 9A8 8 0 1 1 1 9a8 8 0 0 1 16 0Z"></path>
+          <path stroke="red" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 9H6"></path>
+        </svg>
+        <div class="w-full h-full flex-col y-center gap-025">
+          <div class="text-s text-semibold max-w-350 trunc">默认</div>
+        </div>
+      </div></lut-list>
+      <view-port class="pd-050"><canvas ref="$cvs" class="w-full h-full" width="333" height="669"></canvas></view-port>
+    </section>
+  </lut-converter>
+  <script src="./js/app.js"></script>
+<script>
+  // var selects = document.getElementById("sel1");
+  //     var indexs = 1;  //选中项的索引
+
+  // alert(selects.options[indexs].value);
+  // selects.onchange = function () {
+  //     var indexs = selects.selectedIndex;  //选中项的索引
+  //     alert(selects.options[0].value);
+  //   }
+    // selects.fireEvent("onchange")  
+  </script>
+<!-- <select id="mySelect" onchange="myFunction()">
+  <option value="option1">选项1</option>
+  <option value="option2">选项2</option>
+  <option value="option3">选项3</option>
+</select> -->
+
+<script>
+window.onload = function() {
+  // myFunction();  // 调用事件处理程序，以确保初始状态的处理函数被执行
+}
+
+function myFunction() {
+  // var selectValue = document.getElementById("mySelect").value;
+  // console.log("你选择了：" + selectValue);
+}
+</script>
+</body></html>

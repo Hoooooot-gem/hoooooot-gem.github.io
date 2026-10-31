@@ -1,0 +1,13 @@
+{
+  "name": "Coooooolour by Hoooooot",
+  "version": "1.0.2.5",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . Coooooolour --platform=win32 --arch=x64 --icon=icon.ico --out=dist"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-packager": "^17.1.2"
+  }
+}
