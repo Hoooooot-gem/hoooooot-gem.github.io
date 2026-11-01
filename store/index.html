@@ -162,6 +162,19 @@
 
 </main>
 
+<!-- 6. 地域提示弹窗：仅当 IP 判定为非中国大陆时出现，默认 hidden -->
+<div class="region-gate" id="region-gate" role="dialog" aria-modal="true"
+     aria-labelledby="region-gate-title" aria-describedby="region-gate-desc" hidden>
+    <div class="region-gate-panel">
+        <h2 class="region-gate-title" id="region-gate-title">售卖服务仅限于中国大陆境内。</h2>
+        <p class="region-gate-desc" id="region-gate-desc">是否继续浏览？</p>
+        <div class="region-gate-actions">
+            <button type="button" class="region-gate-btn" data-gate="no">否</button>
+            <button type="button" class="region-gate-btn region-gate-btn--solid" data-gate="yes">是</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // 顶栏毛玻璃：与首页阈值一致（滚动超过 10px 触发）。
     // 首页由 js/script.js 处理，子页面没有该文件，这里单独补上。
@@ -186,6 +199,69 @@
             });
             observer.observe(document.body, { childList: true });
         }
+    })();
+</script>
+
+<script>
+    // 地域提示：沿用首页 index.html 的检测方式（countries.dev/ip → countryCode），
+    // 只有明确拿到非 'CN' 才拦人；接口失败按中国大陆处理，与首页兜底一致。
+    (function () {
+        var gate = document.getElementById('region-gate');
+        if (!gate) return;
+
+        var main = document.querySelector('main');
+        var yesBtn = gate.querySelector('[data-gate="yes"]');
+        var noBtn = gate.querySelector('[data-gate="no"]');
+
+        function openGate() {
+            gate.hidden = false;
+            document.documentElement.classList.add('gate-open');
+            if (main) main.setAttribute('aria-hidden', 'true');
+            // 焦点落在「是」，键盘用户回车即继续
+            yesBtn.focus();
+        }
+
+        function closeGate() {
+            gate.hidden = true;
+            document.documentElement.classList.remove('gate-open');
+            if (main) main.removeAttribute('aria-hidden');
+        }
+
+        // 阻止继续浏览：能退回站内上一页就退，否则回首页
+        function leave() {
+            var fromSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
+            if (fromSite && history.length > 1) {
+                history.back();
+            } else {
+                location.replace('/');
+            }
+        }
+
+        yesBtn.addEventListener('click', closeGate);
+        noBtn.addEventListener('click', leave);
+
+        // 只有两个按钮，Tab 在两者之间循环，焦点不会跑到弹窗外的页面
+        gate.addEventListener('keydown', function (e) {
+            if (e.key !== 'Tab') return;
+            e.preventDefault();
+            (document.activeElement === yesBtn ? noBtn : yesBtn).focus();
+        });
+
+        // 自查开关：地址后加 ?region=non-cn 可强制弹出，方便在国内网络下预览样式
+        if (/[?&]region=non-cn(&|#|$)/.test(location.search)) {
+            openGate();
+            return;
+        }
+
+        fetch('https://countries.dev/ip')
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.countryCode !== 'CN') openGate();
+            })
+            .catch(function (error) {
+                // 检测失败不拦人：与首页「失败即按中国版呈现」保持一致
+                console.warn('地域检测失败，跳过提示：', error);
+            });
     })();
 </script>
 

@@ -75,13 +75,15 @@ body.store a:hover {
 }
 
 .store-hero-title {
-    /* 末字后的字距空隙用负外边距抵消，保证视觉上真正居中 */
-    display: inline-block;
-    margin: 0 -0.14em 0 0;
-    font-size: clamp(2.5rem, 6.6vw, 5rem);
-    font-weight: 500;
+    /* 与首页 hero 的 .hero-title（css/style.css）逐项对齐：
+       font-size 1.8rem、font-weight 走同一个 --font-weight-bold 变量，
+       字距同样 0.02em；首页该规则没有断点覆盖，这里因此也用固定值，
+       保证任意视口下两处标题的字号/字重完全一致。 */
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: var(--font-weight-bold);
     line-height: 1.1;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.02em;
     color: #ffffff;
     /* 不做遮罩，只用一道很紧的投影让字口在实色块上站得住 */
     text-shadow: 0 1px 2px rgba(0, 46, 92, 0.22);
@@ -323,7 +325,115 @@ body.store .page-lead {
     transform: translateX(4px);
 }
 
-/* ---------- 8. 响应式 ---------- */
+/* ---------- 8. 地域提示弹窗（非中国大陆访问时出现） ---------- */
+
+.region-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 4vw, 32px);
+    background: rgba(0, 0, 0, 0.32);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    animation: gate-fade 0.2s ease-out both;
+}
+
+/* .region-gate 的 display 会盖掉浏览器默认的 [hidden]，这里补回来 */
+.region-gate[hidden] {
+    display: none;
+}
+
+/* 弹窗打开时锁住页面滚动 */
+html.gate-open,
+html.gate-open body {
+    overflow: hidden;
+}
+
+.region-gate-panel {
+    width: min(440px, 100%);
+    padding: clamp(24px, 3vw, 30px);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
+    animation: gate-rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.region-gate-title {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+}
+
+.region-gate-desc {
+    margin: 10px 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #6e6e73;
+}
+
+.region-gate-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: clamp(22px, 3vw, 28px);
+}
+
+.region-gate-btn {
+    min-width: 88px;
+    padding: 10px 24px;
+    border: 1px solid #d2d2d7;
+    border-radius: 999px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    cursor: pointer;
+    transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease, transform 0.16s ease;
+}
+
+.region-gate-btn:hover {
+    border-color: #1d1d1f;
+}
+
+.region-gate-btn:active {
+    transform: scale(0.97);
+}
+
+.region-gate-btn--solid {
+    border-color: #1d1d1f;
+    background: #1d1d1f;
+    color: #ffffff;
+}
+
+.region-gate-btn--solid:hover {
+    background: #000000;
+    border-color: #000000;
+}
+
+@keyframes gate-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes gate-rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ---------- 9. 响应式 ---------- */
 
 @media (max-width: 899px) {
     .product-grid {
@@ -359,18 +469,33 @@ body.store .page-lead {
         flex: 1 1 auto;
         justify-content: center;
     }
+
+    /* 窄屏按 HIG 竖排按钮：主操作「是」在上，「否」在下 */
+    .region-gate-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .region-gate-btn {
+        width: 100%;
+        min-width: 0;
+        padding: 12px 24px;
+    }
 }
 
-/* ---------- 9. 尊重减弱动态效果 ---------- */
+/* ---------- 10. 尊重减弱动态效果 ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-    .store-hero-title {
+    .store-hero-title,
+    .region-gate,
+    .region-gate-panel {
         animation: none;
     }
 
     .product,
     .product-buy,
-    .store-cta .pill .arrow {
+    .store-cta .pill .arrow,
+    .region-gate-btn {
         transition: none;
     }
 
