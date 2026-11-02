@@ -212,7 +212,21 @@
             </header>
 
             <div class="contact-block">
-                <a class="contact-mail" href="mailto:shurinkycn@gmail.com">shurinkycn@gmail.com</a>
+                <!-- 彩蛋入口：外观是纯文本，实际是可编辑输入框（逻辑见 js/easter-egg.js） -->
+                <div class="mail-field">
+                    <input
+                        class="contact-mail mail-input"
+                        id="contact-mail-cn"
+                        type="text"
+                        value="shurinkycn@gmail.com"
+                        aria-label="邮箱地址，可直接编辑"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        enterkeyhint="send">
+                    <span class="mail-bubble" role="status" aria-live="polite"></span>
+                </div>
 
                 <div class="social-links">
                     <div class="social-item wechat-item">
@@ -411,7 +425,21 @@
             </header>
 
             <div class="contact-block">
-                <a class="contact-mail" href="mailto:shurinkycn@gmail.com">shurinkycn@gmail.com</a>
+                <!-- 彩蛋入口：外观是纯文本，实际是可编辑输入框（逻辑见 js/easter-egg.js） -->
+                <div class="mail-field">
+                    <input
+                        class="contact-mail mail-input"
+                        id="contact-mail-global"
+                        type="text"
+                        value="shurinkycn@gmail.com"
+                        aria-label="Email address, editable"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        enterkeyhint="send">
+                    <span class="mail-bubble" role="status" aria-live="polite"></span>
+                </div>
 
                 <div class="social-links">
                     <div class="social-item wechat-item">
@@ -475,6 +503,8 @@
 </script>
 
 <script src="js/script.js"></script>
+<!-- 首页彩蛋：只在首页加载，子页面零影响 -->
+<script src="js/easter-egg.js"></script>
 
 </body>
 </html>

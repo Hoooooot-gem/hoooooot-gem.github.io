@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 共享顶栏 / 底栏注入（必须在最前） -->
+    <script src="/js/components.js" data-chrome="both"></script>
+
+    <!-- ==================== 基础 Meta ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ==================== SEO 与社交分享 ==================== -->
+    <title>彩蛋 · Hoooooot's</title>
+    <meta name="description" content="首页邮箱里藏着的那个东西。">
+    <!-- 彩蛋页不进搜索引擎索引 -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ==================== 网站图标（Favicon） ==================== -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+    <!-- ==================== 样式 ==================== -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages.css">
+
+    <!-- 彩蛋页自己的版式；通用按钮、页头语汇仍来自 pages.css -->
+    <style>
+        /* ---------- 1. 舞台：两拍内容叠在同一格里，切换时不推挤页面 ---------- */
+
+        .egg-main {
+            display: flex;
+            align-items: center;
+            /* 内容在导航与页脚之间居中，不孤零零挂在顶端 */
+            min-height: 62vh;
+            padding: clamp(16px, 3vw, 40px) 0 clamp(64px, 9vw, 110px);
+        }
+
+        .egg-wrap {
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 5vw, 40px);
+        }
+
+        /* 问题与答案共用同一个网格单元：行高取两者较高者，
+           所以切换时页脚不会突然跳一下 */
+        .egg-stage {
+            display: grid;
+            align-items: center;
+        }
+
+        .egg-stage > * {
+            grid-area: 1 / 1;
+        }
+
+        /* ---------- 2. 第一拍：问题 ---------- */
+
+        .egg-ask {
+            text-align: center;
+            transition: opacity 0.24s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+        }
+
+        .egg-ask.is-hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.24s ease, transform 0.28s ease, visibility 0s linear 0.28s;
+        }
+
+        .egg-question {
+            margin: 0;
+            font-size: clamp(1.75rem, 4.2vw, 2.75rem);
+            font-weight: 600;
+            line-height: 1.12;
+            letter-spacing: -0.03em;
+            color: #1d1d1f;
+        }
+
+        .egg-choices {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: clamp(28px, 4vw, 40px);
+        }
+
+        /* 按钮沿用 pages.css 的胶囊语汇，只补字体与焦点环 */
+        .egg-choice {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .egg-choice:focus-visible,
+        .egg-back .pill:focus-visible {
+            outline: 2px solid #1d1d1f;
+            outline-offset: 3px;
+        }
+
+        /* ---------- 3. 第二拍：答案 ---------- */
+
+        .egg-answer {
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+            /* 未展开时不可见、不可聚焦 */
+            visibility: hidden;
+        }
+
+        /* 展开后由脚本转移焦点过来，容器本身不需要焦点环 */
+        .egg-answer:focus {
+            outline: none;
+        }
+
+        .egg-answer.is-active {
+            visibility: visible;
+        }
+
+        /* 逐条入场：先那句回应，再分隔线，再年份与正文，最后是收尾 */
+        .egg-answer > * {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .egg-answer.is-active > * {
+            opacity: 1;
+            transform: none;
+        }
+
+        .egg-answer.is-active > *:nth-child(1) { transition-delay: 0.12s; }
+        .egg-answer.is-active > *:nth-child(2) { transition-delay: 0.2s; }
+        .egg-answer.is-active > *:nth-child(3) { transition-delay: 0.28s; }
+        .egg-answer.is-active > *:nth-child(4) { transition-delay: 0.46s; }
+        .egg-answer.is-active > *:nth-child(5) { transition-delay: 0.58s; }
+
+        .egg-ack {
+            margin: 0 0 clamp(24px, 3vw, 32px);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+            color: #86868b;
+        }
+
+        /* 短横线代替分割框，和首页的细线语汇一致 */
+        .egg-rule {
+            width: 36px;
+            height: 1px;
+            margin: 0 0 clamp(24px, 3vw, 30px);
+            border: 0;
+            background: #d2d2d7;
+        }
+
+        .egg-year {
+            margin: 0 0 16px;
+            font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            color: #1d1d1f;
+        }
+
+        .egg-text {
+            margin: 0;
+            font-size: clamp(1rem, 1.5vw, 1.125rem);
+            line-height: 1.85;
+            color: #1d1d1f;
+        }
+
+        .egg-text + .egg-text {
+            margin-top: 1.05em;
+        }
+
+        .egg-last {
+            margin: clamp(28px, 3.4vw, 36px) 0 0;
+            font-size: 1.0625rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: #1d1d1f;
+        }
+
+        .egg-back {
+            margin: clamp(32px, 4vw, 44px) 0 0;
+        }
+
+        /* ---------- 4. 响应式 ---------- */
+
+        @media (max-width: 767px) {
+            .egg-main {
+                min-height: 56vh;
+            }
+
+            /* 窄屏按钮竖排，整行可点 */
+            .egg-choices {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .egg-choice {
+                width: 100%;
+            }
+        }
+
+        /* ---------- 5. 无障碍：减弱动态时只做淡入淡出 ---------- */
+
+        @media (prefers-reduced-motion: reduce) {
+            .egg-ask,
+            .egg-ask.is-hidden,
+            .egg-answer > *,
+            .egg-answer.is-active > * {
+                transform: none;
+                transition: opacity 0.2s ease;
+                transition-delay: 0s;
+            }
+        }
+    </style>
+</head>
+<body class="page has-chrome">
+
+<!--
+    彩蛋页说明
+    ------------------------------------------------------------------
+    · 入口：首页联系区的邮箱输入框，输入 OMG 后回车（逻辑见 js/easter-egg.js）。
+    · 结构是两拍：先问「你是怎么找到这里的」，选完才露出答案 ——
+      答案是首页时间线里没有的那一年（首页只有 2025 / 2026）。
+    · 两个区块叠在同一个网格单元里，切换时行高不变，页脚不会跳。
+    · 想改文案：直接改 .egg-ask 里的 data-ack（三个选项各自的回应）
+      和 .egg-entry 里的年份与正文。改完不需要动 JS。
+-->
+
+<main>
+    <section class="egg-main" aria-label="彩蛋">
+        <div class="egg-wrap">
+            <div class="egg-stage" id="egg-stage">
+
+                <!-- 第一拍：问题 -->
+                <div class="egg-ask" id="egg-ask">
+                    <p class="page-eyebrow">彩蛋</p>
+                    <h1 class="egg-question">你是怎么找到这里的？</h1>
+
+                    <div class="egg-choices">
+                        <button class="pill egg-choice" type="button"
+                                data-ack="乱按能按到这里，概率不高。">乱按的</button>
+                        <button class="pill egg-choice" type="button"
+                                data-ack="猜的。那你还挺准。">猜的</button>
+                        <button class="pill egg-choice" type="button"
+                                data-ack="那他也太不保密了。">有人告诉我的</button>
+                    </div>
+                </div>
+
+                <!-- 第二拍：首页时间线上没有的那一年 -->
+                <div class="egg-answer" id="egg-answer" tabindex="-1">
+                    <p class="egg-ack" id="egg-ack"></p>
+
+                    <hr class="egg-rule">
+
+                    <article class="egg-entry">
+                        <p class="egg-year">2024</p>
+                        <p class="egg-text">这一年没写进时间线，因为它压不成一行。</p>
+                        <p class="egg-text">大部分时间我在脑子里偷偷剪片子。剪到时间码开始重复，剪到窗外黑了又亮。</p>
+                        <p class="egg-text">有一个三秒钟的镜头，我看了四十多遍，只为了确认那个人眨眼的时候，是不是在忍。</p>
+                        <p class="egg-text">片子最后没做完。但那之后我调每一帧，用的都是那晚定下来的标准。</p>
+                    </article>
+
+                    <p class="egg-last">别告诉别人哦。</p>
+
+                    <p class="egg-back">
+                        <a class="pill" href="/">返回首页</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    (function () {
+        'use strict';
+
+        var ask = document.getElementById('egg-ask');
+        var answer = document.getElementById('egg-answer');
+        var ack = document.getElementById('egg-ack');
+        if (!ask || !answer || !ack) return;
+
+        var choices = ask.querySelectorAll('.egg-choice');
+        var answered = false;
+
+        function choose(button) {
+            if (answered) return;
+            answered = true;
+
+            // 三个选项各自一句回应，之后是同一段正文
+            ack.textContent = button.getAttribute('data-ack') || '';
+
+            ask.classList.add('is-hidden');
+            answer.classList.add('is-active');
+
+            // 焦点跟着内容走：读屏用户不会停在已经消失的按钮上
+            answer.focus({ preventScroll: true });
+        }
+
+        Array.prototype.forEach.call(choices, function (button) {
+            button.addEventListener('click', function () {
+                choose(button);
+            });
+        });
+    })();
+</script>
+
+</body>
+</html>

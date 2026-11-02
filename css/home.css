@@ -350,10 +350,120 @@
     border-bottom-color: #1d1d1f;
 }
 
+/* ---------- 8b. 彩蛋：伪装成纯文本的输入框 + 微信式尖角气泡 ---------- */
+
+/* 包裹层只提供定位上下文，视觉上不存在 */
+.home .mail-field {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* 抹掉原生控件外观：无边框、无底色、无圆角，只剩文字本身。
+   宽度由 js/easter-egg.js 按实际文字宽度写入，保证与纯文本逐像素一致。 */
+.home .mail-input {
+    display: inline-block;
+    width: auto;
+    min-width: 4ch;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0 6px;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    font: inherit;
+    font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.4;
+    color: #1d1d1f;
+    text-align: center;
+    cursor: text;
+    caret-color: #1d1d1f;
+    -webkit-appearance: none;
+    appearance: none;
+    /* 支持 field-sizing 的浏览器先按内容自适应，避免脚本执行前闪一下默认宽度 */
+    field-sizing: content;
+    transition: border-color 0.2s ease;
+}
+
+.home .mail-input:focus {
+    /* 去掉原生焦点框，改用与悬停一致的下划线作为焦点指示 */
+    outline: none;
+    border-bottom-color: #1d1d1f;
+}
+
+/* 气泡：白色材质 + 一圈细描边 + 向上的尖角，落点永远指向输入框中心 */
+.home .mail-bubble {
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 0;
+    z-index: 20;
+    max-width: min(280px, calc(100vw - 24px));
+    padding: 10px 16px;
+    border: 1px solid #d2d2d7;
+    border-radius: 14px;
+    background: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    color: #1d1d1f;
+    white-space: nowrap;
+    /* 永不拦截点击，彩蛋不干扰页面任何其他交互 */
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.92);
+    /* 从尖角处放大，气泡像是从输入框里长出来的 */
+    transform-origin: var(--tail-x, 50%) 0;
+    /* drop-shadow 会跟随尖角轮廓投影，box-shadow 做不到；只向下投，避免四周出现灰环 */
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.1));
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+}
+
+.home .mail-bubble.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    /* 入场带一点回弹（1.32 略过冲），出场不带 */
+    transition: opacity 0.18s ease, transform 0.3s cubic-bezier(0.34, 1.32, 0.64, 1), visibility 0s;
+}
+
+/* 重复回车时的小回弹：表示「又按了一次」，不重播整个入场 */
+.home .mail-bubble.is-nudge {
+    animation: mail-bubble-nudge 0.32s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+@keyframes mail-bubble-nudge {
+    0% { transform: translateY(0) scale(1); }
+    45% { transform: translateY(0) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* 尖角：旋转 45° 的方块，只留朝上的两条边，与气泡同色同描边；
+   下半部分压在气泡顶边上，正好把那条边「咬」开，不会出现双线 */
+.home .mail-bubble::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: var(--tail-x, 50%);
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    border-top: 1px solid #d2d2d7;
+    border-left: 1px solid #d2d2d7;
+    border-radius: 3px 0 0 0;
+    background: #ffffff;
+    transform: rotate(45deg);
+}
+
 .home .contact-block .social-links {
     justify-content: center;
     gap: 32px;
-    margin-top: 44px;
+    /* 原为 44px：留出这段空白，彩蛋气泡弹出时不压住下方图标 */
+    margin-top: clamp(56px, 5vw, 72px);
 }
 
 /* 图标只承担识别功能，去掉描边下划线，默认降低存在感 */
@@ -448,6 +558,12 @@
         gap: 24px;
         margin-top: 36px;
     }
+
+    /* 窄屏：气泡离输入框近一点，避免贴到视口底部之外 */
+    .home .mail-bubble {
+        top: calc(100% + 14px);
+        padding: 9px 14px;
+    }
 }
 
 /* ---------- 10. 无障碍：尊重系统减弱动态效果 ---------- */
@@ -469,5 +585,16 @@
     .home .store-btn,
     .home .store-btn-arrow {
         transition: none;
+    }
+
+    /* 减弱动态：气泡只做淡入淡出，去掉位移、缩放与回弹 */
+    .home .mail-bubble,
+    .home .mail-bubble.is-visible {
+        transform: none;
+        transition: opacity 0.18s ease, visibility 0s linear 0.18s;
+    }
+
+    .home .mail-bubble.is-nudge {
+        animation: none;
     }
 }
