@@ -34,16 +34,16 @@ body.page > .footer {
 
 /* 有顶栏时给内容区留出固定导航的高度，避免首行被遮住 */
 body.page.has-chrome > main {
-    padding-top: calc(var(--nav-height, 42px) + clamp(48px, 7vw, 88px));
+    padding-top: calc(var(--nav-height, 42px) + var(--nav-drop, 0px) + clamp(48px, 7vw, 88px));
 }
 
-/* 子页面没有首屏视频衬托，顶栏文字直接使用深色，避免白字落在白底上 */
+/* 胶囊为深色玻璃：子页面同样使用白字（移动端展开的白底菜单由 !important 覆盖为深色） */
 body.page.has-chrome .navbar .nav-list a {
-    color: #1d1d1f;
+    color: #FFFFFF;
 }
 
 body.page.has-chrome .hamburger .bar {
-    background-color: #1d1d1f;
+    background-color: #FFFFFF;
 }
 
 /* ---------- 2. 页头（与首页 .sec-head 同构） ---------- */

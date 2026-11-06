@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('组件加载失败，请检查 header.html/footer.html 是否存在', error);
+    } finally {
+        // 顶栏/底栏注入完毕（失败也算一次），首页据此补写导航文案
+        document.dispatchEvent(new CustomEvent('chrome:ready'));
     }
 });
 
@@ -79,7 +82,7 @@ function bindHeader() {
 
                 // 找到当前可见的那一版首页（中国版 / 国际版）
                 let activeHome = null;
-                document.querySelectorAll('#china-home, #global-home').forEach(home => {
+                document.querySelectorAll('#home-main, #china-home, #global-home').forEach(home => {
                     const style = getComputedStyle(home);
                     if (style.display !== 'none' && style.visibility !== 'hidden') {
                         activeHome = home;

@@ -1,31 +1,36 @@
 <!-- ==================== 固定顶部导航栏 ==================== -->
+<!-- 整条模糊背景已移除：顶栏本体透明，玻璃效果只存在于右侧的 .nav-pill 胶囊内 -->
 <header class="navbar" role="banner">
     <div class="nav-container">
         <!-- 左侧 Logo（已改为可点击跳转的链接） -->
         <a href="https://hoooooot-gem.github.io" class="logo" aria-label="返回首页">
-            <img src="/images/favicon.svg" alt="Hoooooot" width="28" height="28">
+            <img src="/images/logo-icon.png" alt="Hoooooot" width="42" height="42">
         </a>
-        <nav class="nav-menu" role="navigation" aria-label="主导航">
-            <ul class="nav-list">
-                <li><a href="/store">商店</a></li>
-                <li><a href="https://hoooooot-gem.github.io/dev">开发</a></li>
-                <!-- 课程入口暂时隐藏（2026-10）：恢复时取消下面这行注释即可 -->
-                <!-- <li><a href="/proj/2026/HSC/">课程</a></li> -->
-                <!-- 实用 / 关于 / 画廊 / 历程 暂时隐藏（2026-10）：恢复时取消整段注释 -->
-                <!--
-                <li><a href="/#tools">实用</a></li>
-                <li><a href="/#about">关于</a></li>
-                <li><a href="/#portfolio">画廊</a></li>
-                <li><a href="/#timeline">历程</a></li>
-                -->
-                <li><a href="/#contact">联系</a></li>
-            </ul>
-        </nav>
-        
-        <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
+
+        <!-- 玻璃胶囊：承载全部导航项；移动端收成一枚圆形按钮 -->
+        <div class="nav-pill">
+            <nav class="nav-menu" role="navigation" aria-label="主导航">
+                <ul class="nav-list">
+                    <li><a href="/store" data-i18n="nav.store">商店</a></li>
+                    <li><a href="https://hoooooot-gem.github.io/dev" data-i18n="nav.dev">开发</a></li>
+                    <!-- 课程入口暂时隐藏（2026-10）：恢复时取消下面这行注释即可 -->
+                    <!-- <li><a href="/proj/2026/HSC/">课程</a></li> -->
+                    <!-- 实用 / 关于 / 画廊 / 历程 暂时隐藏（2026-10）：恢复时取消整段注释 -->
+                    <!--
+                    <li><a href="/#tools">实用</a></li>
+                    <li><a href="/#about">关于</a></li>
+                    <li><a href="/#portfolio">画廊</a></li>
+                    <li><a href="/#timeline">历程</a></li>
+                    -->
+                    <li><a href="/#contact" data-i18n="nav.contact">联系</a></li>
+                </ul>
+            </nav>
+
+            <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
     </div>
 </header>

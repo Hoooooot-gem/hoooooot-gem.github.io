@@ -598,3 +598,43 @@
         animation: none;
     }
 }
+
+/* ============================================================
+   11. 多语言排版适配（仅首页，按 <html lang> 生效）
+   ------------------------------------------------------------
+   · CustomFont 只含拉丁字形，CJK 由系统字体接管；日文、韩文
+     单独给出字体栈，避免日文汉字按中文字形（如「直」「骨」）渲染。
+   · 中日韩文字不适合负字距与 1.07 行高，单独放宽。
+   · 韩文按词断行，避免音节被拆到两行。
+   ============================================================ */
+html:lang(ja) {
+    --font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Hiragino Sans',
+        'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+}
+
+html:lang(ko) {
+    --font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+        'Malgun Gothic', 'Noto Sans KR', sans-serif;
+}
+
+.home:lang(ja) .sec-title,
+.home:lang(ko) .sec-title {
+    line-height: 1.2;
+    letter-spacing: 0.005em;
+}
+
+.home:lang(ja) .sec-eyebrow,
+.home:lang(ko) .sec-eyebrow {
+    letter-spacing: 0.1em;
+}
+
+.home:lang(ja) .about-statement,
+.home:lang(ko) .about-statement {
+    line-height: 1.35;
+    letter-spacing: 0;
+}
+
+.home:lang(ko) {
+    word-break: keep-all;
+}
+

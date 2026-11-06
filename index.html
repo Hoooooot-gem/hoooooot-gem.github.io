@@ -8,7 +8,7 @@
     
     <!-- ==================== SEO 与社交分享 ==================== -->
     <title>Hoooooot's</title>
-    <meta name="description" content="I'm Hoooooot. Student Filmmaker & Creator，通过影像与设计讲述故事。">
+    <meta name="description" content="我是 Hoooooot。Student Filmmaker & Creator，通过影像与设计讲述故事。">
     <!-- Open Graph -->
     <meta property="og:title" content="Hoooooot">
     <meta property="og:description" content="Hoooooot 的个人网站。Student Filmmaker & Creator。">
@@ -26,32 +26,32 @@
     <link rel="stylesheet" href="css/home.css">
     <link rel="manifest" href="/manifest.json">
     <style>
-        body.region-pending #china-home,
-        body.region-pending #global-home {
+        /* 语言判定完成前先隐藏主内容，避免闪现默认语言 */
+        body.region-pending #home-main {
             visibility: hidden;
         }
     </style>
+    <noscript>
+        <style>body.region-pending #home-main { visibility: visible; }</style>
+    </noscript>
 </head>
 <body class="home region-pending">
 
 <!--
-    主页改版说明（Apple 风格极简）
+    多语言说明
     ------------------------------------------------------------------
-    · Hero 区块保持原样，未做任何结构与样式改动。
-    · 原先右下角的胶囊音乐播放器已按需求整体移除：HTML、CSS、JS
-      三段逻辑及音频/封面资源均已删除，页面不再自动播放声音。
-    · 各区块统一为「眉标 + 大标题 + 一句说明 + 内容」的结构，
-      仅使用黑白灰三色，靠留白与字阶建立层次，去掉卡片投影与
-      emoji 图标等装饰元素。
-    · 页面级样式集中在 css/home.css，避免影响复用 style.css 的子页面。
+    · 页面只有一份 DOM，文案通过 data-i18n / data-i18n-html /
+      data-i18n-aria / data-i18n-alt 由 js/i18n.js 在运行时写入。
+    · 语言按访客 IP 国家/地区自动判定，仅首页生效；其他页面不受影响。
+    · HTML 中写的是简体中文，作为无 JS / 判定未完成时的静态兜底。
+    · 结构、样式与原有中英双版完全一致，不再保留两份重复的 <main>。
 -->
 
-<!-- ==================== 页面主内容区（中国版） ==================== -->
-<main id="china-home" style="visibility: hidden;">
-    <!-- 中国用户专属内容  -->
+<!-- ==================== 页面主内容区 ==================== -->
+<main id="home-main">
     
     <!-- 1. Hero 首页区域 -->
-    <section id="hero" class="section hero" aria-label="首页">
+    <section id="hero" class="section hero" aria-label="首页" data-i18n-aria="aria.hero">
         <div class="hero-bg-image">
             <video 
                 src="/images/hero-bg.mp4" 
@@ -61,7 +61,7 @@
                 muted 
                 loop 
                 playsinline>
-                <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy">
+                <img src="/images/hero-bg.webp" alt="Hoooooot 背景图" loading="lazy" data-i18n-alt="alt.hero">
             </video>
         </div>
         
@@ -71,130 +71,130 @@
     </section>
 
     <!-- 2. 关于 -->
-    <section id="about" class="section about" aria-label="关于">
+    <section id="about" class="section about" aria-label="关于" data-i18n-aria="aria.about">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">关于</p>
+                <p class="sec-eyebrow" data-i18n="about.eyebrow">关于</p>
             </header>
             <div class="about-wrap">
-                <h2 class="about-statement">用镜头捕捉真实，<br>用设计传递情绪。</h2>
-                <p class="about-note">持续探索视觉语言与叙事逻辑的结合。</p>
+                <h2 class="about-statement" data-i18n-html="about.statement">用镜头捕捉真实，<br>用设计传递情绪。</h2>
+                <p class="about-note" data-i18n="about.note">持续探索视觉语言与叙事逻辑的结合。</p>
                 <ul class="about-meta">
-                    <li>剪辑</li>
-                    <li>调色</li>
-                    <li>设计</li>
-                    <li>创意</li>
-                    <li>故事</li>
+                    <li data-i18n="about.tag1">剪辑</li>
+                    <li data-i18n="about.tag2">调色</li>
+                    <li data-i18n="about.tag3">设计</li>
+                    <li data-i18n="about.tag4">创意</li>
+                    <li data-i18n="about.tag5">故事</li>
                 </ul>
             </div>
         </div>
     </section>
 
     <!-- 3. 商店 -->
-    <section id="store" class="section store" aria-label="商店">
+    <section id="store" class="section store" aria-label="商店" data-i18n-aria="aria.store">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">商店</p>
-                <h2 class="sec-title">自己做的，也能带走。</h2>
-                <p class="sec-lead">明信片与调色预设，把看过的光留成可以寄出、可以调用的样子。</p>
+                <p class="sec-eyebrow" data-i18n="store.eyebrow">商店</p>
+                <h2 class="sec-title" data-i18n="store.title">自己做的，也能带走。</h2>
+                <p class="sec-lead" data-i18n="store.lead">明信片与调色预设，把看过的光留成可以寄出、可以调用的样子。</p>
             </header>
 
             <ul class="store-items">
                 <li class="store-item">
-                    <span class="store-item-name">Hoooooot LUT Premium</span>
-                    <span class="store-item-desc">23 款基于 Rec.709 的风格化 LUT，照片与视频通用。</span>
+                    <span class="store-item-name" data-i18n="store.name1">Hoooooot LUT Premium</span>
+                    <span class="store-item-desc" data-i18n="store.desc1">23 款基于 Rec.709 的风格化 LUT，照片与视频通用。</span>
                 </li>
                 <li class="store-item">
-                    <span class="store-item-name">2027 明信片</span>
-                    <span class="store-item-desc">15 款典藏套装，从东莞到中国香港，一起放大世界。</span>
+                    <span class="store-item-name" data-i18n="store.name2">2027 明信片</span>
+                    <span class="store-item-desc" data-i18n="store.desc2">15 款典藏套装，从东莞到中国香港，一起放大世界。</span>
                 </li>
                 <li class="store-item">
-                    <span class="store-item-name">豪华套装</span>
-                    <span class="store-item-desc">明信片与 LUT 打包，九五折。</span>
+                    <span class="store-item-name" data-i18n="store.name3">豪华套装</span>
+                    <span class="store-item-desc" data-i18n="store.desc3">明信片与 LUT 打包，九五折。</span>
                 </li>
             </ul>
 
             <div class="store-actions">
-                <a class="store-btn" href="/store">前往商店<span class="store-btn-arrow" aria-hidden="true">›</span></a>
-                <p class="store-note">仅在中国大陆地区发售。</p>
+                <a class="store-btn" href="/store"><span data-i18n="store.cta">前往商店</span><span class="store-btn-arrow" aria-hidden="true">›</span></a>
+                <p class="store-note" data-i18n="store.note">仅在中国大陆地区发售。</p>
             </div>
         </div>
     </section>
 
     <!-- 4. 画廊 -->
-    <section id="portfolio" class="section portfolio is-alt" aria-label="作品集">
+    <section id="portfolio" class="section portfolio is-alt" aria-label="作品集" data-i18n-aria="aria.gallery">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">画廊</p>
-                <h2 class="sec-title">一些看过的画面。</h2>
-                <p class="sec-lead">日常拍摄的片段，持续更新。</p>
+                <p class="sec-eyebrow" data-i18n="gallery.eyebrow">画廊</p>
+                <h2 class="sec-title" data-i18n="gallery.title">一些看过的画面。</h2>
+                <p class="sec-lead" data-i18n="gallery.lead">日常拍摄的片段，持续更新。</p>
             </header>
         </div>
         <!-- 通栏跑马灯：脱离 container 以获得整屏宽度 -->
-        <div class="gallery-marquee" aria-label="作品画廊滚动展示">
+        <div class="gallery-marquee" aria-label="作品画廊滚动展示" data-i18n-aria="aria.marquee">
             <div class="carousel-track" id="gallery-track"></div>
         </div>
     </section>
 
     <!-- 5. 历程 -->
-    <section id="timeline" class="section timeline" aria-label="历程">
+    <section id="timeline" class="section timeline" aria-label="历程" data-i18n-aria="aria.timeline">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">历程</p>
-                <h2 class="sec-title">一步一步走到这里。</h2>
+                <p class="sec-eyebrow" data-i18n="timeline.eyebrow">历程</p>
+                <h2 class="sec-title" data-i18n="timeline.title">一步一步走到这里。</h2>
             </header>
 
             <ul class="tl-list">
                 <li class="tl-row">
                     <span class="tl-year">2026</span>
-                    <p class="tl-desc">独立创作阶段，搭建个人数字空间。</p>
+                    <p class="tl-desc" data-i18n="timeline.desc2026">独立创作阶段，搭建个人数字空间。</p>
                 </li>
                 <li class="tl-row">
                     <span class="tl-year">2025</span>
-                    <p class="tl-desc">深入探索影像制作与设计美学的边界。</p>
+                    <p class="tl-desc" data-i18n="timeline.desc2025">深入探索影像制作与设计美学的边界。</p>
                 </li>
             </ul>
         </div>
     </section>
 
     <!-- 6. 实用工具 -->
-    <section id="tools" class="section tools is-alt" aria-label="实用工具">
+    <section id="tools" class="section tools is-alt" aria-label="实用工具" data-i18n-aria="aria.tools">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">实用</p>
-                <h2 class="sec-title">顺手的小工具。</h2>
-                <p class="sec-lead">都在浏览器里完成，不登录，也不上传任何数据。</p>
+                <p class="sec-eyebrow" data-i18n="tools.eyebrow">实用</p>
+                <h2 class="sec-title" data-i18n="tools.title">顺手的小工具。</h2>
+                <p class="sec-lead" data-i18n="tools.lead">都在浏览器里完成，不登录，也不上传任何数据。</p>
             </header>
 
             <div class="tool-list">
                 <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-row">
                     <span>
-                        <span class="tool-name">打字练习</span>
-                        <span class="tool-desc">短句、段落与长篇三种文本，实时统计速度与准确率。</span>
+                        <span class="tool-name" data-i18n="tools.name1">打字练习</span>
+                        <span class="tool-desc" data-i18n="tools.desc1">短句、段落与长篇三种文本，实时统计速度与准确率。</span>
                     </span>
                     <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
 
                 <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-row">
                     <span>
-                        <span class="tool-name">连接测速</span>
-                        <span class="tool-desc">用 50MB 样本测量你与本站之间的实际带宽和延迟。</span>
+                        <span class="tool-name" data-i18n="tools.name2">连接测速</span>
+                        <span class="tool-desc" data-i18n="tools.desc2">用 50MB 样本测量你与本站之间的实际带宽和延迟。</span>
                     </span>
                     <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
 
                 <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-row">
                     <span>
-                        <span class="tool-name">调色板</span>
-                        <span class="tool-desc">HEX、RGB、HSL、CMYK 互转，支持屏幕取色与一键复制。</span>
+                        <span class="tool-name" data-i18n="tools.name3">调色板</span>
+                        <span class="tool-desc" data-i18n="tools.desc3">HEX、RGB、HSL、CMYK 互转，支持屏幕取色与一键复制。</span>
                     </span>
                     <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
 
                 <a href="https://hoooooot-gem.github.io/tools/2026/LUT/" target="_blank" rel="noopener noreferrer" class="tool-row">
                     <span>
-                        <span class="tool-name">LUT 转换器</span>
-                        <span class="tool-desc">预览 .cube 与 LUT PNG，导出 Resolve、Premiere、Unity 等格式。</span>
+                        <span class="tool-name" data-i18n="tools.name4">LUT 转换器</span>
+                        <span class="tool-desc" data-i18n="tools.desc4">预览 .cube 与 LUT PNG，导出 Resolve、Premiere、Unity 等格式。</span>
                     </span>
                     <span class="tool-arrow" aria-hidden="true">›</span>
                 </a>
@@ -203,12 +203,12 @@
     </section>
 
     <!-- 7. 联系 -->
-    <section id="contact" class="section contact" aria-label="联系">
+    <section id="contact" class="section contact" aria-label="联系" data-i18n-aria="aria.contact">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow">联系</p>
-                <h2 class="sec-title">聊聊你的想法。</h2>
-                <p class="sec-lead">合作、约拍，或只是打个招呼，都欢迎。</p>
+                <p class="sec-eyebrow" data-i18n="contact.eyebrow">联系</p>
+                <h2 class="sec-title" data-i18n="contact.title">聊聊你的想法。</h2>
+                <p class="sec-lead" data-i18n="contact.lead">合作、约拍，或只是打个招呼，都欢迎。</p>
             </header>
 
             <div class="contact-block">
@@ -216,10 +216,11 @@
                 <div class="mail-field">
                     <input
                         class="contact-mail mail-input"
-                        id="contact-mail-cn"
+                        id="contact-mail"
                         type="text"
                         value="shurinkycn@gmail.com"
                         aria-label="邮箱地址，可直接编辑"
+                        data-i18n-aria="contact.mailAria"
                         autocomplete="off"
                         autocapitalize="off"
                         autocorrect="off"
@@ -231,10 +232,10 @@
                 <div class="social-links">
                     <div class="social-item wechat-item">
                         <span class="social-label">
-                            <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy">
+                            <img src="/images/shipinhaosvg.svg" alt="视频号" class="social-img" loading="lazy" data-i18n-alt="alt.wechat">
                         </span>
                         <div class="qr-popup">
-                            <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy">
+                            <img src="/images/WeChatChannelQRCode.png" alt="视频号二维码" loading="lazy" data-i18n-alt="alt.qr">
                         </div>
                     </div>
 
@@ -260,248 +261,16 @@
 
 </main>
 
-<!-- ==================== 页面主内容区（国际版，结构与中文版一一对应） ==================== -->
-<main id="global-home" style="display: none; visibility: hidden;">
-    <!-- 国际首页  -->
-    
-    <!-- 1. Hero 首页区域 -->
-    <section id="hero" class="section hero" aria-label="Home">
-        <div class="hero-bg-image">
-            <video 
-                src="/images/hero-bg.mp4" 
-                poster="/images/hero-bg.webp" 
-                preload="metadata" 
-                autoplay 
-                muted 
-                loop 
-                playsinline>
-                <img src="/images/hero-bg.webp" alt="Hoooooot background" loading="lazy">
-            </video>
-        </div>
-        
-        <div class="hero-content">
-            <h1 class="hero-title">Hoooooot</h1>
-        </div>
-    </section>
-
-    <!-- 2. About -->
-    <section id="about" class="section about" aria-label="About">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">About</p>
-            </header>
-            <div class="about-wrap">
-                <h2 class="about-statement">Stories through images.<br>Emotion through design.</h2>
-                <p class="about-note">Exploring where visual language meets narrative.</p>
-                <ul class="about-meta">
-                    <li>Editing</li>
-                    <li>Color</li>
-                    <li>Design</li>
-                    <li>Ideas</li>
-                    <li>Story</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Store -->
-    <section id="store" class="section store" aria-label="Store">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">Store</p>
-                <h2 class="sec-title">Things I made, out in the world.</h2>
-                <p class="sec-lead">Postcards and color presets — light you can mail, or apply.</p>
-            </header>
-
-            <ul class="store-items">
-                <li class="store-item">
-                    <span class="store-item-name">Hoooooot LUT Premium</span>
-                    <span class="store-item-desc">23 stylised LUTs built on Rec.709, for stills and video.</span>
-                </li>
-                <li class="store-item">
-                    <span class="store-item-name">2027 Postcards</span>
-                    <span class="store-item-desc">Fifteen cards, fifteen cities — enlarging the world.</span>
-                </li>
-                <li class="store-item">
-                    <span class="store-item-name">The Bundle</span>
-                    <span class="store-item-desc">Postcards and LUTs together, five percent off.</span>
-                </li>
-            </ul>
-
-            <div class="store-actions">
-                <a class="store-btn" href="/store">Visit the store<span class="store-btn-arrow" aria-hidden="true">›</span></a>
-                <p class="store-note">Available in mainland China only.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. Gallery -->
-    <section id="portfolio" class="section portfolio is-alt" aria-label="Gallery">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">Gallery</p>
-                <h2 class="sec-title">Frames from the everyday.</h2>
-                <p class="sec-lead">Shot on the move, updated often.</p>
-            </header>
-        </div>
-        <div class="gallery-marquee" aria-label="Scrolling gallery">
-            <div class="carousel-track" id="gallery-track"></div>
-        </div>
-    </section>
-
-    <!-- 5. Timeline -->
-    <section id="timeline" class="section timeline" aria-label="Timeline">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">Timeline</p>
-                <h2 class="sec-title">One step at a time.</h2>
-            </header>
-
-            <ul class="tl-list">
-                <li class="tl-row">
-                    <span class="tl-year">2026</span>
-                    <p class="tl-desc">Independent practice — building a personal digital space.</p>
-                </li>
-                <li class="tl-row">
-                    <span class="tl-year">2025</span>
-                    <p class="tl-desc">Exploring the edges of filmmaking and design.</p>
-                </li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- 6. Tools -->
-    <section id="tools" class="section tools is-alt" aria-label="Tools">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">Tools</p>
-                <h2 class="sec-title">Small tools, close at hand.</h2>
-                <p class="sec-lead">Everything runs in your browser — no account, no uploads.</p>
-            </header>
-
-            <div class="tool-list">
-                <a href="https://hoooooot-gem.github.io/proj/2026/TP" target="_blank" rel="noopener noreferrer" class="tool-row">
-                    <span>
-                        <span class="tool-name">Typing Practice</span>
-                        <span class="tool-desc">Three text lengths, with live speed and accuracy.</span>
-                    </span>
-                    <span class="tool-arrow" aria-hidden="true">›</span>
-                </a>
-
-                <a href="https://hoooooot-gem.github.io/ConnectionTest" target="_blank" rel="noopener noreferrer" class="tool-row">
-                    <span>
-                        <span class="tool-name">Connection Test</span>
-                        <span class="tool-desc">Measures real bandwidth and latency with a 50 MB sample.</span>
-                    </span>
-                    <span class="tool-arrow" aria-hidden="true">›</span>
-                </a>
-
-                <a href="https://hoooooot-gem.github.io/tools/2026/Palette" target="_blank" rel="noopener noreferrer" class="tool-row">
-                    <span>
-                        <span class="tool-name">Color Palette</span>
-                        <span class="tool-desc">HEX, RGB, HSL and CMYK, with an eye dropper and copy.</span>
-                    </span>
-                    <span class="tool-arrow" aria-hidden="true">›</span>
-                </a>
-
-                <a href="https://hoooooot-gem.github.io/tools/2026/LUT/" target="_blank" rel="noopener noreferrer" class="tool-row">
-                    <span>
-                        <span class="tool-name">LUT Converter</span>
-                        <span class="tool-desc">Preview .cube and LUT PNGs, then export for Resolve, Premiere, Unity and more.</span>
-                    </span>
-                    <span class="tool-arrow" aria-hidden="true">›</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. Contact -->
-    <section id="contact" class="section contact" aria-label="Contact">
-        <div class="container">
-            <header class="sec-head">
-                <p class="sec-eyebrow">Contact</p>
-                <h2 class="sec-title">Let's talk.</h2>
-                <p class="sec-lead">Collaboration, commissions, or just a hello.</p>
-            </header>
-
-            <div class="contact-block">
-                <!-- 彩蛋入口：外观是纯文本，实际是可编辑输入框（逻辑见 js/easter-egg.js） -->
-                <div class="mail-field">
-                    <input
-                        class="contact-mail mail-input"
-                        id="contact-mail-global"
-                        type="text"
-                        value="shurinkycn@gmail.com"
-                        aria-label="Email address, editable"
-                        autocomplete="off"
-                        autocapitalize="off"
-                        autocorrect="off"
-                        spellcheck="false"
-                        enterkeyhint="send">
-                    <span class="mail-bubble" role="status" aria-live="polite"></span>
-                </div>
-
-                <div class="social-links">
-                    <div class="social-item wechat-item">
-                        <span class="social-label">
-                            <img src="/images/shipinhaosvg.svg" alt="WeChat Channel" class="social-img" loading="lazy">
-                        </span>
-                        <div class="qr-popup">
-                            <img src="/images/WeChatChannelQRCode.png" alt="WeChat Channel QR code" loading="lazy">
-                        </div>
-                    </div>
-
-                    <a href="https://m.youtube.com/channel/UC8tGv8Q6uknTwidi39MQzFQ" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/youtubesvg.svg" alt="YouTube" class="social-img" loading="lazy">
-                    </a>
-
-                    <a href="https://space.bilibili.com/3707026240702873" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/bilibilisvg.svg" alt="Bilibili" class="social-img" loading="lazy">
-                    </a>
-                    
-                    <a href="https://v.douyin.com/DaqvLirlmJU" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/douyinsvg.svg" alt="Douyin" class="social-img" loading="lazy">
-                    </a>
-
-                    <a href="https://xhslink.com/m/2uhLo66EVVN" target="_blank" rel="noopener noreferrer" class="social-link">
-                        <img src="/images/xiaohongshusvg.svg" alt="Xiaohongshu" class="social-img" loading="lazy">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</main>
-
+<!-- 首页多语言：按 IP 地区自动切换文案（简体 / 繁体台湾 / 繁体粤语 / 日语 / 韩语 / 英文） -->
+<script src="js/i18n.js"></script>
 <script>
-    fetch('https://countries.dev/ip')
-        .then(response => response.json())
-        .then(country => {
-            console.log('访客国家代码：', country.countryCode);
-
-            if (country.countryCode === 'CN') {
-                document.getElementById('china-home').style.display = 'block';
-                document.getElementById('china-home').style.visibility = 'visible';
-
-                document.getElementById('global-home').style.display = 'none';
-            } else {
-                document.getElementById('china-home').style.display = 'none';
-
-                document.getElementById('global-home').style.display = 'block';
-                document.getElementById('global-home').style.visibility = 'visible';
-            }
-        })
-        .catch(error => {
-            console.error('IP 地区检测失败：', error);
-
-            document.getElementById('china-home').style.display = 'block';
-            document.getElementById('china-home').style.visibility = 'visible';
-            document.getElementById('global-home').style.display = 'none';
-
+    // 保险丝：若语言脚本因网络原因未执行，3 秒后无论如何先露出页面（简体中文兜底）
+    window.setTimeout(function () {
+        if (document.body.classList.contains('region-pending')) {
             document.body.classList.remove('region-pending');
-        });
+        }
+    }, 3000);
 </script>
-
 <script src="js/script.js"></script>
 <!-- 首页彩蛋：只在首页加载，子页面零影响 -->
 <script src="js/easter-egg.js"></script>
