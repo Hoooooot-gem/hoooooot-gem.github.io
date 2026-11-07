@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    改动意图：
    1. 只服务 index.html。全部规则挂在 body.home 下，与 style.css
-      共存但不外溢，HSC / ConnectionTest / TP 等复用 style.css
+      共存但不外溢，Palette / LUT / TP 等复用 style.css
       的子页面视觉不受影响。
    2. Hero 保持原样。本文件没有任何选择器命中
       #hero / .hero-bg-image / .hero-content / .hero-title，
@@ -96,6 +96,18 @@
 
 .home .tool-row:nth-child(even) {
     padding-left: clamp(24px, 4vw, 48px);
+}
+
+/* 条目数为奇数时，最后一项独占整行：
+   否则右半行会空着，且底部细线断在中间，看起来像少了一块。
+   描述限制行宽，避免全宽后一行拉到 1000px 读不下去。 */
+.home .tool-row:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    padding-right: 0;
+}
+
+.home .tool-row:last-child:nth-child(odd) .tool-desc {
+    max-width: 40em;
 }
 
 .home .tool-name {
