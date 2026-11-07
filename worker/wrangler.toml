@@ -1,0 +1,16 @@
+name = "hoooooot-bili-proxy"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# 免费计划即可，无需任何付费项
+# 部署：npx wrangler deploy
+# 本地调试：npx wrangler dev
+
+[vars]
+# 要抓取的 UP 主 UID，其它 mid 一律拒绝
+BILI_MID = "3707026240702873"
+# 允许跨域调用本接口的站点，逗号分隔；本地调试端口已在内置默认值里
+ALLOWED_ORIGINS = "https://hoooooot-gem.github.io"
+
+[observability]
+enabled = true

@@ -1,9 +1,10 @@
 /* ============================================================
    js/script.js
-   功能模块：导航高亮、滚动入场动画、二维码弹层、画廊跑马灯、
+   功能模块：导航高亮、滚动入场动画、二维码弹层、
              滚动毛玻璃控制、Hero 视频兜底播放
    说明：音乐播放器模块已移除（2026-10），不再创建 Audio 实例，
          也不再尝试自动播放音频。
+         首页画廊跑马灯已移除（2026-11），作品集改由 js/portfolio.js 渲染。
    ============================================================ */
 
 'use strict';
@@ -68,26 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-// ==================== 5. 画廊无限跑马灯 ====================
-(function() {
-    const galleryImages = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg'];
-    if (galleryImages.length === 0) return;
-    const tracks = document.querySelectorAll('#gallery-track');
-    if (tracks.length === 0) return;
-    tracks.forEach(track => {
-        galleryImages.forEach(url => {
-            const div = document.createElement('div');
-            div.className = 'carousel-item';
-            div.innerHTML = `<img src="/images/homegallery/${url}" alt="gallery" loading="lazy">`;
-            track.appendChild(div);
-        });
-        const firstGroupItems = [...track.children];
-        firstGroupItems.forEach(item => {
-            track.appendChild(item.cloneNode(true));
-        });
-        track.style.animationDuration = (galleryImages.length * 4) + 's';
-    });
-})();
+// ==================== 5. 作品集跑马灯（已移除） ====================
+// 2026-11：首页作品集改为 B 站视频卡片网格，逻辑迁到 js/portfolio.js。
+// 原 #gallery-track 无限轮播代码与 images/homegallery 一并删除。
 
     // ==================== 6. 滚动控制顶栏浮现 ====================
     // 改动说明：原「播放栏同步浮现」逻辑随音乐播放器一并删除，

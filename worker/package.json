@@ -1,0 +1,15 @@
+{
+  "name": "hoooooot-bili-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bilibili 投稿列表代理，供 hoooooot-gem.github.io 首页作品集板块使用",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

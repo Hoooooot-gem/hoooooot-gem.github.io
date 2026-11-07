@@ -121,18 +121,60 @@
         </div>
     </section>
 
-    <!-- 4. 画廊 -->
+    <!-- 4. 作品集：B 站最新投稿（数据由 js/portfolio.js 拉取渲染） -->
     <section id="portfolio" class="section portfolio is-alt" aria-label="作品集" data-i18n-aria="aria.gallery">
         <div class="container">
             <header class="sec-head">
-                <p class="sec-eyebrow" data-i18n="gallery.eyebrow">画廊</p>
-                <h2 class="sec-title" data-i18n="gallery.title">一些看过的画面。</h2>
-                <p class="sec-lead" data-i18n="gallery.lead">日常拍摄的片段，持续更新。</p>
+                <p class="sec-eyebrow" data-i18n="gallery.eyebrow">作品集</p>
+                <h2 class="sec-title" data-i18n="gallery.title">最新的几支片子。</h2>
+                <p class="sec-lead" data-i18n="gallery.lead">同步自 B 站，每次打开都是最新的。</p>
             </header>
-        </div>
-        <!-- 通栏跑马灯：脱离 container 以获得整屏宽度 -->
-        <div class="gallery-marquee" aria-label="作品画廊滚动展示" data-i18n-aria="aria.marquee">
-            <div class="carousel-track" id="gallery-track"></div>
+
+            <!-- 骨架先占位，保证数据回来前后高度不跳；加载完成由脚本整体替换 -->
+            <ul class="video-grid" id="video-grid" aria-busy="true"
+                aria-label="B 站最新视频" data-i18n-aria="aria.videoGrid">
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+                <li class="video-card is-skeleton" aria-hidden="true">
+                    <span class="video-thumb"></span>
+                    <span class="sk-line"></span>
+                    <span class="sk-line is-short"></span>
+                </li>
+            </ul>
+
+            <!-- 无数据 / 抓取失败时的降级：一句提示 + 通往 B 站空间的出口 -->
+            <div class="video-empty" id="video-empty" hidden>
+                <p class="video-empty-text" data-i18n="gallery.empty">新片还在路上。</p>
+                <a class="video-empty-link"
+                   href="https://space.bilibili.com/3707026240702873"
+                   target="_blank" rel="noopener noreferrer">
+                    <span data-i18n="gallery.emptyCta">去 B 站看</span>
+                    <span class="video-empty-arrow" aria-hidden="true">›</span>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -272,6 +314,8 @@
     }, 3000);
 </script>
 <script src="js/script.js"></script>
+<!-- 作品集：拉取 B 站最新投稿，失败逐级降级到本地快照 / 空态 -->
+<script src="js/portfolio.js"></script>
 <!-- 首页彩蛋：只在首页加载，子页面零影响 -->
 <script src="js/easter-egg.js"></script>
 

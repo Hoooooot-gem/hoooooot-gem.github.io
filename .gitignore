@@ -7,3 +7,12 @@
 
 # 临时文件
 *.log
+
+# Worker 依赖与本地凭证：node_modules 有 149MB，绝不能进版本库
+node_modules/
+worker/.wrangler/
+worker/.dev.vars
+worker/.env
+
+# WorkBuddy 本地工作记录
+.workbuddy/

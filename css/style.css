@@ -886,56 +886,10 @@ p {
 
 /* ==================== 17. 预留未来扩展接口 ==================== */
 
-/* ==================== 画廊跑马灯 ==================== */
-
-.gallery-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding: 20px 0;
-}
-
-.carousel-track {
-    display: flex;
-    flex-wrap: nowrap;
-    width: max-content;
-    animation-name: scroll;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-@keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
-.carousel-item {
-    flex-shrink: 0;
-    width: 320px;
-    height: 210px;
-    margin-right: 24px;
-    border-radius: 12px;
-    overflow: hidden;
-    background-color: var(--border-color);
-}
-
-.carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-@media (max-width: 767px) {
-    .gallery-wrapper {
-        padding-left: 12px;
-    }
-    .carousel-item {
-        width: 230px;
-        height: 150px;
-        margin-right: 16px;
-    }
-}
+/* ==================== 画廊跑马灯样式已移除（2026-11） ====================
+   原首页 #portfolio 是图片轮播，现已替换为 B 站作品集视频网格，
+   .gallery-wrapper / .carousel-track / .carousel-item 全部删除。
+   若将来需要恢复轮播，从 git 历史取回本段即可。 */
 
 /* ==================== 音乐播放器样式已移除（2026-10） ====================
    主页不再提供音频播放，原胶囊播放栏相关规则整体删除；

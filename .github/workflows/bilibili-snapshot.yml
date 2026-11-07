@@ -1,0 +1,58 @@
+name: Bilibili Snapshot
+
+# 抓取最新投稿，写进 data/videos.json —— 首页作品集板块的唯一数据源。
+#
+# 为什么每小时一次：需求上「一天内更新即可」，每小时已经远超要求；
+# B 站对高频请求会升级风控，一天 24 次是稳妥区间，再密容易整段 412。
+# GitHub 的 cron 有 5–20 分钟调度延迟，实际更新间隔约 1–1.5 小时。
+#
+# 抓取失败时脚本会保留上一次的快照不覆盖，所以页面不会因为一次风控就变空。
+
+on:
+  schedule:
+    # UTC 时间，每小时第 7 分钟，避开整点的任务高峰
+    - cron: '7 * * * *'
+  workflow_dispatch:
+    inputs:
+      mid:
+        description: '临时覆盖 UP 主 UID（留空则用脚本默认值）'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bilibili-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 配置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 抓取最新投稿
+        env:
+          BILI_MID: ${{ inputs.mid }}
+        run: node scripts/fetch-bilibili.mjs
+
+      - name: 有变化才提交
+        run: |
+          if [ -z "$(git status --porcelain data/videos.json)" ]; then
+            echo "快照无变化，跳过提交"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/videos.json
+          git commit -m "chore(snapshot): 更新 B 站作品集快照"
+          git push
