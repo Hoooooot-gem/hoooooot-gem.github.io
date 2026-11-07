@@ -2,6 +2,67 @@
   "ok": true,
   "mid": "3707026240702873",
   "source": "snapshot",
-  "updatedAt": "2026-11-07T04:59:56.284Z",
-  "videos": []
+  "updatedAt": "2026-11-07T05:45:28.928Z",
+  "videos": [
+    {
+      "bvid": "BV1aony6vEo1",
+      "title": "【4K60杜比视界】🦅在天空翱翔是什么感觉？",
+      "cover": "https://i1.hdslb.com/bfs/archive/803f5abe834a74e244d88513cefed3483166d993.jpg",
+      "coverThumb": "https://i1.hdslb.com/bfs/archive/803f5abe834a74e244d88513cefed3483166d993.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1aony6vEo1",
+      "pubdate": 1792655166,
+      "duration": "02:39",
+      "views": 70
+    },
+    {
+      "bvid": "BV18tp764EdS",
+      "title": "📍A Day in Huiyang｜探店｜闲逛",
+      "cover": "https://i2.hdslb.com/bfs/archive/b6be48616518633495cb2c2802b83c41aa3735f0.jpg",
+      "coverThumb": "https://i2.hdslb.com/bfs/archive/b6be48616518633495cb2c2802b83c41aa3735f0.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV18tp764EdS",
+      "pubdate": 1791693000,
+      "duration": "10:26",
+      "views": 60
+    },
+    {
+      "bvid": "BV1ciHx6cENf",
+      "title": "🌳自然赠予你 树冠 微风 肩头的暴雨",
+      "cover": "https://i2.hdslb.com/bfs/archive/aecda93c9cccd6684cdc90c1101ddb7c8f47463f.jpg",
+      "coverThumb": "https://i2.hdslb.com/bfs/archive/aecda93c9cccd6684cdc90c1101ddb7c8f47463f.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1ciHx6cENf",
+      "pubdate": 1791206236,
+      "duration": "00:34",
+      "views": 156
+    },
+    {
+      "bvid": "BV1xJhf6pEwj",
+      "title": "【4K 杜比视界】生活本身不就是电影吗？",
+      "cover": "https://i2.hdslb.com/bfs/archive/97ede5640ae1289c82250892fefd93128e516935.jpg",
+      "coverThumb": "https://i2.hdslb.com/bfs/archive/97ede5640ae1289c82250892fefd93128e516935.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1xJhf6pEwj",
+      "pubdate": 1790182545,
+      "duration": "02:36",
+      "views": 48
+    },
+    {
+      "bvid": "BV1dz8r6QEvg",
+      "title": "【杜比视界】在香港，我竟然拍到了这些……",
+      "cover": "https://i0.hdslb.com/bfs/archive/539000471704c17f55b5fbe2330690f7fce66eb3.jpg",
+      "coverThumb": "https://i0.hdslb.com/bfs/archive/539000471704c17f55b5fbe2330690f7fce66eb3.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1dz8r6QEvg",
+      "pubdate": 1787400000,
+      "duration": "02:08",
+      "views": 207
+    },
+    {
+      "bvid": "BV1Etb96RE3p",
+      "title": "【杜比视界】毕业旅行，我选择了……",
+      "cover": "https://i0.hdslb.com/bfs/archive/c2c60376221bc69c7b4eec6f0647c891f3c19afc.jpg",
+      "coverThumb": "https://i0.hdslb.com/bfs/archive/c2c60376221bc69c7b4eec6f0647c891f3c19afc.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1Etb96RE3p",
+      "pubdate": 1787146694,
+      "duration": "27:43",
+      "views": 188
+    }
+  ]
 }
