@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0f0d">
+<title>【任殊啸】军魂筑梦 · 青春报国</title>
+<meta name="description" content="一支军号，三代人的回答——国防历史、军事科技、国家安全互动作品。">
+<style>
+/* ============================================================
+   军魂筑梦 · 青春报国  |  单页交互动画
+   纯原生实现，无外部依赖
+   ============================================================ */
+
+:root {
+  --ink: #0b0e0c;
+  --ink-2: #111613;
+  --paper: #e9e4d8;
+  --paper-70: rgba(233, 228, 216, 0.72);
+  --paper-45: rgba(233, 228, 216, 0.45);
+  --paper-30: rgba(233, 228, 216, 0.3);
+  --line: rgba(233, 228, 216, 0.13);
+  --line-2: rgba(233, 228, 216, 0.22);
+  --red: #c0503c;
+  --red-dim: rgba(192, 80, 60, 0.16);
+  --serif: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC", "SimSun", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --pad: clamp(22px, 6vw, 44px);
+  --ease: cubic-bezier(0.22, 0.68, 0.24, 1);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--red); color: #fff; }
+
+img, svg, canvas { display: block; max-width: 100%; }
+
+[hidden] { display: none !important; }
+
+button, input { font: inherit; color: inherit; }
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- 顶部进度与导航 ---------- */
+
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: transparent;
+  z-index: 60;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--red);
+  transform-origin: left center;
+}
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px var(--pad);
+  background: rgba(11, 14, 12, 0.62);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-bottom: 1px solid rgba(233, 228, 216, 0.06);
+  transform: translateY(-100%);
+  transition: transform 0.5s var(--ease);
+}
+.topbar.is-on { transform: none; }
+
+.brand {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--paper-70);
+}
+.brand-dot { margin: 0 0.35em; color: var(--red); }
+
+.sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--paper-45);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+.sound:hover { border-color: var(--line-2); color: var(--paper-70); }
+.sound:active { transform: scale(0.97); }
+
+.sound-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; }
+.sound-bars i {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background: currentColor;
+  transition: height 0.3s var(--ease);
+}
+.sound[aria-pressed="true"] .sound-bars i:nth-child(1) { height: 4px; }
+.sound[aria-pressed="true"] .sound-bars i:nth-child(2) { height: 9px; }
+.sound[aria-pressed="true"] .sound-bars i:nth-child(3) { height: 6px; }
+.sound[aria-pressed="true"] .sound-bars i:nth-child(4) { height: 10px; }
+
+.dots {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 45;
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+.dots a {
+  position: relative;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--paper-30);
+  transition: background 0.3s, transform 0.3s;
+}
+.dots a::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--paper-45);
+  opacity: 0;
+  transition: opacity 0.25s;
+  white-space: nowrap;
+}
+.dots a:hover::after { opacity: 1; }
+.dots a.is-on { background: var(--red); transform: scale(1.5); }
+
+@media (min-width: 1100px) {
+  .dots { display: flex; }
+}
+
+/* ---------- 版面骨架 ---------- */
+
+main {
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+.act {
+  padding: 92px var(--pad) 96px;
+  position: relative;
+}
+
+.act-head { margin-bottom: 42px; }
+
+.act-no {
+  margin: 0 0 18px;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.act-no::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.6;
+}
+
+h2 {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 6.4vw, 1.95rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+
+.act-lead {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--paper-70);
+  font-size: 14.5px;
+  line-height: 1.9;
+}
+
+/* ---------- 序 ---------- */
+
+.act--hero {
+  min-height: 100svh;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-inner { width: 100%; }
+
+.eyebrow {
+  margin: 0 0 clamp(28px, 6vh, 52px);
+  font-size: 10.5px;
+  letter-spacing: 0.4em;
+  color: var(--paper-45);
+  text-indent: 0.4em;
+}
+
+.hero-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 13vw, 3.6rem);
+  line-height: 1.16;
+  letter-spacing: 0.1em;
+  text-indent: 0.1em;
+}
+.hero-title span { display: block; }
+.hero-title-sub {
+  color: var(--paper);
+  opacity: 0.9;
+}
+
+.hero-lead {
+  margin: clamp(20px, 4vh, 30px) 0 0;
+  color: var(--paper-45);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+}
+
+.wave-wrap {
+  width: 100%;
+  height: 74px;
+  margin: clamp(24px, 5vh, 44px) 0 clamp(20px, 4vh, 34px);
+  opacity: 0.9;
+}
+#wave { width: 100%; height: 100%; }
+
+.horn {
+  position: relative;
+  width: 124px; height: 124px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--paper);
+  font-size: 12.5px;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.35s, background 0.35s, transform 0.12s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.horn:hover { border-color: rgba(233, 228, 216, 0.5); background: rgba(233, 228, 216, 0.03); }
+.horn:active { transform: scale(0.96); }
+.horn:focus-visible { outline: 1px solid var(--red); outline-offset: 6px; }
+
+.horn-ring {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--red);
+  opacity: 0;
+  pointer-events: none;
+}
+.horn.is-blowing .horn-ring {
+  animation: ring 2.4s var(--ease) forwards;
+}
+@keyframes ring {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.horn-text { display: block; }
+
+.hero-hint {
+  margin: 26px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(233, 228, 216, 0.28);
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px; height: 34px;
+  background: var(--line);
+  overflow: hidden;
+}
+.scroll-cue span {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 50%;
+  background: var(--paper-45);
+  animation: cue 2.4s var(--ease) infinite;
+}
+@keyframes cue {
+  0%   { transform: translateY(-100%); }
+  60%  { transform: translateY(100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* ---------- 时间轴 ---------- */
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.tl-item {
+  position: relative;
+  padding: 0 0 38px 30px;
+  margin-left: 3px;
+  border-left: 1px solid var(--line);
+}
+.tl-item:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -1px; top: 0;
+  width: 1px; height: 100%;
+  background: var(--red);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1s var(--ease);
+  opacity: 0.32;
+}
+.tl-item.in::before { transform: scaleY(1); }
+
+.tl-dot {
+  position: absolute;
+  left: -5px; top: 7px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid var(--paper-30);
+  transition: border-color 0.6s 0.2s, background 0.6s 0.2s;
+}
+.tl-item.in .tl-dot { border-color: var(--red); background: var(--red); }
+
+.tl-year {
+  display: block;
+  font-family: var(--serif);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--paper-45);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 4px;
+}
+
+.tl-item h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 1.06rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+}
+
+.tl-item p {
+  margin: 0;
+  color: var(--paper-70);
+  font-size: 14px;
+  line-height: 1.88;
+}
+
+/* ---------- 装备 ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+
+.tabs {
+  display: flex;
+  gap: 26px;
+  flex: 1;
+}
+.tab {
+  position: relative;
+  padding: 10px 0 12px;
+  border: 0;
+  background: none;
+  color: var(--paper-45);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: var(--red);
+  transform: scaleX(0);
+  transition: transform 0.35s var(--ease);
+}
+.tab:hover { color: var(--paper-70); }
+.tab.is-active { color: var(--paper); }
+.tab.is-active::after { transform: scaleX(1); }
+
+.stage { position: relative; padding-top: 18px; }
+
+.schematic {
+  display: none;
+  margin: 0;
+  animation: fade 0.5s var(--ease);
+}
+.schematic.is-active { display: block; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.schematic svg { width: 100%; height: auto; overflow: visible; }
+
+.pt {
+  fill: rgba(233, 228, 216, 0.055);
+  stroke: rgba(233, 228, 216, 0.5);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  transition: transform 0.55s var(--ease), stroke 0.4s, fill 0.4s;
+}
+.pt--orbit {
+  fill: none;
+  stroke: rgba(233, 228, 216, 0.26);
+  stroke-dasharray: 2 4;
+}
+.pt--earth {
+  fill: rgba(233, 228, 216, 0.05);
+  stroke: rgba(233, 228, 216, 0.3);
+}
+.pt--ground {
+  fill: rgba(192, 80, 60, 0.65);
+  stroke: rgba(192, 80, 60, 0.9);
+}
+.pt--hangar {
+  fill: none;
+  stroke: rgba(233, 228, 216, 0.3);
+  stroke-dasharray: 3 4;
+}
+.sat {
+  fill: var(--paper-45);
+  transition: transform 0.55s var(--ease);
+}
+
+.callout { opacity: 0; transition: opacity 0.4s var(--ease); }
+.callout line {
+  stroke: rgba(233, 228, 216, 0.32);
+  stroke-width: 0.7;
+  stroke-dasharray: 2 3;
+}
+.callout text {
+  fill: var(--paper-70);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+}
+
+.is-cut .callout { opacity: 1; }
+.is-cut .callout[data-c="1"] { transition-delay: 0.06s; }
+.is-cut .callout[data-c="2"] { transition-delay: 0.14s; }
+.is-cut .callout[data-c="3"] { transition-delay: 0.22s; }
+.is-cut .callout[data-c="4"] { transition-delay: 0.3s; }
+
+.is-cut .pt { stroke: rgba(233, 228, 216, 0.62); }
+
+#j20.is-cut .pt--wing   { fill: rgba(233, 228, 216, 0.1); }
+
+#carrier.is-cut .pt--deck   { transform: translate(0, -12px); }
+#carrier.is-cut .pt--island { transform: translate(0, -16px); }
+#carrier.is-cut .pt--ramp   { transform: translate(-10px, -6px); }
+#carrier.is-cut .pt--ground {
+  fill: rgba(192, 80, 60, 0.65);
+  stroke: rgba(192, 80, 60, 0.9);
+}
+.pt--hangar { stroke-dasharray: 3 4; }
+
+#beidou.is-cut .sat        { transform: translateY(-5px); }
+#beidou.is-cut .pt--earth  { transform: translateY(6px); }
+
+.cut {
+  flex: none;
+  margin-bottom: -1px;
+  padding: 5px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--paper-45);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background 0.25s, transform 0.12s var(--ease);
+}
+.cut:hover { color: var(--paper); border-color: rgba(233, 228, 216, 0.4); }
+.cut:active { transform: scale(0.96); }
+.cut[aria-pressed="true"] {
+  color: var(--red);
+  border-color: rgba(192, 80, 60, 0.5);
+  background: var(--red-dim);
+}
+
+figcaption { margin-top: 22px; }
+
+.spec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.spec span {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--paper-45);
+}
+
+.cap {
+  margin: 0;
+  color: var(--paper-70);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.note {
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.note p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: rgba(233, 228, 216, 0.32);
+}
+
+/* ---------- 隐患地图 ---------- */
+
+.mapbox { position: relative; }
+
+.map {
+  width: 100%;
+  height: auto;
+  background: rgba(233, 228, 216, 0.016);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.grid path { stroke: rgba(233, 228, 216, 0.045); stroke-width: 0.5; fill: none; }
+.roads path { stroke: rgba(233, 228, 216, 0.035); stroke-width: 14; stroke-linecap: square; fill: none; }
+.blocks rect {
+  fill: rgba(233, 228, 216, 0.04);
+  stroke: rgba(233, 228, 216, 0.24);
+  stroke-width: 0.8;
+}
+.blocks text {
+  fill: rgba(233, 228, 216, 0.44);
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+}
+
+.hot { cursor: pointer; outline: none; }
+.hot-hit { fill: transparent; }
+.hot-ring {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 1;
+  opacity: 0.6;
+  transition: opacity 0.3s, transform 0.3s var(--ease), stroke 0.3s;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.hot-dot {
+  fill: var(--red);
+  transition: fill 0.3s, opacity 0.3s;
+}
+.hot:hover .hot-ring,
+.hot:focus-visible .hot-ring { opacity: 1; transform: scale(1.25); }
+.hot:focus-visible .hot-ring { stroke-width: 2; }
+
+.hot.found .hot-ring { stroke: var(--paper-30); opacity: 0.35; transform: scale(0.9); }
+.hot.found .hot-dot { fill: var(--paper-30); }
+
+.map-status {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  color: var(--paper-45);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.map-status span { color: var(--red); }
+
+.tip {
+  margin: 30px 0 0;
+  font-size: 12.5px;
+  color: var(--paper-45);
+  letter-spacing: 0.04em;
+}
+.tip strong {
+  color: var(--paper);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 接力 ---------- */
+
+.dos {
+  list-style: none;
+  margin: 0 0 46px;
+  padding: 0;
+  display: grid;
+  gap: 26px;
+}
+.dos li {
+  padding-left: 20px;
+  border-left: 1px solid var(--line);
+}
+.dos h3 {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.dos p {
+  margin: 0;
+  font-size: 13.8px;
+  line-height: 1.85;
+  color: var(--paper-70);
+}
+
+.poster-box {
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.field { display: block; }
+.field > span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--paper-45);
+  margin-bottom: 10px;
+}
+.field input {
+  width: 100%;
+  padding: 11px 2px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-2);
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  transition: border-color 0.3s;
+}
+.field input::placeholder { color: rgba(233, 228, 216, 0.22); }
+.field input:focus {
+  outline: none;
+  border-bottom-color: var(--red);
+}
+
+.poster-actions {
+  display: flex;
+  gap: 12px;
+  margin: 22px 0 0;
+}
+
+.btn {
+  padding: 11px 20px;
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--paper-70);
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background 0.25s, transform 0.12s var(--ease);
+}
+.btn:hover { color: var(--paper); border-color: rgba(233, 228, 216, 0.42); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn:disabled:hover { color: var(--paper-70); border-color: var(--line-2); }
+
+.btn--primary {
+  color: var(--ink);
+  background: var(--paper);
+  border-color: var(--paper);
+}
+.btn--primary:hover { color: var(--ink); background: #f3eee2; border-color: #f3eee2; }
+
+.poster-canvas {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 30px auto 0;
+  display: none;
+  border: 1px solid var(--line);
+}
+.poster-canvas.is-on { display: block; animation: fade 0.6s var(--ease); }
+
+/* ---------- 说明 ---------- */
+
+.act--about { padding-bottom: 60px; }
+
+.about-grid { display: grid; gap: 30px; }
+.about-item h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--paper-45);
+  font-weight: 400;
+}
+.about-item p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--paper-70);
+}
+
+.foot {
+  margin-top: 64px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.foot p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  color: var(--paper-45);
+}
+.foot-sub {
+  margin-top: 8px !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.2em !important;
+  color: rgba(233, 228, 216, 0.22) !important;
+  font-family: var(--sans) !important;
+}
+
+/* ---------- 隐患面板 ---------- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sheet[hidden] { display: none; }
+
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 7, 6, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fade 0.3s var(--ease);
+}
+
+.sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: 30px var(--pad) 34px;
+  background: var(--ink-2);
+  border-top: 1px solid var(--line-2);
+  border-radius: 10px 10px 0 0;
+  animation: rise 0.42s var(--ease);
+}
+@keyframes rise {
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.sheet-close {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 44px; height: 44px;
+  border: 0;
+  background: none;
+  color: var(--paper-45);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.sheet-close:hover { color: var(--paper); }
+
+.sheet-kicker {
+  margin: 0 0 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  color: var(--red);
+}
+
+.sheet-panel h3 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 1.28rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  padding-right: 34px;
+}
+
+.sheet-scene {
+  margin: 0 0 22px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--paper-70);
+}
+
+.choices { display: grid; gap: 10px; }
+
+.choice {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--paper);
+  font-size: 13.5px;
+  line-height: 1.7;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.12s var(--ease);
+}
+.choice:hover { border-color: rgba(233, 228, 216, 0.45); background: rgba(233, 228, 216, 0.03); }
+.choice:active { transform: scale(0.995); }
+.choice:focus-visible { outline: 1px solid var(--red); outline-offset: 2px; }
+.choice b {
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--paper-45);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdict-mark {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+.verdict-mark.ok { color: #8dbe86; }
+.verdict-mark.no { color: #d9694f; }
+
+.verdict-text {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--paper-70);
+}
+
+.verdict-law {
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  background: rgba(233, 228, 216, 0.035);
+  border-left: 1px solid var(--red);
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--paper-70);
+}
+
+.btn:focus-visible { outline: 1px solid var(--red); outline-offset: 2px; }
+
+/* ---------- 进场动画 ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+.tl-item:nth-child(2) { transition-delay: 0.03s; }
+
+/* ---------- 桌面 ---------- */
+
+@media (min-width: 780px) {
+  body { font-size: 15.5px; }
+  .act { padding: 110px 48px 112px; }
+  .hero-title { font-size: 3.8rem; }
+  .stage { padding-top: 26px; }
+  .sheet { align-items: center; }
+  .sheet-panel {
+    border-radius: 10px;
+    border: 1px solid var(--line-2);
+    padding: 34px 40px 38px;
+    animation: pop 0.4s var(--ease);
+  }
+  @keyframes pop {
+    from { transform: scale(0.98); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}
+
+/* ---------- 减弱动效 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .tl-item::before { transform: scaleY(1); }
+  .scroll-cue { display: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .topbar { background: var(--ink); backdrop-filter: none; }
+  .sheet-backdrop { backdrop-filter: none; background: rgba(5, 7, 6, 0.94); }
+}
+
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="topbar">
+  <span class="brand">军魂筑梦<span class="brand-dot">·</span>青春报国</span>
+  <button class="sound" id="soundBtn" type="button" aria-pressed="true" aria-label="关闭声音">
+    <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="sound-label" id="soundLabel">声音开</span>
+  </button>
+</header>
+
+<nav class="dots" aria-label="章节导航">
+  <a href="#hero" data-label="序"><span></span></a>
+  <a href="#history" data-label="烽火"><span></span></a>
+  <a href="#tech" data-label="利剑"><span></span></a>
+  <a href="#security" data-label="防线"><span></span></a>
+  <a href="#relay" data-label="接力"><span></span></a>
+</nav>
+
+<main>
+
+  <!-- ============ 序 ============ -->
+  <section class="act act--hero" id="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">26网新2班任殊啸</p>
+      <h1 class="hero-title">
+        <span>一支军号</span>
+        <span class="hero-title-sub">三代英雄</span>
+      </h1>
+      <p class="hero-lead">新闻学概论10月29日作业</p>
+
+      <div class="wave-wrap" aria-hidden="true">
+        <canvas id="wave" width="640" height="120"></canvas>
+      </div>
+
+      <button class="horn" id="hornBtn" type="button">
+        <span class="horn-ring" aria-hidden="true"></span>
+        <span class="horn-text">轻触，吹响</span>
+      </button>
+
+      <p class="hero-hint">开始前建议开启声音，聆听号角</p>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ 一 · 烽火 ============ -->
+  <section class="act" id="history">
+    <header class="act-head reveal">
+      <p class="act-no">壹 · 烽火</p>
+      <h2>军魂，是在劣势里长出来的</h2>
+      <p class="act-lead">从 1927 年城头的一声枪响，到 1953 年谈判桌上的签字，这支队伍绝大多数时间都在以弱对强。它靠什么赢——这是理解国防的第一问。</p>
+    </header>
+
+    <ol class="timeline" id="timeline">
+      <li class="tl-item reveal">
+        <span class="tl-year">1927</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>南昌城头的枪声</h3>
+        <p>八月一日凌晨，两万余人在南昌起义。此后二十二年，这支队伍从城市转向农村，从几千人走到百万大军。建军节由此而来。</p>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-year">1934—1936</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>长征：一次被迫的远征</h3>
+        <p>湘江一战，中央红军由八万六千余人锐减至三万余人。遵义会议后队伍重新找回方向，翻越十八座大山、渡过二十四条大河，走完二万五千里。</p>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-year">1937—1945</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>抗战：以简陋武器对现代化装备</h3>
+        <p>平型关、百团大战，敌后根据地。没有制空权，没有重炮，靠的是把战线铺进敌后的纵深，和把群众变成防线。</p>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-year">1946—1949</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>三大战役，一百四十二天</h3>
+        <p>辽沈、淮海、平津，一百四十二天歼灭国民党军一百五十四万余人。淮海战役的胜利，是人民群众用小车推出来的。</p>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-year">1950—1953</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>抗美援朝：钢少气多</h3>
+        <p>长津湖零下四十度，上甘岭四十三天。以“钢少气多”对“钢多气少”，把对手逼回谈判桌。这一战，打出了此后数十年的和平环境。</p>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-year">1950s—</span>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <h3>从仿制到自研</h3>
+        <p>1964 年第一颗原子弹，1967 年氢弹，1970 年东方红一号，2012 年辽宁舰入列。国防工业体系从零建起，靠的是一代人隐姓埋名的积累。</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ 二 · 利剑 ============ -->
+  <section class="act" id="tech">
+    <header class="act-head reveal">
+      <p class="act-no">贰 · 利剑</p>
+      <h2>装备的代际，是实力的刻度</h2>
+      <p class="act-lead">以下均为公开信息。点击“剖视”，看一件装备由哪几层构成。</p>
+    </header>
+
+    <div class="toolbar reveal">
+      <div class="tabs" role="tablist" aria-label="装备选择">
+        <button class="tab is-active" role="tab" aria-selected="true" data-target="j20" type="button">歼-20</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="carrier" type="button">山东舰</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="beidou" type="button">北斗</button>
+      </div>
+      <button class="cut" id="cutBtn" type="button" aria-pressed="false">
+        <span>剖视</span>
+      </button>
+    </div>
+
+    <div class="stage reveal">
+      <!-- 歼-20 -->
+      <figure class="schematic is-active" id="j20" data-name="歼-20 隐身战斗机">
+        <svg viewBox="0 0 440 220" role="img" aria-label="歼-20 俯视示意图">
+          <g class="parts">
+            <path class="pt pt--body" d="M26 130 L90 119 L200 112 L330 112 L398 118 L404 128 L404 132 L398 142 L330 148 L200 148 L90 141 Z"/>
+            <path class="pt pt--canopy" d="M106 130 C110 121 140 116 166 122 L176 130 L166 138 C140 144 110 139 106 130 Z"/>
+            <path class="pt pt--wing" d="M204 116 L352 56 L368 64 L300 130 Z"/>
+            <path class="pt pt--wing" d="M204 144 L352 204 L368 196 L300 130 Z"/>
+            <path class="pt pt--canard" d="M154 118 L202 90 L210 96 L184 121 Z"/>
+            <path class="pt pt--canard" d="M154 142 L202 170 L210 164 L184 139 Z"/>
+            <path class="pt pt--fin" d="M330 113 L352 93 L364 99 L342 118 Z"/>
+            <path class="pt pt--fin" d="M330 147 L352 167 L364 161 L342 142 Z"/>
+            <path class="pt pt--nozzle" d="M388 117 L406 116 L406 125 L388 126 Z"/>
+            <path class="pt pt--nozzle" d="M388 143 L406 144 L406 135 L388 134 Z"/>
+          </g>
+          <g class="callouts">
+            <g class="callout" data-c="1"><line x1="200" y1="92" x2="186" y2="60"/><text x="182" y="50" text-anchor="middle">可动鸭翼</text></g>
+            <g class="callout" data-c="2"><line x1="296" y1="80" x2="296" y2="48"/><text x="296" y="40" text-anchor="middle">翼身融合体</text></g>
+            <g class="callout" data-c="3"><line x1="352" y1="100" x2="384" y2="74"/><text x="390" y="66">全动垂尾</text></g>
+            <g class="callout" data-c="4"><line x1="400" y1="136" x2="416" y2="166"/><text x="430" y="178" text-anchor="end">双发喷口</text></g>
+          </g>
+        </svg>
+        <figcaption>
+          <p class="spec"><span>首飞 2011</span><span>服役 2017</span><span>第五代</span></p>
+          <p class="cap">鸭式布局带来优异的超音速配平能力，内置弹舱让武器全部收进机身——这两点共同构成了它的隐身前提。中国由此成为少数能独立研制第五代战斗机的国家。</p>
+        </figcaption>
+      </figure>
+
+      <!-- 山东舰 -->
+      <figure class="schematic" id="carrier" data-name="山东舰 航空母舰">
+        <svg viewBox="0 0 440 210" role="img" aria-label="山东舰 侧视示意图">
+          <g class="parts">
+            <path class="pt pt--body" d="M48 144 L96 136 L360 136 L394 142 L398 152 L392 170 L340 178 L120 178 L70 168 L50 158 Z"/>
+            <path class="pt pt--deck" d="M40 140 L100 129 L368 129 L400 137 L398 144 L96 145 L44 147 Z"/>
+            <path class="pt pt--ramp" d="M40 141 C44 126 50 118 60 113 L82 122 L96 130 L44 147 Z"/>
+            <path class="pt pt--island" d="M272 129 L278 103 L308 103 L314 129 Z"/>
+            <rect class="pt pt--hangar" x="128" y="150" width="212" height="20" rx="2"/>
+          </g>
+          <g class="callouts">
+            <g class="callout" data-c="1"><line x1="54" y1="120" x2="62" y2="86"/><text x="64" y="76">滑跃甲板 · 14°</text></g>
+            <g class="callout" data-c="2"><line x1="291" y1="103" x2="291" y2="76"/><text x="291" y="68" text-anchor="middle">舰岛与指挥中枢</text></g>
+            <g class="callout" data-c="3"><line x1="234" y1="170" x2="214" y2="196"/><text x="210" y="208" text-anchor="middle">机库与升降机</text></g>
+          </g>
+        </svg>
+        <figcaption>
+          <p class="spec"><span>入列 2019</span><span>首艘国产</span><span>常规动力</span></p>
+          <p class="cap">滑跃起飞解决了“有没有”的问题，也换来了对舰载机重量与出动效率的取舍。真正的门槛不在船体，而在舰机适配、甲板调度与持续保障——那是一整套工业能力。</p>
+        </figcaption>
+      </figure>
+
+      <!-- 北斗 -->
+      <figure class="schematic" id="beidou" data-name="北斗三号 卫星导航系统">
+        <svg viewBox="0 0 440 210" role="img" aria-label="北斗三号 星座示意图">
+          <g class="parts">
+            <path class="pt pt--orbit" d="M20 205 Q220 -145 420 205"/>
+            <path class="pt pt--orbit" d="M50 205 Q220 -65 390 205"/>
+            <path class="pt pt--orbit" d="M10 205 Q220 15 430 205"/>
+            <path class="pt pt--earth" d="M0 210 A 330 330 0 0 1 440 210 Z"/>
+          </g>
+          <g class="sats">
+            <rect class="sat" x="116" y="70" width="8" height="8"/>
+            <rect class="sat" x="216" y="26" width="8" height="8"/>
+            <rect class="sat" x="316" y="70" width="8" height="8"/>
+            <rect class="sat" x="131" y="100" width="8" height="8"/>
+            <rect class="sat" x="216" y="106" width="8" height="8"/>
+            <circle class="pt pt--ground" cx="220" cy="124" r="4"/>
+          </g>
+          <g class="callouts">
+            <g class="callout" data-c="1"><line x1="220" y1="26" x2="220" y2="16"/><text x="228" y="12">中圆轨道 · 全球覆盖</text></g>
+            <g class="callout" data-c="2"><line x1="131" y1="100" x2="110" y2="66"/><text x="106" y="58" text-anchor="middle">倾斜同步轨道</text></g>
+            <g class="callout" data-c="3"><line x1="220" y1="128" x2="220" y2="186"/><text x="220" y="200" text-anchor="middle">地面运控与增强系统</text></g>
+          </g>
+        </svg>
+        <figcaption>
+          <p class="spec"><span>全球组网 2020</span><span>三种轨道</span><span>自主可控</span></p>
+          <p class="cap">三种轨道混合星座，兼顾全球覆盖与区域增强。导航系统的意义不止于“找得到路”——授时、通信、指挥、精确制导，都建立在同一套时空基准之上。</p>
+        </figcaption>
+      </figure>
+
+    </div>
+
+    <div class="note reveal">
+      <p>装备数据取自公开报道与官方发布，仅用于科普，未涉及任何非公开信息。</p>
+    </div>
+  </section>
+
+  <!-- ============ 三 · 防线 ============ -->
+  <section class="act" id="security">
+    <header class="act-head reveal">
+      <p class="act-no">叁 · 防线</p>
+      <h2>看不见的战场，就在日常里</h2>
+      <p class="act-lead">下面这张图里藏着五个容易被忽略的破口。点开看看，如果是你，会怎么选。</p>
+    </header>
+
+    <div class="mapbox reveal">
+      <svg class="map" viewBox="0 0 560 420" role="img" aria-label="校园与营区周边示意图，图中分布五处安全隐患">
+        <g class="grid" aria-hidden="true">
+          <path d="M0 70 H560 M0 140 H560 M0 210 H560 M0 280 H560 M0 350 H560"/>
+          <path d="M70 0 V420 M140 0 V420 M210 0 V420 M280 0 V420 M350 0 V420 M420 0 V420 M490 0 V420"/>
+        </g>
+        <g class="roads" aria-hidden="true">
+          <path d="M0 196 H560"/>
+          <path d="M244 0 V420"/>
+        </g>
+        <g class="blocks">
+          <rect x="56" y="56" width="150" height="110" rx="3"/>
+          <text x="131" y="118" text-anchor="middle">营 区</text>
+          <rect x="286" y="56" width="120" height="86" rx="3"/>
+          <text x="346" y="105" text-anchor="middle">教学楼</text>
+          <rect x="60" y="252" width="120" height="76" rx="3"/>
+          <text x="120" y="296" text-anchor="middle">咖啡馆</text>
+          <rect x="286" y="268" width="96" height="64" rx="3"/>
+          <text x="334" y="306" text-anchor="middle">快递站</text>
+          <rect x="418" y="240" width="104" height="92" rx="3"/>
+          <text x="470" y="292" text-anchor="middle">公寓</text>
+        </g>
+        <g class="hotspots" id="hotspots">
+          <g class="hot" data-id="0" tabindex="0" role="button" aria-label="营区门口"><circle class="hot-hit" cx="212" cy="100" r="30"/><circle class="hot-ring" cx="212" cy="100" r="11"/><circle class="hot-dot" cx="212" cy="100" r="3.5"/></g>
+          <g class="hot" data-id="1" tabindex="0" role="button" aria-label="咖啡馆无线网络"><circle class="hot-hit" cx="86" cy="266" r="30"/><circle class="hot-ring" cx="86" cy="266" r="11"/><circle class="hot-dot" cx="86" cy="266" r="3.5"/></g>
+          <g class="hot" data-id="2" tabindex="0" role="button" aria-label="公寓里的社交动态"><circle class="hot-hit" cx="436" cy="258" r="30"/><circle class="hot-ring" cx="436" cy="258" r="11"/><circle class="hot-dot" cx="436" cy="258" r="3.5"/></g>
+          <g class="hot" data-id="3" tabindex="0" role="button" aria-label="教学楼收到的邮件"><circle class="hot-hit" cx="312" cy="72" r="30"/><circle class="hot-ring" cx="312" cy="72" r="11"/><circle class="hot-dot" cx="312" cy="72" r="3.5"/></g>
+          <g class="hot" data-id="4" tabindex="0" role="button" aria-label="快递站的旧手机"><circle class="hot-hit" cx="366" cy="282" r="30"/><circle class="hot-ring" cx="366" cy="282" r="11"/><circle class="hot-dot" cx="366" cy="282" r="3.5"/></g>
+        </g>
+      </svg>
+      <p class="map-status"><span id="foundCount">0</span> / 5 已发现</p>
+    </div>
+
+    <p class="tip reveal">国家安全机关举报受理电话 <strong>12339</strong></p>
+  </section>
+
+  <!-- ============ 四 · 接力 ============ -->
+  <section class="act" id="relay">
+    <header class="act-head reveal">
+      <p class="act-no">肆 · 接力</p>
+      <h2>号声该由我们接着吹</h2>
+      <p class="act-lead">前三个章节讲的是过去、装备和风险。最后这一章，讲一件更小的事：明天早上，你打算做什么。</p>
+    </header>
+
+    <ul class="dos">
+      <li class="reveal"><h3>把该学的学扎实</h3><p>国防不是抽象的立场，是具体的专业能力。你手上的每一点本事，最终都会成为这个国家的一块底。</p></li>
+      <li class="reveal"><h3>把该守的守住</h3><p>不该拍的别拍，不该连的别连，不该说的别说。绝大多数泄密，不是因为敌人高明，而是因为我们松懈。</p></li>
+      <li class="reveal"><h3>把该讲的讲清楚</h3><p>遇到模糊的传闻，先查权威来源；遇到误解，能说清来龙去脉。这本身就是一种国防动员能力。</p></li>
+    </ul>
+
+    <div class="poster-box reveal">
+      <label class="field">
+        <span>留下你的名字（可不填）</span>
+        <input id="nameInput" type="text" maxlength="12" placeholder="一名青年" autocomplete="off">
+      </label>
+      <div class="poster-actions">
+        <button class="btn btn--primary" id="makeBtn" type="button">生成接力海报</button>
+        <button class="btn" id="saveBtn" type="button" disabled>保存图片</button>
+      </div>
+      <canvas id="poster" width="1080" height="1440" class="poster-canvas" aria-label="接力海报预览"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ 说明 ============ -->
+  <section class="act act--about" id="about">
+    <header class="act-head reveal">
+      <p class="act-no">附 · 说明</p>
+      <h2>关于这件作品</h2>
+    </header>
+    <div class="about-grid">
+      <div class="about-item reveal">
+        <h3>创作思路</h3>
+        <p>以一支军号串起四个章节：冲锋号对应战火年代，出操号对应和平年代的日复一日，紧急集合号对应没有硝烟的防线，起床号留给结尾——仗打完了，天亮了，轮到我们。</p>
+      </div>
+      <div class="about-item reveal">
+        <h3>技术实现</h3>
+        <p>纯前端单页，HTML / CSS / 原生 JavaScript，无任何第三方库与外部依赖，不需要联网，断网也可运行。</p>
+      </div>
+      <div class="about-item reveal">
+        <h3>资料来源</h3>
+        <p>历史事件与时间节点引自《中国共产党简史》及公开出版物；装备信息取自国防部网站、新华社、中国军网等公开报道，仅涉及公开参数；法律依据引自《国家安全法》《反间谍法》《军事设施保护法》《数据安全法》的公开条文。作品为课程作业，用于学习交流。</p>
+      </div>
+    </div>
+    <footer class="foot">
+      <p>26级网新2班任殊啸 · 新闻学概论作业</p>
+      <p class="foot-sub">2026 年 11 月</p>
+    </footer>
+  </section>
+
+</main>
+
+<!-- 隐患面板 -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
+    <button class="sheet-close" data-close type="button" aria-label="关闭">×</button>
+    <p class="sheet-kicker" id="sheetKicker"></p>
+    <h3 id="sheetTitle"></h3>
+    <p class="sheet-scene" id="sheetScene"></p>
+    <div class="choices" id="sheetChoices"></div>
+    <div class="verdict" id="sheetVerdict" hidden>
+      <p class="verdict-mark" id="verdictMark"></p>
+      <p class="verdict-text" id="verdictText"></p>
+      <p class="verdict-law" id="verdictLaw"></p>
+      <button class="btn btn--primary" data-close type="button">知道了</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   军魂筑梦 · 青春报国
+   原生 JS，无依赖
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------------------------------------------------
+     一、音频：用 Web Audio 实时合成号角动机
+     不使用任何录音素材，避免版权问题
+     --------------------------------------------------------- */
+  var Sound = (function () {
+    var ctx = null;
+    var master = null;
+    var analyser = null;
+    var enabled = true;
+    var playing = false;
+
+    function ensure() {
+      if (ctx) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0.26;
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 2048;
+      master.connect(analyser);
+      analyser.connect(ctx.destination);
+      return ctx;
+    }
+
+    /* 号角动机：三连音起，上行到属音，收在长音 */
+    var CALL = [
+      [392.00, 0.00, 0.09],
+      [392.00, 0.10, 0.09],
+      [392.00, 0.20, 0.09],
+      [523.25, 0.30, 0.16],
+      [659.25, 0.47, 0.16],
+      [783.99, 0.64, 0.52],
+      [659.25, 1.22, 0.09],
+      [783.99, 1.32, 0.78]
+    ];
+
+    function playCall(onDone) {
+      if (!enabled) { if (onDone) onDone(); return; }
+      var c = ensure();
+      if (!c) { if (onDone) onDone(); return; }
+      if (c.state === 'suspended') c.resume();
+
+      var t0 = c.currentTime + 0.04;
+      var end = 0;
+
+      CALL.forEach(function (n) {
+        var freq = n[0], start = t0 + n[1], dur = n[2];
+
+        var env = c.createGain();
+        env.gain.setValueAtTime(0.0001, start);
+        env.gain.exponentialRampToValueAtTime(0.85, start + 0.035);
+        env.gain.exponentialRampToValueAtTime(0.5, start + dur * 0.5);
+        env.gain.exponentialRampToValueAtTime(0.0001, start + dur + 0.14);
+
+        var filter = c.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2600, start);
+        filter.frequency.exponentialRampToValueAtTime(1400, start + dur + 0.14);
+        filter.Q.value = 0.9;
+
+        [['sawtooth', 1], ['triangle', 1.004]].forEach(function (o) {
+          var osc = c.createOscillator();
+          osc.type = o[0];
+          osc.frequency.setValueAtTime(freq, start);
+          osc.detune.value = (o[1] - 1) * 1000;
+          osc.connect(filter);
+          osc.start(start);
+          osc.stop(start + dur + 0.2);
+        });
+
+        filter.connect(env);
+        env.connect(master);
+        end = Math.max(end, n[1] + dur + 0.18);
+      });
+
+      playing = true;
+      if (onDone) window.setTimeout(onDone, end * 1000);
+    }
+
+    function setEnabled(v) {
+      enabled = v;
+      if (master) {
+        var t = ctx.currentTime;
+        master.gain.cancelScheduledValues(t);
+        master.gain.setTargetAtTime(v ? 0.26 : 0.0001, t, 0.05);
+      }
+      if (enabled) ensure();
+    }
+
+    function isPlaying() { return playing; }
+
+    function getWave() {
+      if (!analyser) return null;
+      var buf = new Uint8Array(analyser.fftSize);
+      analyser.getByteTimeDomainData(buf);
+      return buf;
+    }
+
+    return { playCall: playCall, setEnabled: setEnabled, isPlaying: isPlaying, getWave: getWave, get enabled() { return enabled; } };
+  })();
+
+  /* ---------------------------------------------------------
+     二、号角声波：Canvas 绘制实时波形
+     --------------------------------------------------------- */
+  var Wave = (function () {
+    var canvas = document.getElementById('wave');
+    if (!canvas) return { start: function () {}, stop: function () {} };
+    var g = canvas.getContext('2d');
+    var w = 0, h = 0, raf = 0;
+    var flat = 0;
+
+    function size() {
+      var r = canvas.getBoundingClientRect();
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = r.width; h = r.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawIdle();
+    }
+
+    function drawIdle() {
+      g.clearRect(0, 0, w, h);
+      var y = h / 2;
+      var x0 = w * 0.18, x1 = w * 0.82;
+      var n = 48;
+      for (var i = 0; i < n; i++) {
+        var t0 = i / n, t1 = (i + 1) / n;
+        var a = Math.sin(Math.PI * (t0 + t1) / 2);
+        g.beginPath();
+        g.moveTo(x0 + (x1 - x0) * t0, y);
+        g.lineTo(x0 + (x1 - x0) * t1, y);
+        g.strokeStyle = 'rgba(233,228,216,' + (0.34 * a).toFixed(3) + ')';
+        g.lineWidth = 1;
+        g.stroke();
+      }
+    }
+
+    function frame() {
+      var data = Sound.getWave();
+      g.clearRect(0, 0, w, h);
+      if (!data) { drawIdle(); return; }
+
+      var mid = h / 2;
+      var amp = h * 0.42;
+      var step = Math.floor(data.length / w) || 1;
+      var peak = 0;
+
+      for (var i = 0; i < data.length; i++) {
+        peak = Math.max(peak, Math.abs(data[i] - 128));
+      }
+      flat += ((peak / 128) - flat) * 0.18;
+
+      g.beginPath();
+      for (var x = 0; x < w; x++) {
+        var v = (data[x * step] - 128) / 128;
+        var y = mid + v * amp * (0.35 + flat * 0.9);
+        if (x === 0) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.strokeStyle = 'rgba(233,228,216,' + (0.28 + flat * 0.6) + ')';
+      g.lineWidth = 1.1;
+      g.lineJoin = 'round';
+      g.stroke();
+
+      if (flat > 0.004) raf = requestAnimationFrame(frame);
+      else { raf = 0; drawIdle(); }
+    }
+
+    function start() {
+      if (reduceMotion) return;
+      if (!raf) raf = requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', size);
+    size();
+
+    return { start: start, resize: size };
+  })();
+
+  /* ---------------------------------------------------------
+     三、号角按钮
+     --------------------------------------------------------- */
+  var hornBtn = document.getElementById('hornBtn');
+  var hornState = 'idle';
+
+  if (hornBtn) {
+    hornBtn.addEventListener('click', function () {
+      if (hornState === 'idle') {
+        hornState = 'playing';
+        hornBtn.classList.add('is-blowing');
+        hornBtn.querySelector('.horn-text').textContent = '号声起';
+        Sound.playCall(function () {
+          hornState = 'done';
+          hornBtn.classList.remove('is-blowing');
+          hornBtn.querySelector('.horn-text').textContent = '进入';
+        });
+        Wave.start();
+      } else if (hornState === 'done') {
+        document.getElementById('history').scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------
+     四、声音开关
+     --------------------------------------------------------- */
+  var soundBtn = document.getElementById('soundBtn');
+  var soundLabel = document.getElementById('soundLabel');
+
+  if (soundBtn) {
+    soundBtn.addEventListener('click', function () {
+      var on = soundBtn.getAttribute('aria-pressed') === 'true';
+      var next = !on;
+      soundBtn.setAttribute('aria-pressed', String(next));
+      soundBtn.setAttribute('aria-label', next ? '关闭声音' : '开启声音');
+      soundLabel.textContent = next ? '声音开' : '声音关';
+      Sound.setEnabled(next);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     五、滚动：进度、顶栏、入场、章节指示
+     --------------------------------------------------------- */
+  var progressBar = document.getElementById('progressBar');
+  var topbar = document.querySelector('.topbar');
+  var ticking = false;
+
+  function onScroll() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? window.scrollY / max : 0;
+    if (progressBar) progressBar.style.width = (p * 100).toFixed(2) + '%';
+    if (topbar) topbar.classList.toggle('is-on', window.scrollY > 80);
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  var dotLinks = Array.prototype.slice.call(document.querySelectorAll('.dots a'));
+  var sections = dotLinks.map(function (a) {
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var navIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          dotLinks.forEach(function (a) {
+            a.classList.toggle('is-on', a.getAttribute('href') === '#' + en.target.id);
+          });
+        }
+      });
+    }, { threshold: 0, rootMargin: '-45% 0px -45% 0px' });
+    sections.forEach(function (s) { navIO.observe(s); });
+  }
+
+  /* ---------------------------------------------------------
+     六、装备切换与剖视
+     --------------------------------------------------------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var cutBtn = document.getElementById('cutBtn');
+  var stage = document.querySelector('.stage');
+
+  function activeFigure() {
+    return document.querySelector('.schematic.is-active');
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.schematic'), function (fig) {
+        fig.classList.toggle('is-active', fig.id === tab.dataset.target);
+      });
+      if (cutBtn) {
+        cutBtn.setAttribute('aria-pressed', 'false');
+        cutBtn.querySelector('span').textContent = '剖视';
+      }
+      var fig = activeFigure();
+      if (fig) fig.classList.remove('is-cut');
+    });
+  });
+
+  if (cutBtn) {
+    cutBtn.addEventListener('click', function () {
+      var fig = activeFigure();
+      if (!fig) return;
+      var on = cutBtn.getAttribute('aria-pressed') !== 'true';
+      cutBtn.setAttribute('aria-pressed', String(on));
+      cutBtn.querySelector('span').textContent = on ? '合拢' : '剖视';
+      fig.classList.toggle('is-cut', on);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     七、隐患地图与判断面板
+     --------------------------------------------------------- */
+  var CASES = [
+    {
+      kicker: '隐患 01 · 随手拍',
+      title: '营区门口的“到此一游”',
+      scene: '你路过一处营区，门口停着几台没见过的装备，哨兵站得笔直。你举起手机，想拍一张发到朋友圈。',
+      choices: [
+        { text: '拍下来，加上定位，配文“路过神秘单位”', ok: false },
+        { text: '收起手机，只拍一张路牌风景', ok: true }
+      ],
+      verdict: '军事管理区的外围同样受法律保护。照片里的营门朝向、装备型号、山体轮廓，甚至影子的长度，都能被用来推断部署与方位。一张随手拍，有时抵得上一份侦察报告。',
+      law: '《中华人民共和国军事设施保护法》规定：禁止对军事禁区、军事管理区进行摄影、摄像、录音、勘察、测量、定位、描绘和记述。'
+    },
+    {
+      kicker: '隐患 02 · 网络',
+      title: '咖啡馆里的“免费校园网”',
+      scene: '你在营区附近的咖啡馆坐下，手机搜到一个不需要密码的热点，名字很像学校的 Wi-Fi。你正好要登录教务系统查成绩。',
+      choices: [
+        { text: '连上，省点流量，反正只是查个成绩', ok: false },
+        { text: '用手机流量，或先向店员确认热点来源', ok: true }
+      ],
+      verdict: '陌生热点可以被配置成“中间人”：你输入的账号、密码、甚至内网凭证，都会先经过别人的设备。名字越像官方的热点，越值得怀疑。',
+      law: '《中华人民共和国数据安全法》要求采取必要措施保障数据安全；涉密网络与内部网络不得违规与互联网连接。'
+    },
+    {
+      kicker: '隐患 03 · 社交',
+      title: '朋友发来的训练照',
+      scene: '朋友在群里发了一张训练照，背景里有装备编号和熟悉的山脊线，配文是“我们在这儿”。群里已经有人开始转发。',
+      choices: [
+        { text: '跟着转发，帮他“宣传”一下', ok: false },
+        { text: '私信提醒他删除或打码，别让照片出群', ok: true }
+      ],
+      verdict: '单张照片也许无害，但公开信息会被长期收集、交叉比对：编号能定位单位，山脊线能定位营区，发布时间能推断作息。情报很多时候是“拼”出来的。',
+      law: '《中华人民共和国保守国家秘密法》规定：禁止在互联网及其他公共信息网络中传递国家秘密。'
+    },
+    {
+      kicker: '隐患 04 · 邮件',
+      title: '一封报酬丰厚的“学术调研”',
+      scene: '你收到一封邮件，对方自称某研究机构，邀请你参与“国防工业调研”，报酬可观，问题涉及你实习单位的项目进度与人员构成。',
+      choices: [
+        { text: '填一下，反正问的都是些公开信息', ok: false },
+        { text: '拒绝，并向学校或国家安全机关反映', ok: true }
+      ],
+      verdict: '以调研、兼职、交友为名的情报套取，是境外机构最常用的低成本手段。他们往往从“无关紧要”的问题开始，逐步逼近核心。可疑情况可拨 12339。',
+      law: '《中华人民共和国反间谍法》明确：公民和组织应当支持、协助反间谍工作，发现间谍行为应当及时向国家安全机关报告。'
+    },
+    {
+      kicker: '隐患 05 · 设备',
+      title: '二手平台上的旧手机',
+      scene: '你换了新手机，把旧的挂上二手平台。机器里还留着实习时的通讯录、几张工作照，以及登录过内部系统的记录。',
+      choices: [
+        { text: '恢复出厂设置，直接发货', ok: false },
+        { text: '退出账号、彻底清除并覆写，工作资料不带出', ok: true }
+      ],
+      verdict: '简单的删除和“恢复出厂”并不能真正抹掉数据，专业工具仍可恢复。涉密或内部资料应当按保密规定移交，不得私自留存、处理或带离。',
+      law: '《中华人民共和国保守国家秘密法》规定：涉密载体应当按照规定清点、登记、归档、销毁，禁止私自留存和私自处理。'
+    }
+  ];
+
+  var sheet = document.getElementById('sheet');
+  var sheetKicker = document.getElementById('sheetKicker');
+  var sheetTitle = document.getElementById('sheetTitle');
+  var sheetScene = document.getElementById('sheetScene');
+  var sheetChoices = document.getElementById('sheetChoices');
+  var sheetVerdict = document.getElementById('sheetVerdict');
+  var verdictMark = document.getElementById('verdictMark');
+  var verdictText = document.getElementById('verdictText');
+  var verdictLaw = document.getElementById('verdictLaw');
+  var foundCount = document.getElementById('foundCount');
+  var found = {};
+  var lastFocus = null;
+
+  function openCase(id, trigger) {
+    var c = CASES[id];
+    if (!c) return;
+    lastFocus = trigger || null;
+
+    sheetKicker.textContent = c.kicker;
+    sheetTitle.textContent = c.title;
+    sheetScene.textContent = c.scene;
+    sheetVerdict.hidden = true;
+    sheetChoices.hidden = false;
+    sheetChoices.innerHTML = '';
+
+    c.choices.forEach(function (ch, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice';
+      b.innerHTML = '<b>' + String.fromCharCode(65 + i) + '</b>' + ch.text;
+      b.addEventListener('click', function () { judge(ch.ok, c, id, trigger); });
+      sheetChoices.appendChild(b);
+    });
+
+    sheet.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var panel = sheet.querySelector('.sheet-panel');
+    if (panel) panel.focus({ preventScroll: true });
+  }
+
+  function judge(ok, c, id, trigger) {
+    sheetChoices.hidden = true;
+    sheetVerdict.hidden = false;
+    verdictMark.textContent = ok ? '判断正确' : '这里容易被忽略';
+    verdictMark.className = 'verdict-mark ' + (ok ? 'ok' : 'no');
+    verdictText.textContent = c.verdict;
+    verdictLaw.textContent = c.law;
+    var vp = sheet.querySelector('.sheet-panel');
+    if (vp) vp.focus({ preventScroll: true });
+
+    if (!found[id]) {
+      found[id] = true;
+      if (trigger) trigger.classList.add('found');
+      var n = Object.keys(found).length;
+      foundCount.textContent = String(n);
+      if (n === 5) {
+        var st = foundCount.parentElement;
+        if (st) { st.textContent = '5 / 5 · 全部发现'; st.classList.add('is-done'); }
+      }
+    }
+  }
+
+  function closeSheet() {
+    sheet.hidden = true;
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+  }
+
+  if (sheet) {
+    sheet.addEventListener('click', function (e) {
+      if (e.target.hasAttribute('data-close')) closeSheet();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !sheet.hidden) closeSheet();
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.hot'), function (h) {
+    var id = Number(h.dataset.id);
+    h.addEventListener('click', function () { openCase(id, h); });
+    h.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCase(id, h);
+      }
+    });
+  });
+
+  /* ---------------------------------------------------------
+     八、接力海报
+     --------------------------------------------------------- */
+  var canvas = document.getElementById('poster');
+  var nameInput = document.getElementById('nameInput');
+  var makeBtn = document.getElementById('makeBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var W = 1080, H = 1440;
+
+  function spaced(g, text, x, y, tracking) {
+    var total = 0;
+    for (var i = 0; i < text.length; i++) total += g.measureText(text[i]).width + tracking;
+    total -= tracking;
+    var cx = x - total / 2;
+    for (var j = 0; j < text.length; j++) {
+      g.fillText(text[j], cx, y);
+      cx += g.measureText(text[j]).width + tracking;
+    }
+  }
+
+  function star(g, cx, cy, R, r) {
+    g.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var rad = i % 2 === 0 ? R : r;
+      var a = -Math.PI / 2 + i * Math.PI / 5;
+      var px = cx + Math.cos(a) * rad;
+      var py = cy + Math.sin(a) * rad;
+      if (i === 0) g.moveTo(px, py); else g.lineTo(px, py);
+    }
+    g.closePath();
+  }
+
+  function relayNumber() {
+    var n = 1024;
+    try {
+      n = Number(localStorage.getItem('jh_relay_n') || 0) || 1024;
+      n += 1;
+      localStorage.setItem('jh_relay_n', String(n));
+    } catch (e) { n = 1024 + Math.floor(Math.random() * 900); }
+    return n;
+  }
+
+  function drawPoster(name, num) {
+    var g = canvas.getContext('2d');
+    var serif = '"Songti SC","STSong","Source Han Serif SC","SimSun",serif';
+    var sans = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+
+    g.fillStyle = '#0b0e0c';
+    g.fillRect(0, 0, W, H);
+
+    g.strokeStyle = 'rgba(233,228,216,0.10)';
+    g.lineWidth = 2;
+    g.strokeRect(46, 46, W - 92, H - 92);
+
+    g.fillStyle = 'rgba(233,228,216,0.36)';
+    g.font = '30px ' + sans;
+    spaced(g, '国防教育 · 数字化作品', W / 2, 150, 8);
+
+    g.strokeStyle = 'rgba(192,80,60,0.5)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(W / 2 - 60, 190);
+    g.lineTo(W / 2 + 60, 190);
+    g.stroke();
+
+    g.strokeStyle = 'rgba(192,80,60,0.75)';
+    g.lineWidth = 2.5;
+    star(g, W / 2, 400, 92, 36);
+    g.stroke();
+
+    g.fillStyle = '#e9e4d8';
+    g.textBaseline = 'alphabetic';
+    g.font = '500 116px ' + serif;
+    spaced(g, '军魂筑梦', W / 2, 660, 14);
+    spaced(g, '青春报国', W / 2, 792, 14);
+
+    g.fillStyle = 'rgba(233,228,216,0.42)';
+    g.font = '34px ' + sans;
+    spaced(g, '一支军号，三代人的回答', W / 2, 884, 4);
+
+    g.strokeStyle = 'rgba(233,228,216,0.10)';
+    g.lineWidth = 1.5;
+    g.beginPath();
+    g.moveTo(180, 990);
+    g.lineTo(W - 180, 990);
+    g.stroke();
+
+    g.fillStyle = '#e9e4d8';
+    g.font = '500 58px ' + serif;
+    spaced(g, name, W / 2, 1092, 7);
+
+    g.fillStyle = 'rgba(233,228,216,0.55)';
+    g.font = '30px ' + sans;
+    spaced(g, '第 ' + num + ' 位青春接力者', W / 2, 1160, 3);
+
+    g.fillStyle = 'rgba(233,228,216,0.3)';
+    g.font = '26px ' + sans;
+    spaced(g, '2026 · 11', W / 2, 1300, 8);
+  }
+
+  function makePoster() {
+    var raw = (nameInput.value || '').trim().slice(0, 12);
+    var name = raw || '一名青年';
+    var num = relayNumber();
+    drawPoster(name, num);
+    canvas.classList.add('is-on');
+    saveBtn.disabled = false;
+    if (window.matchMedia('(max-width: 780px)').matches) {
+      canvas.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+
+  if (makeBtn) {
+    makeBtn.addEventListener('click', makePoster);
+    nameInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') makePoster();
+    });
+    saveBtn.addEventListener('click', function () {
+      var a = document.createElement('a');
+      a.download = '军魂筑梦-青春接力.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  }
+
+  /* ---------------------------------------------------------
+     九、首屏时间轴：滚动到位时点亮
+     --------------------------------------------------------- */
+  var tlItems = document.querySelectorAll('.tl-item');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var tlIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          tlIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    Array.prototype.forEach.call(tlItems, function (el) { tlIO.observe(el); });
+  } else {
+    Array.prototype.forEach.call(tlItems, function (el) { el.classList.add('in'); });
+  }
+})();
+
+</script>
+</body>
+</html>
