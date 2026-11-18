@@ -2,8 +2,18 @@
   "ok": true,
   "mid": "3707026240702873",
   "source": "snapshot",
-  "updatedAt": "2026-11-18T07:15:00.740Z",
+  "updatedAt": "2026-11-18T20:25:32.433Z",
   "videos": [
+    {
+      "bvid": "BV1fwsU6aEUP",
+      "title": "【原创音乐】Hoooooot - Non Omnis Moriar",
+      "cover": "https://i2.hdslb.com/bfs/archive/881170b5cec17028af5cd41999d986d57798caeb.jpg",
+      "coverThumb": "https://i2.hdslb.com/bfs/archive/881170b5cec17028af5cd41999d986d57798caeb.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1fwsU6aEUP",
+      "pubdate": 1794992400,
+      "duration": "05:53",
+      "views": 40
+    },
     {
       "bvid": "BV1aony6vEo1",
       "title": "【4K60杜比视界】🦅在天空翱翔是什么感觉？",
@@ -53,16 +63,6 @@
       "pubdate": 1787400000,
       "duration": "02:08",
       "views": 208
-    },
-    {
-      "bvid": "BV1Etb96RE3p",
-      "title": "【杜比视界】毕业旅行，我选择了……",
-      "cover": "https://i0.hdslb.com/bfs/archive/c2c60376221bc69c7b4eec6f0647c891f3c19afc.jpg",
-      "coverThumb": "https://i0.hdslb.com/bfs/archive/c2c60376221bc69c7b4eec6f0647c891f3c19afc.jpg@480w_270h_1c",
-      "url": "https://www.bilibili.com/video/BV1Etb96RE3p",
-      "pubdate": 1787146694,
-      "duration": "27:43",
-      "views": 188
     }
   ]
 }
