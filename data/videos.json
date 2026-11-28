@@ -2,8 +2,18 @@
   "ok": true,
   "mid": "3707026240702873",
   "source": "snapshot",
-  "updatedAt": "2026-11-27T08:14:48.461Z",
+  "updatedAt": "2026-11-28T07:37:33.922Z",
   "videos": [
+    {
+      "bvid": "BV1hk14ztEvt",
+      "title": "【杜比视界】你见过这样的惠院吗？",
+      "cover": "https://i0.hdslb.com/bfs/archive/c14843973b4e22e9a461af140de42a57d597c49f.jpg",
+      "coverThumb": "https://i0.hdslb.com/bfs/archive/c14843973b4e22e9a461af140de42a57d597c49f.jpg@480w_270h_1c",
+      "url": "https://www.bilibili.com/video/BV1hk14ztEvt",
+      "pubdate": 1795800506,
+      "duration": "01:17",
+      "views": 92
+    },
     {
       "bvid": "BV1fwsU6aEUP",
       "title": "【原创音乐】Hoooooot - Non Omnis Moriar",
@@ -12,7 +22,7 @@
       "url": "https://www.bilibili.com/video/BV1fwsU6aEUP",
       "pubdate": 1794992400,
       "duration": "05:53",
-      "views": 105
+      "views": 106
     },
     {
       "bvid": "BV1aony6vEo1",
@@ -22,7 +32,7 @@
       "url": "https://www.bilibili.com/video/BV1aony6vEo1",
       "pubdate": 1792655166,
       "duration": "02:39",
-      "views": 74
+      "views": 75
     },
     {
       "bvid": "BV18tp764EdS",
@@ -53,16 +63,6 @@
       "pubdate": 1790182545,
       "duration": "02:36",
       "views": 50
-    },
-    {
-      "bvid": "BV1dz8r6QEvg",
-      "title": "【杜比视界】在香港，我竟然拍到了这些……",
-      "cover": "https://i0.hdslb.com/bfs/archive/539000471704c17f55b5fbe2330690f7fce66eb3.jpg",
-      "coverThumb": "https://i0.hdslb.com/bfs/archive/539000471704c17f55b5fbe2330690f7fce66eb3.jpg@480w_270h_1c",
-      "url": "https://www.bilibili.com/video/BV1dz8r6QEvg",
-      "pubdate": 1787400000,
-      "duration": "02:08",
-      "views": 208
     }
   ]
 }
